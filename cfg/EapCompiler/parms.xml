@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>EapCompiler parameters</name>
+      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>createtemplate</name>
+         <arg>yes|no</arg>
+         <tip>Yes if an EAP template should be created for this application</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>createumlreport</name>
+         <arg>yes|no</arg>
+         <tip>Yes if an UML report based on EAP should be created</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>createderivedeap</name>
+         <arg>yes|no</arg>
+         <tip>Yes if an full EA representation of all derived information should be created</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <properties>
+      
+       <!--  template EAP used as the basis for all working copies -->
+       <TEMPLATE_TEMPLATE_FILE>${cli/managedinputfolder}/eap/TEMPLATE.EAP</TEMPLATE_TEMPLATE_FILE>
+       <TEMPLATE_TEMPLATE_FILE_GUID>${cli/managedinputfolder}/eap/TEMPLATE.EAP.GUID</TEMPLATE_TEMPLATE_FILE_GUID>
+       
+       <!--  reports, part of distribution	 -->
+       <RESULT_DOC_FOLDER>${properties/APPLICATION_FOLDER}/doc</RESULT_DOC_FOLDER>
+       
+       <!--  EAP HTML report, part of distribution -->
+       <RESULT_UML_FOLDER>${properties/APPLICATION_FOLDER}/uml/report</RESULT_UML_FOLDER>
+
+       <!-- the XSL file that transforms the source XMI to template --> 
+       <IMVERTOR_TEMPLATE_XSLPATH>XMI1Template.xsl</IMVERTOR_TEMPLATE_XSLPATH>
+       <WORK_TEMPLATE_FILE>${system/work-imvert-folder-path}/imvertor.30.template.xmi</WORK_TEMPLATE_FILE>
+       
+       <RESULT_TEMPLATE_FILE>${system/work-etc-folder-path}/${appinfo/release-name}.template.eap</RESULT_TEMPLATE_FILE>
+
+       <IMVERTOR_REPORTINGCOPY_XSLPATH>XMI1Reportingcopy.xsl</IMVERTOR_REPORTINGCOPY_XSLPATH>
+       <WORK_EAP_FILE>${system/work-imvert-folder-path}/imvertor.31.workingcopy.eap</WORK_EAP_FILE>
+       <WORK_TEMP_XMI_FILE>${system/work-imvert-folder-path}/imvertor.32.workingcopy.temp.xmi</WORK_TEMP_XMI_FILE>
+       <WORK_FULL_XMI_FILE>${system/work-imvert-folder-path}/imvertor.33.workingcopy.full.xmi</WORK_FULL_XMI_FILE>
+       
+      <!--  files generated as part of this application 	 -->
+      <RESULT_DERIVED_EAP_FILE>${system/work-etc-folder-path}/${properties/RELEASE_NAME}.derived.eap</RESULT_DERIVED_EAP_FILE>
+      
+    </properties>
+ 
+</config>

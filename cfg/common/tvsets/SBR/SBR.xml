@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tagset>
+    <svn>$Id: SBR.xml 7371 2016-01-11 11:07:16Z arjan $</svn>
+    <name>SBR</name>
+    <descr>Stelsel basisregistraties</descr>
+    <web>http://stelselcatalogus.logius.nl/over-de-stelselcatalogus/metadata/</web>
+    
+    <tagged-values xml:id="tagset">
+        <tv norm="space">
+            <name>Herkomst</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Complex datatype</stereo>
+                <stereo>Data element</stereo>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Relatiesoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Referentielijst</stereo>
+                <stereo>Referentie element</stereo>
+                <stereo>Union</stereo>
+                <stereo>Union element</stereo>
+            </stereotypes>
+        </tv>
+        <!-- TODO Vaststellen per tagged value of deze derived moeten worden of niet. -->
+        <tv norm="space">
+            <name>Eigenaar</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo> <!-- TODO anders dan metamodel -->
+                <stereo>Attribuutsoort</stereo> <!-- TODO anders dan metamodel -->
+                <stereo>Gegevensgroeptype</stereo> <!-- TODO anders dan metamodel -->
+            </stereotypes>
+        </tv>
+        <tv norm="note">
+            <name>Populatie</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Attribuutsoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space">
+            <name>Kwaliteitsbegrip</name>
+            <name>Kwaliteit</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Attribuutsoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="note" validate="boolean">
+            <name>Authentiek</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo> <!-- TODO anders dan metamodel -->
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="note">
+            <name>Regels</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="note">
+            <name>Toelichting</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+                <stereo>Referentielijst</stereo>
+                <stereo>Referentie element</stereo>
+            </stereotypes>
+        </tv> 
+    </tagged-values>
+</tagset>

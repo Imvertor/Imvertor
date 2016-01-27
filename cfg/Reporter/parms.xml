@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Reporter parameters</name>
+      <version-control>$Id: parms.xml 7268 2015-09-20 10:21:54Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <!-- none -->
+   </cli-parms>
+   
+   <properties>
+      <REPORTER_XSLPATH>Reporter.xsl</REPORTER_XSLPATH>
+   </properties>
+</config>

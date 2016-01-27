@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Office compiler</name>
+      <version-control>$Id: parms.xml 7371 2016-01-11 11:07:16Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>createoffice</name>
+         <arg>html|doc</arg>
+         <tip>Create a documentation file in HTML or MsWord format. By default, create none.</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <properties>
+
+      <WORK_OFFICE_FILE>${system/work-imvert-folder-path}/imvertor.25.office.html</WORK_OFFICE_FILE>
+      
+      <IMVERTOR_METAMODEL_BOM_OFFICE_XSLPATH>Imvert2office-Kadaster.xsl</IMVERTOR_METAMODEL_BOM_OFFICE_XSLPATH>
+      <IMVERTOR_METAMODEL_ISO19103_OFFICE_XSLPATH>Imvert2office-ISO.xsl</IMVERTOR_METAMODEL_ISO19103_OFFICE_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGSIM_OFFICE_XSLPATH>Imvert2office-KINGSIM.xsl</IMVERTOR_METAMODEL_KINGSIM_OFFICE_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUIM_OFFICE_XSLPATH>Imvert2office-KINGUIM.xsl</IMVERTOR_METAMODEL_KINGUIM_OFFICE_XSLPATH>
+      <IMVERTOR_METAMODEL_Kadaster_OFFICE_XSLPATH>Imvert2office-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_OFFICE_XSLPATH>
+      
+   </properties>
+</config>

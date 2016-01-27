@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Schema validator</name>
+      <version-control>$Id: parms.xml 7268 2015-09-20 10:21:54Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>validateschema</name>
+         <arg>yes|no</arg>
+         <tip>Yes if result schemas must be validated</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <properties>
+      
+      
+   </properties>
+</config>

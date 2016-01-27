@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Tester parameters</name>
+      <version-control>$Id: parms.xml 7295 2015-11-04 11:24:37Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>infile</name>
+         <arg>filepath</arg>
+         <tip>Input file for tester transformation</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>outfile</name>
+         <arg>filepath</arg>
+         <tip>Output file for tester transformation</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>inexcelfile</name>
+         <arg>filepath</arg>
+         <tip>Input file for tester Excel processor</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>outexcelfile</name>
+         <arg>filepath</arg>
+         <tip>Output file for tester Excel processor</tip>
+         <required>true</required>
+      </cli-parm> 
+   </cli-parms>
+   
+   <properties>
+      <TESTER_XSLPATH>Tester.xsl</TESTER_XSLPATH>
+      <TESTER_SERIALIZER_WORK_PATH>${system/work-folder-path}/serializer</TESTER_SERIALIZER_WORK_PATH>
+   </properties>
+</config>

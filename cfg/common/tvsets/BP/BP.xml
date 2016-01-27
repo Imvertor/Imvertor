@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tagset xmlns:xi="http://www.w3.org/2001/XInclude">
+    <svn>$Id: BP.xml 7389 2016-01-18 15:03:45Z arjan $</svn>
+    <name>BP</name>
+    <descr>Best Practices</descr>
+    <tagged-values>
+        <!-- BP follows SBR requirements -->
+        <xi:include href="../SBR/SBR.xml"/>
+      
+        <tv norm="space">
+            <name>Datum opname</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo> 
+                <stereo>Referentielijst</stereo>
+                <stereo>Referentie element</stereo>
+                <stereo>Union</stereo>
+                <stereo>Union element</stereo>
+                <stereo>Complex datatype</stereo>
+                <stereo>Externe koppeling</stereo>
+            </stereotypes>
+        </tv> 
+        <tv norm="space" validate="boolean"  rules="NOC">
+            <name>Indicatie materiële historie</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="boolean" rules="NOC">
+            <name>Indicatie formele historie</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space">
+            <name>Indicatie authentiek</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Objecttype</stereo>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space"><!-- MIG -->
+            <name>Patroon</name>
+            <name>Pattern</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Referentie element</stereo>
+                <stereo>Union element</stereo>
+                <stereo>Datatype</stereo>
+                <stereo>Complex datatype</stereo>
+                <stereo>Data element</stereo>
+                <stereo>Union element</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="boolean">
+            <name>Mogelijk geen waarde</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Gegevensgroeptype</stereo>
+                <stereo>Relatiesoort</stereo>
+                <stereo>Voidable</stereo>
+            </stereotypes>
+        </tv>
+       
+        <tv norm="space"><!-- MIG -->
+            <name>Data locatie</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Referentielijst</stereo>
+                <stereo>Referentie element</stereo>
+            </stereotypes>
+        </tv>
+        
+        <tv norm="space">
+            <name>Locatie</name><!-- MIG -->
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>External</stereo>
+                <stereo>View</stereo>
+            </stereotypes>
+        </tv>
+        
+        <tv norm="space" origin="system">
+            <name>Positie</name>
+            <name>Position</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo>Attribuutsoort</stereo>
+                <stereo>Relatiesoort</stereo>
+                <stereo>Union element</stereo>
+                <stereo>Enum</stereo>
+                <stereo>Data element</stereo>
+                <stereo>Referentie element</stereo>
+                <stereo>Gegevensgroep compositie</stereo>
+                <stereo>#none</stereo> <!-- also allowed on enumeration values that have no enum stereo -->
+            </stereotypes>
+        </tv>
+        
+    </tagged-values>
+</tagset>

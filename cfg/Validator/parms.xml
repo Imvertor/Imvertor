@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Validator parameters</name>
+      <version-control>$Id: parms.xml 7363 2016-01-07 09:29:02Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>normalizenames</name>
+         <arg>yes|no</arg>
+         <tip>Yes if names of classes, attributes and relations should be normalized</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <migrate>
+      <normalize-names>${cli/normalizenames}</normalize-names>
+   </migrate>
+   <properties>
+        
+      <!-- location of the generated base file transformed in accordance with the metamodel -->
+      <WORK_BASE_METAMODEL_FILE>${system/work-imvert-folder-path}/imvertor.02.1.base.xml</WORK_BASE_METAMODEL_FILE>
+      <WORK_BASE_METAMODEL_FILE_2>${system/work-imvert-folder-path}/imvertor.02.2.base.xml</WORK_BASE_METAMODEL_FILE_2>
+      <WORK_BASE_METAMODEL_FILE_3>${system/work-imvert-folder-path}/imvertor.02.3.base.xml</WORK_BASE_METAMODEL_FILE_3>
+      
+      <!-- location of the generated validation file; this is a dummy file as all reported messages are made part of the process parms file. -->
+      <WORK_VALIDATE_FILE>${system/work-imvert-folder-path}/imvertor.13.validate.xml</WORK_VALIDATE_FILE>
+      
+      <!--
+     
+      <WORK_DOCS_FILE>${system/work-imvert-folder-path}/imvertor.10.docs.xml</WORK_DOCS_FILE>
+      
+      -->
+      
+      <!-- stylesheets for validation of canonical and regulatr imvertor files -->   
+      <IMVERTOR_VALIDATE_XSLPATH>Imvert2validation.xsl</IMVERTOR_VALIDATE_XSLPATH>
+      
+      <IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>Imvert2validation-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>
+      <IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH_2>Imvert2canonical-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH_2>
+      
+      <IMVERTOR_METAMODEL_BOM_CANONICAL_XSLPATH>Imvert2canonical-bom.xsl</IMVERTOR_METAMODEL_BOM_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_BOM_VALIDATE_XSLPATH>Imvert2validation-bom.xsl</IMVERTOR_METAMODEL_BOM_VALIDATE_XSLPATH>
+      
+      <IMVERTOR_METAMODEL_ISO19103_CANONICAL_XSLPATH>Imvert2canonical-ISO19103.xsl</IMVERTOR_METAMODEL_ISO19103_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_ISO19103_VALIDATE_XSLPATH>Imvert2validation-ISO19103.xsl</IMVERTOR_METAMODEL_ISO19103_VALIDATE_XSLPATH>
+      
+      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_3>Imvert2canonical-KINGUIM.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_3>
+      <IMVERTOR_METAMODEL_KINGUIM_VALIDATE_XSLPATH>Imvert2validation-KINGUIM.xsl</IMVERTOR_METAMODEL_KINGUIM_VALIDATE_XSLPATH>
+      
+      <IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_3>Imvert2canonical-KINGSIM.xsl</IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_3>
+      <IMVERTOR_METAMODEL_KINGSIM_VALIDATE_XSLPATH>Imvert2validation-KINGSIM.xsl</IMVERTOR_METAMODEL_KINGSIM_VALIDATE_XSLPATH>
+      
+      <!-- formal unique name of this release, will be used as zip file name and result folder name -->
+      <RELEASE_NAME>${appinfo/project-name}-${appinfo/application-name}-${appinfo/version}-${appinfo/phase}-${appinfo/release}${system/documentation-release}-at-${system/generation-id}</RELEASE_NAME>
+      
+      
+   </properties>
+</config>

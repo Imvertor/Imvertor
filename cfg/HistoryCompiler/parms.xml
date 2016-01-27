@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>History compiler</name>
+      <version-control>$Id: parms.xml 7322 2015-11-25 10:08:59Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>createhistory</name>
+         <arg>yes|no</arg>
+         <tip>Yes if history info should be read from Excel file</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>starthistory</name>
+         <arg>YYYYMMDD</arg>
+         <tip>Release date from which to compile history to be included in documentation; defaults to most recent previous release</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>hisfile</name>
+         <arg>filepath</arg>
+         <tip>Path to the input xls history file</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <properties>
+      
+      <IMVERTOR_VERSIONS_XSLPATH>VERSIONS2Imvert.xsl</IMVERTOR_VERSIONS_XSLPATH>
+      <IMVERTOR_VERSIONS_MERGER_XSLPATH>VERSIONS2merger.xsl</IMVERTOR_VERSIONS_MERGER_XSLPATH>
+   
+      <USER_HISTORY_FILE>${cli/hisfile}</USER_HISTORY_FILE>
+      
+      <WORK_HISTORY_FILE>${system/work-imvert-folder-path}/imvertor.16.history.xml</WORK_HISTORY_FILE>
+      <WORK_VERSIONS_FILE>${system/work-imvert-folder-path}/imvertor.17.versions.xml</WORK_VERSIONS_FILE>
+      
+   </properties>
+</config>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>XmiTranslator parameters</name>
+      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <!-- none -->
+   </cli-parms>
+   
+   <test>
+      <XmiTranslator>${properties/id/name}</XmiTranslator>
+   </test>
+   <properties>
+      <!--  names of the file created by the primary Imvertor file  -->
+      <WORK_BASE_FILE>${system/work-imvert-folder-path}/imvertor.01.base.xml</WORK_BASE_FILE>
+      <!--  names of the step stylesheets  -->
+      <XMI_IMVERTOR_XSLPATH>XMI1Imvert.xsl</XMI_IMVERTOR_XSLPATH>
+   </properties>
+</config>

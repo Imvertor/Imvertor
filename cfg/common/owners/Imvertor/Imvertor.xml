@@ -1,0 +1,12 @@
+<project-owner>
+    <name>Imvertor</name>
+    <parameter name="web-css">../web/css/report.css</parameter> 
+    <parameter name="web-logo">../web/img/Logo.jpg</parameter> 
+    <parameter name="pretext-encoding">
+        This schema is based on an UML specification, which is transformed by the Imvertor software. Imvertor modules are in the public domain, see http://www.imvertor.org. 
+    </parameter>
+    
+    <parameter name="application-version-regex">^\S+$</parameter>
+    <parameter name="domain-version-regex">^\S+$</parameter>
+    
+</project-owner>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Application configuration modifier</name>
+      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <cli-parm>
+         <name>apcfile</name>
+         <arg>path</arg>
+         <tip>Path to the application specific configuration Excel file</tip>
+         <required>false</required>
+      </cli-parm> 
+   </cli-parms>
+   <properties>
+      
+      <!-- location of the application configuration result file -->
+      <WORK_APPCONFIG_EXCEL_FILE>${system/work-imvert-folder-path}/imvertor.30.appexcel.xml</WORK_APPCONFIG_EXCEL_FILE>
+      <WORK_APPCONFIG_FILE>${system/work-imvert-folder-path}/imvertor.31.appconfig.xml</WORK_APPCONFIG_FILE>
+      <WORK_APPCONFIG_MERGED_FILE>${system/work-imvert-folder-path}/imvertor.32.apcmerged.xml</WORK_APPCONFIG_MERGED_FILE>
+      
+      <IMVERTOR_APPCONFIG_XSLPATH>APPCONFIG2Imvert.xsl</IMVERTOR_APPCONFIG_XSLPATH>
+      <IMVERTOR_APPCONFIG_MERGER_XSLPATH>APPCONFIG2merger.xsl</IMVERTOR_APPCONFIG_MERGER_XSLPATH>
+      
+   </properties>
+</config>

@@ -1,0 +1,99 @@
+<?xml version="1.0" standalone="yes"?>
+<metamodel xmlns:xi="http://www.w3.org/2001/XInclude">
+    <svn>$Id: Kadaster.xml 7380 2016-01-14 07:40:00Z arjan $</svn>
+    <name>Kadaster</name>
+
+    <description>Metamodel for Kadaster exchange models</description>
+
+    <!-- kadaster follows BP requirements -->
+    <xi:include href="../BP/BP.xml"/>
+
+    <naming>
+        <package>
+            <format>UpperCamel</format>
+        </package>
+        <class>
+            <format>UpperCamel</format>
+        </class>
+        <property>
+            <format>LowerCamel</format>
+        </property>
+        <tv>
+            <format>UpperCamel</format>
+        </tv>
+    </naming>
+    
+    <stereotypes>
+
+        <stereo id="stereotype-name-product">
+            <name lang="en">product</name>
+            <construct>class</construct>
+        </stereo>
+        <stereo id="stereotype-name-service">
+            <name lang="en">service</name>
+            <construct>class</construct>
+        </stereo>
+        <stereo id="stereotype-name-process">
+            <name lang="en">process</name>
+            <construct>class</construct>
+        </stereo>
+        <stereo id="stereotype-name-collection">
+            <name lang="en">collection</name>
+            <construct>class</construct>
+        </stereo>
+
+        <stereo id="stereotype-name-identificatie">
+            <name lang="nl">identificatie</name>
+            <construct>attribute</construct>
+        </stereo>
+        <stereo id="stereotype-name-koppelklasse">
+            <name lang="nl">koppelklasse</name>
+            <construct>class</construct>
+        </stereo>
+        <stereo id="stereotype-name-voidable">
+            <name lang="en">voidable</name>
+            <construct>attribute</construct>
+            <construct>association</construct>
+        </stereo>
+
+        <stereo id="stereotype-name-generalization">
+            <name lang="nl">generalisatie</name>
+            <construct>generalization</construct>
+        </stereo>
+        <stereo id="stereotype-name-static-liskov">
+            <name lang="en">static liskov</name>
+            <construct>generalization</construct>
+        </stereo>
+        <stereo id="stereotype-name-static-generalization">
+            <name lang="en">static</name>
+            <construct>generalization</construct>
+        </stereo>
+        <stereo id="stereotype-name-dynamic-generalization">
+            <name lang="en">dynamic</name>
+            <construct>generalization</construct>
+        </stereo>
+
+        <stereo id="stereotype-name-formele-historie">
+            <name lang="nl">formelehistorie</name>
+            <construct>attribute</construct>
+        </stereo>
+        <stereo id="stereotype-name-formele-levensduur">
+            <name lang="nl">formelelevensduur</name>
+            <construct>attribute</construct>
+        </stereo>
+        <stereo id="stereotype-name-materiele-historie">
+            <name lang="nl">materielehistorie</name>
+            <construct>attribute</construct>
+        </stereo>
+        <stereo id="stereotype-name-materiele-levensduur">
+            <name lang="nl">materielelevensduur</name>
+            <construct>attribute</construct>
+        </stereo>
+
+        <stereo id="stereotype-name-anonymous">
+            <name lang="en">anonymous</name>
+            <construct>attribute</construct>
+            <construct>association</construct>
+        </stereo>
+    </stereotypes>
+</metamodel>

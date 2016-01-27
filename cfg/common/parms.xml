@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Standard initial parameters</name>
+      <version-control>$Id: parms.xml 7393 2016-01-25 13:11:40Z arjan $</version-control>
+   </id>
+   
+   <cli-parms>
+      <cli-parm>
+         <name>help</name>
+         <arg>program|license</arg>
+         <tip>Print program help and copyright/license info for this application</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>arguments</name>
+         <arg>filepath</arg>
+         <tip>Path to the file holding (additional) arguments (in the form key = value)</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>language</name>
+         <arg>code</arg>
+         <tip>A language code from ISO 639-1. If unspecified or unsupported, assume "en".</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>debug</name>
+         <arg>yes|no</arg>
+         <tip>Yes if run in debug mode</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>task</name>
+         <arg>compile|release</arg>
+         <tip>Set task to compile or release</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>owner</name>
+         <arg>name</arg>
+         <tip>Name of the project owner</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>schemarules</name>
+         <arg>name</arg>
+         <tip>Name of the configuration folder for schema rules</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>tvset</name>
+         <arg>name</arg>
+         <tip>Name of the configuration folder for tagged value set definitions</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>project</name>
+         <arg>name</arg>
+         <tip>Name of the project</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>application</name>
+         <arg>name</arg>
+         <tip>Name of the application, i.e. root package in UML</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>umlfile</name>
+         <arg>filepath</arg>
+         <tip>Path to the input UML file, must be EAP or XMI</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>managedinputfolder</name>
+         <arg>filepath</arg>
+         <tip>Folder containing all common input material</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>managedoutputfolder</name>
+         <arg>filepath</arg>
+         <tip>Folder containing all result files: applications, releases and distributions</tip>
+         <required>true</required>
+      </cli-parm> 
+      <!--
+      <cli-parm>
+         <name>managedworkfolder</name>
+         <arg>filepath</arg>
+         <tip>Folder containing all common intermediate files</tip>
+         <required>true</required>
+      </cli-parm> 
+      -->
+      <cli-parm>
+         <name>managedinstallfolder</name><!-- TODO cli parameter managedinstallfolder must be removed -->
+         <arg>filepath</arg>
+         <tip>Folder containing all installation folders and files (such as /xsl and /bin)</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>metamodel</name>
+         <arg>name</arg>
+         <tip>Name of metamodel used in UML model</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>forcecompile</name>
+         <arg>yes|no</arg>
+         <tip>Force a compile and ignore possible errors</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>docrelease</name>
+         <arg>YYYYMMDD</arg>
+         <tip>If supplied, this is a documentation release with specified release date</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>suppresswarnings</name>
+         <arg>yes|no</arg>
+         <tip>Yes if warnings should be suppressed in documentation.</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>messagelevel</name>
+         <arg>warning|error</arg>
+         <tip>Set the message level to error (no warnings) or warning (errors and warnings).</tip>
+         <required>false</required>
+      </cli-parm>
+   </cli-parms>
+   
+   <system>
+      <final-etc-folder-path>${properties/APPLICATION_FOLDER}/etc</final-etc-folder-path>
+   </system>
+   
+   <!-- properties zijn directe mapping vanuit imvertor.properties. Die moeten dus later netjes worden verwerkt -->
+   <properties>
+   
+      <!-- default base folder, will be overwritten when more info is available -->
+      <APPLICATION_BASE_FOLDER>${cli/managedoutputfolder}/applications/${cli/project}/${cli/application}</APPLICATION_BASE_FOLDER>
+      
+      <!-- folder what will hold the release of this application --> 
+      <APPLICATION_FOLDER>${properties/APPLICATION_BASE_FOLDER}/${appinfo/release}</APPLICATION_FOLDER>
+      
+      <!--  Excel to XML -->
+      <WORKBOOK_DTD>${system/etc-folder-path}/dtd/workbook.dtd</WORKBOOK_DTD>
+      <FORMATWORKBOOK_DTD>${system/etc-folder-path}/dtd/formatworkbook.dtd</FORMATWORKBOOK_DTD>
+      
+      <!-- identity transform stylesheet -->
+      <IMVERTOR_IDENTITY_TRANSFORM_XSLPATH>Imvert2identity.xsl</IMVERTOR_IDENTITY_TRANSFORM_XSLPATH>
+      
+   </properties>
+   
+   <!-- migrate parms zijn onttrokken aan Imvert-common.xsl -->
+   <migrate>
+      
+      <configuration-owner-file>${system/cfg-folder-path}/common/owners/${cli/owner}/${cli/owner}.xml</configuration-owner-file>
+      <configuration-tvset-file>${system/cfg-folder-path}/common/tvsets/${cli/owner}/${cli/tvset}.xml</configuration-tvset-file>
+      <configuration-schemarules-file>${system/cfg-folder-path}/common/schemarules/${cli/owner}/${cli/schemarules}.xml</configuration-schemarules-file>
+      <configuration-metamodel-file>${system/cfg-folder-path}/common/metamodels/${cli/owner}/${cli/metamodel}.xml</configuration-metamodel-file>
+      
+      <stylesheet>${system-stylesheet-id}</stylesheet>
+      <imvertor-version>${run/version}</imvertor-version>
+      <generation-date>${run/start}</generation-date>
+      
+      <debug>${cli/debug}</debug>
+      <owner-name>${cli/owner}</owner-name>
+      <project-name>${cli/project}</project-name>
+      <application-package-name>${cli/application}</application-package-name>
+      
+      <!-- 
+         the release of the application is determined by XMI1imvert and set within that step 
+      --> 
+      <application-package-release>${application-package-release}</application-package-release>
+
+   </migrate>
+</config>

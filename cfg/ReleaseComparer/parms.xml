@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Release comparer</name>
+      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <!-- none -->
+   </cli-parms>
+   
+   <properties>
+
+      <IMVERTOR_COMPARE_FOLDER>${system/xsl-folder-path}/ReleaseComparer/compare</IMVERTOR_COMPARE_FOLDER>
+      
+      <IMVERTOR_COMPARE_CLEAN_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/xsl/Imvert/Imvert2compare-clean-documentation.xsl</IMVERTOR_COMPARE_CLEAN_XSLPATH>
+      <IMVERTOR_COMPARE_SIMPLE_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/xsl/Imvert/Imvert2compare-simplify.xsl</IMVERTOR_COMPARE_SIMPLE_XSLPATH>
+      <IMVERTOR_COMPARE_LISTING_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/xsl/Imvert/Imvert2compare-listing.xsl</IMVERTOR_COMPARE_LISTING_XSLPATH>
+      <IMVERTOR_COMPARE_CONFIG>${properties/IMVERTOR_COMPARE_FOLDER}/etc/Imvert-compare-config.xml</IMVERTOR_COMPARE_CONFIG>
+            
+      <WORK_COMPARE_CONTROL_MODEL_FILE>${system/work-imvert-folder-path}/imvertor.20.compare-control-model.xml</WORK_COMPARE_CONTROL_MODEL_FILE>
+      <WORK_COMPARE_TEST_MODEL_FILE>${system/work-imvert-folder-path}/imvertor.21.compare-test-model.xml</WORK_COMPARE_TEST_MODEL_FILE>
+      <WORK_COMPARE_CONTROL_SIMPLE_FILE>${system/work-imvert-folder-path}/imvertor.20.compare-control-simple.xml</WORK_COMPARE_CONTROL_SIMPLE_FILE>
+      <WORK_COMPARE_TEST_SIMPLE_FILE>${system/work-imvert-folder-path}/imvertor.21.compare-test-simple.xml</WORK_COMPARE_TEST_SIMPLE_FILE>
+      <WORK_COMPARE_CONTROL_NAME_FILE>${system/work-imvert-folder-path}/imvertor.20.compare-control-name.xml</WORK_COMPARE_CONTROL_NAME_FILE>
+      <WORK_COMPARE_TEST_NAME_FILE>${system/work-imvert-folder-path}/imvertor.21.compare-test-name.xml</WORK_COMPARE_TEST_NAME_FILE>
+      <WORK_COMPARE_DIFF_FILE>${system/work-imvert-folder-path}/imvertor.22.compare-diff.xml</WORK_COMPARE_DIFF_FILE>
+      <WORK_COMPARE_LISTING_FILE>${system/work-imvert-folder-path}/imvertor.23.compare-listing.xml</WORK_COMPARE_LISTING_FILE>
+
+      <COMPARE_GENERATOR_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/xsl/compare.generator.xsl</COMPARE_GENERATOR_XSLPATH>
+      <COMPARE_GENERATED_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/work/generated.xsl</COMPARE_GENERATED_XSLPATH>
+      
+      
+   </properties>
+</config>

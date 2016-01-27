@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+   <id>
+      <name>Run analyzer</name>
+      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+   </id>
+   <cli-parms>
+      <!-- none -->
+   </cli-parms>
+   
+   <properties>
+
+      <RUN_ANALYZER_XSL>RunAnalyzer.xsl</RUN_ANALYZER_XSL>
+   
+      <WORK_ANALYZER_FILE>${system/work-imvert-folder-path}/imvertor.40.run.xml</WORK_ANALYZER_FILE>
+      
+   </properties>
+</config>
