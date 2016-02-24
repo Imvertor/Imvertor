@@ -2,14 +2,14 @@
 <config>
    <id>
       <name>Readme analyzer</name>
-      <version-control>$Id: parms.xml 7371 2016-01-11 11:07:16Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7415 2016-02-08 09:02:51Z arjan $</version-control>
    </id>
    <cli-parms>
       <!-- none -->
    </cli-parms>
    <properties>
 
-      <!-- TODO ReadmeAnalyzer.xsl is not used yet -->
+      <!-- TODO ReadmeAnalyzer.xsl is not used yet; find a correct way to determine/pass state / propertoies of previous run. -->
       <IMVERTOR_README_ANALYZE_XSLPATH>ReadmeAnalyzer.xsl</IMVERTOR_README_ANALYZE_XSLPATH>
  
    </properties>

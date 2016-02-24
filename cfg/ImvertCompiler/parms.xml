@@ -2,7 +2,7 @@
 <config>
    <id>
       <name>Imvert compiler</name>
-      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7427 2016-02-16 13:12:30Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -18,6 +18,12 @@
          <required>false</required>
       </cli-parm> 
       <cli-parm>
+         <name>modelistraced</name>
+         <arg>yes|no</arg>
+         <tip>Yes if the model derivation is implemented by UML tracing</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
          <name>mapping</name>
          <arg>name</arg>
          <tip>Name of a mapping to be used for conceptual schemas</tip>
@@ -28,7 +34,7 @@
    <properties>
       
       <!--  location of all individual applications -->
-      <APPLICATIONS_FOLDER>${cli/managedoutputfolder}/applications</APPLICATIONS_FOLDER>
+      <APPLICATIONS_FOLDER>${system/managedoutputfolder}/applications</APPLICATIONS_FOLDER>
 
       <APPLICATION_BASE_FOLDER>${properties/APPLICATIONS_FOLDER}/${cli/project}/${cli/application}</APPLICATION_BASE_FOLDER>
       
@@ -50,10 +56,10 @@
       <WORK_DEPENDENCIES_FILE>${system/work-imvert-folder-path}/imvertor.04.dependencies.xml</WORK_DEPENDENCIES_FILE>
       
       <IMVERTOR_LOCALSCHEMA_XSLPATH>Imvert2localSchema.xsl</IMVERTOR_LOCALSCHEMA_XSLPATH>
-      <CONCEPTUAL_SCHEMA_MAPPING_FILE>${cli/managedinputfolder}/xsd/conceptual-schemas.xml</CONCEPTUAL_SCHEMA_MAPPING_FILE>
+      <CONCEPTUAL_SCHEMA_MAPPING_FILE>${system/managedinputfolder}/xsd/conceptual-schemas.xml</CONCEPTUAL_SCHEMA_MAPPING_FILE>
       
       <WORK_LOCALSCHEMA_FILE>${system/work-imvert-folder-path}/imvertor.09.local.xml</WORK_LOCALSCHEMA_FILE> 
-      <LOCAL_SCHEMA_MAPPING_FILE>${cli/managedinputfolder}/xsd/local-schemas.xml</LOCAL_SCHEMA_MAPPING_FILE>
+      <LOCAL_SCHEMA_MAPPING_FILE>${system/managedinputfolder}/xsd/local-schemas.xml</LOCAL_SCHEMA_MAPPING_FILE>
       
       <IMVERTOR_EXPANDDOC_XSLPATH>Imvert2expanddoc.xsl</IMVERTOR_EXPANDDOC_XSLPATH>
       <WORK_EXPANDDOC_FILE>${system/work-imvert-folder-path}/imvertor.11.expanddoc.xml</WORK_EXPANDDOC_FILE>
@@ -67,14 +73,24 @@
       <IMVERTOR_SCHEMA_XSLPATH>Imvert2schema.xsl</IMVERTOR_SCHEMA_XSLPATH>
       <WORK_SCHEMA_FILE>${system/work-imvert-folder-path}/imvertor.24.schema.xml</WORK_SCHEMA_FILE>
       
-      <!--  file location for the Imvertor application schema -->
-      <IMVERTOR_APPLICATION_LOCATION_URL>file:/${cli/managedinstallfolder}/xsd/Imvertor/20141001/xsd/Imvertor/application/v20141001/Imvertor_Application_v1_0_0.xsd</IMVERTOR_APPLICATION_LOCATION_URL>
-
+      <!--
+         What is the location of the original full XSD for the imvert model? 
+      -->
+      <IMVERTOR_APPLICATION_LOCATION_SOURCE>${system/managedinstallfolder}/xsd/Imvertor/20160201/xsd</IMVERTOR_APPLICATION_LOCATION_SOURCE>
+      <!--
+         Where to copy this XSD within the distribution? 
+      -->
+      <IMVERTOR_APPLICATION_LOCATION_TARGET>${system/work-etc-folder-path}/xsd</IMVERTOR_APPLICATION_LOCATION_TARGET>
+      <!--
+         A reference to which (relative) URL can be inserted within the imvert.modelxml?
+      -->
+      <IMVERTOR_APPLICATION_LOCATION_URL>./xsd/Imvertor/application/v20160201/Imvertor_Application_v2_0_0.xsd</IMVERTOR_APPLICATION_LOCATION_URL>
+      
       <WORK_DERIVATION_FILE>${system/work-imvert-folder-path}/imvertor.14.derive.xml</WORK_DERIVATION_FILE>
       <IMVERTOR_DERIVATION_XSLPATH>Imvert2derivation.xsl</IMVERTOR_DERIVATION_XSLPATH>
 
 
-   <!-- ? -->
+   <!-- TODO ? -->
       
       <IMVERTOR_MERGER_XSLPATH>Imvert2merger.xsl</IMVERTOR_MERGER_XSLPATH>
       <IMVERTOR_APPLICATION_XSLPATH>Imvert2application.xsl</IMVERTOR_APPLICATION_XSLPATH>

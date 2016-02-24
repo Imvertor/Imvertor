@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tagset>
-    <svn>$Id: Imvertor.xml 7299 2015-11-10 11:31:12Z arjan $</svn>
+    <svn>$Id: Imvertor.xml 7402 2016-02-02 13:55:57Z arjan $</svn>
     <name>Imvertor</name>
     <tagged-values>
-        <tv name=""></tv>
     </tagged-values>
 </tagset>

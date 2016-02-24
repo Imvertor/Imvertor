@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tagset xmlns:xi="http://www.w3.org/2001/XInclude">
-    <svn>$Id: KINGUIM.xml 7371 2016-01-11 11:07:16Z arjan $</svn>
+    <svn>$Id: KINGUIM.xml 7402 2016-02-02 13:55:57Z arjan $</svn>
     <name>KINGUIM</name>
     
     <xi:include href="../BP/BP.xml"/>
     
     <tagged-values>
         <!-- tagtged values in BIM context-->
-        <tv norm="space" validate="boolean">
+        <tv norm="space" validate="boolean" id="IsFormeel">
             <name>isFormeel</name>
             <desc>Dit bericht vereist (al dan niet) formele historie.</desc>
             <derive>yes</derive>
@@ -15,7 +15,7 @@
                 <stereo>Objecttype</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="boolean">
+        <tv norm="space" validate="boolean" id="IsMaterieel">
             <name>isMaterieel</name>
             <desc>Dit bericht vereist (al dan niet) materiële historie.</desc>
             <derive>yes</derive>
@@ -23,7 +23,7 @@
                 <stereo>Objecttype</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="boolean">
+        <tv norm="space" validate="boolean" id="IsInkomend">
             <name>isInkomend</name>
             <desc>Dit bericht is (al dan niet) een inkomend berichttype.</desc>
             <derive>yes</derive>
@@ -31,7 +31,7 @@
                 <stereo>Objecttype</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="boolean">
+        <tv norm="space" validate="boolean" id="IsSynchroon">
             <name>isSynchroon</name>
             <desc>Dit bericht is (al dan niet) een synchroon berichttype.</desc>
             <derive>yes</derive>
@@ -44,7 +44,7 @@
             tagged values op vraagberichten 
         -->
         <!-- TODO Vaststellen per tagged value of deze derived moeten worden of niet. -->
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigGelijk">
             <name>config-gelijk</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -54,7 +54,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigVanaf">
             <name>config-vanaf</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -64,7 +64,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigTotEnMet">
             <name>config-tot-en-met</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -74,7 +74,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigStart">
             <name>config-start</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -84,7 +84,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigScope">
             <name>config-scope</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -98,7 +98,7 @@
         <!-- 
             tagged values op vrije berichten 
         -->
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigEntiteit">
             <name>config-entiteit</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -108,7 +108,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigSelectie">
             <name>config-selectie</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -118,7 +118,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigUpdate">
             <name>config-update</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -134,7 +134,7 @@
         <!-- 
             tagged values op standaard berichten 
         -->
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigAntwoord">
             <name>config-antwoord</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -144,7 +144,7 @@
                 <stereo>Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="eigenschappen">
+        <tv norm="space" validate="eigenschappen" id="ConfigKennisgeving">
             <name>config-kennisgeving</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -158,14 +158,14 @@
         <!-- 
             tagged values op berichten 
         -->
-        <tv norm="space">
+        <tv norm="space" id="ConfigAfhandeling">
             <name>config-afhandeling</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
                 <stereo>Objecttype</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space">
+        <tv norm="space" id="ConfigBerichttype">
             <name>config-berichttypes</name>
             <derive>no</derive><!-- TODO wat moet dit zijn?-->
             <stereotypes>
@@ -176,7 +176,7 @@
         <!-- 
             verstuffings info 
         -->
-        <tv norm="space">
+        <tv norm="space" id="Verstuffing">
             <name>verstuffing</name>
             <derive>yes</derive>
             <stereotypes>

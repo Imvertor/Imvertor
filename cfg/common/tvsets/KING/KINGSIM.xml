@@ -1,66 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tagset xmlns:xi="http://www.w3.org/2001/XInclude">
-    <svn>$Id: KINGSIM.xml 7389 2016-01-18 15:03:45Z arjan $</svn>
+    <svn>$Id: KINGSIM.xml 7409 2016-02-06 07:31:41Z arjan $</svn>
     <name>KING</name>
     <tagged-values>
         <!-- KING follows BP requirements -->
         <xi:include href="../BP/BP.xml"/>
-        <tv norm="space">
-            <name>Herkomst definitie</name>
-            <derive>yes</derive>
-            <stereotypes>
-                <stereo>Objecttype</stereo>
-                <stereo>Attribuutsoort</stereo>
-                <stereo>Gegevensgroeptype</stereo>
-                <stereo>Relatiesoort</stereo>
-            </stereotypes>
-        </tv>
-        <tv norm="space">
+        <tv norm="space" id="AanduidingStrijdigheidNietigheid">
             <name>Aanduiding strijdigheid/nietigheid</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo>Attribuutsoort</stereo>
-                <stereo>Gegevensgroeptype</stereo>
-                <stereo>Relatiesoort</stereo>
+                <stereo required="yes">Attribuutsoort</stereo>
+                <stereo required="yes">Gegevensgroeptype</stereo>
+                <stereo required="yes">Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space" validate="boolean">
+        <tv norm="space" validate="boolean" id="AanduidingInOnderzoek">
             <name>Indicatie in onderzoek</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo>Attribuutsoort</stereo>
-                <stereo>Gegevensgroeptype</stereo>
-                <stereo>Relatiesoort</stereo>
+                <stereo required="yes">Attribuutsoort</stereo>
+                <stereo required="yes">Gegevensgroeptype</stereo>
+                <stereo required="yes">Relatiesoort</stereo>
             </stereotypes>
         </tv>
-        <tv norm="space">
+        <tv norm="space" id="HerkomstDefinitie">
             <name>Herkomst definitie</name>
             <derive>yes</derive>
             <stereotypes>
                 <!-- in addition to BP -->
-                <stereo>Referentielijst</stereo> 
-                <stereo>Referentie element</stereo>
-                <stereo>Union</stereo>
-                <stereo>Union element</stereo>
-                <stereo>Complex datatype</stereo>
-                <stereo>Data element</stereo>
+                <stereo required="yes">Referentielijst</stereo> 
+                <stereo required="yes">Referentie element</stereo>
+                <stereo required="yes">Union</stereo>
+                <stereo required="yes">Union element</stereo>
+                <stereo required="yes">Complex datatype</stereo>
+                <stereo required="yes">Data element</stereo>
             </stereotypes>
         </tv>
-        
-        <tv norm="space">
+        <tv norm="space" validate="boolean"  rules="NOC" id="IndicatieMateriëleHistorie">
+            <name>Indicatie materiële historie</name>
+            <declared-values>
+                <value>Ja</value>
+                <value>Nee</value>
+                <value>Zie groep</value>
+                <value>Zie regels</value>
+                <value>N.v.t.</value>
+            </declared-values>
+        </tv>
+        <tv norm="space" validate="boolean"  rules="NOC" id="IndicatieFormeleHistorie">
+            <name>Indicatie formele historie</name>
+            <declared-values>
+                <value>Ja</value>
+                <value>Nee</value>
+                <value>Zie groep</value>
+                <value>N.v.t.</value>
+            </declared-values>
+        </tv>
+        <tv norm="space" id="Beheerder">
             <name>Beheerder</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo>External</stereo>
-                <stereo>View</stereo>
+                <stereo required="no">External</stereo>
+                <stereo required="no">View</stereo>
             </stereotypes>
         </tv>
         
-        <tv norm="space">
+        <tv norm="space" id="Groepnaam">
             <name>Groepnaam</name>
             <derive>no</derive>
             <stereotypes>
-                <stereo>Tekentechnisch</stereo>
+                <stereo required="no">Tekentechnisch</stereo>
             </stereotypes>
         </tv>
 

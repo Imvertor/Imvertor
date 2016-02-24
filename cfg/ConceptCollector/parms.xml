@@ -2,7 +2,7 @@
 <config>
    <id>
       <name>Concepts collector</name>
-      <version-control>$Id: parms.xml 7371 2016-01-11 11:07:16Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7409 2016-02-06 07:31:41Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -16,7 +16,7 @@
 
       <IMVERTOR_EXTRACTCONCEPTS_XSLPATH>ExtractConcepts.xsl</IMVERTOR_EXTRACTCONCEPTS_XSLPATH>
       
-      <CONCEPT_DOCUMENTATION_PATH>${cli/managedinputfolder}/rdf/concepts-[release].xml</CONCEPT_DOCUMENTATION_PATH>
+      <CONCEPT_DOCUMENTATION_PATH>${system/managedoutputfolder}/concepts/concepts-[release].xml</CONCEPT_DOCUMENTATION_PATH>
       
       <!--  concept documentation. Enter [year], [month] or [day] to be inserted by the system; these will be replaced by the release date. -->
       <CONCEPT_DOCUMENTATION_LISTING_URI>http://brk.kadaster.nl/doc/[year]/[month]/[day]/stelsel/begrippen?format=rdf%2Bxml</CONCEPT_DOCUMENTATION_LISTING_URI>

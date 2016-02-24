@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="yes"?>
 <metamodel>
-    <svn>$Id: BP.xml 7397 2016-01-26 15:02:41Z arjan $</svn>
+    <svn>$Id: BP.xml 7424 2016-02-15 10:58:15Z arjan $</svn>
     <name>BP</name>
 
     <description>Metamodel for Dutch Best Practices based registrations</description>
@@ -266,6 +266,14 @@
             <name lang="en">isid</name>
             <desc>Aanduiding dat een relatiesoort onderdeel uitmaakt van de unieke aanduiding van een object.</desc>
             <construct>association</construct>
+        </stereo>
+        
+        <!-- tracing -->
+        <stereo id="stereotype-name-trace">
+            <name lang="en">trace</name>
+            <desc>Trace relatie tussen twee klassen. Trace relatie wordt niet als associatie opgenomen, maar als eigenschap van de client.</desc>
+            <construct>class</construct>
+            <construct>datatype</construct>
         </stereo>
         
     </stereotypes>

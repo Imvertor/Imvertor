@@ -2,10 +2,23 @@
 <config>
    <id>
       <name>Release comparer</name>
-      <version-control>$Id: parms.xml 7292 2015-10-27 12:12:27Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7430 2016-02-23 13:43:46Z arjan $</version-control>
    </id>
    <cli-parms>
-      <!-- none -->
+      <!--
+      <cli-parm>
+         <name>compare</name>
+         <arg>supplier|release|none</arg>
+         <tip>Compare the model to the supplier, a release, or do nit compare client and supplier.</tip>
+         <required>false</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>comparerelease</name>
+         <arg>YYYYMMDD</arg>
+         <tip>Compare the new model to the model released at the specified date.</tip>
+         <required>false</required>
+      </cli-parm>
+      -->
    </cli-parms>
    
    <properties>
@@ -28,7 +41,6 @@
 
       <COMPARE_GENERATOR_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/xsl/compare.generator.xsl</COMPARE_GENERATOR_XSLPATH>
       <COMPARE_GENERATED_XSLPATH>${properties/IMVERTOR_COMPARE_FOLDER}/work/generated.xsl</COMPARE_GENERATED_XSLPATH>
-      
       
    </properties>
 </config>

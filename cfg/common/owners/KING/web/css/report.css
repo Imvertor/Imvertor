@@ -18,6 +18,11 @@ table {
     color: red;
     font-weight: bold;
 }
+.tid {
+    display: block;
+    font-size: 70%;
+    color: gray;  
+}
 tr.tableHeader td {
     background-color: #EEEEEE;
     font-weight: bold;

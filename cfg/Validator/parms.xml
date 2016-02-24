@@ -2,7 +2,7 @@
 <config>
    <id>
       <name>Validator parameters</name>
-      <version-control>$Id: parms.xml 7363 2016-01-07 09:29:02Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7417 2016-02-09 13:01:46Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -11,10 +11,19 @@
          <tip>Yes if names of classes, attributes and relations should be normalized</tip>
          <required>false</required>
       </cli-parm> 
+      <cli-parm>
+         <name>validatetvassignment</name>
+         <arg>yes|no</arg>
+         <tip>Check if tagged values are assigned correctly</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>validatetvmissing</name>
+         <arg>yes|no</arg>
+         <tip>Check if tagged values that are required are specified</tip>
+         <required>true</required>
+      </cli-parm> 
    </cli-parms>
-   <migrate>
-      <normalize-names>${cli/normalizenames}</normalize-names>
-   </migrate>
    <properties>
         
       <!-- location of the generated base file transformed in accordance with the metamodel -->
@@ -34,9 +43,13 @@
       <!-- stylesheets for validation of canonical and regulatr imvertor files -->   
       <IMVERTOR_VALIDATE_XSLPATH>Imvert2validation.xsl</IMVERTOR_VALIDATE_XSLPATH>
       
-      <IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>Imvert2validation-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>
+      <IMVERTOR_METAMODEL_Imvertor_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_Imvertor_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_Imvertor_CANONICAL_XSLPATH_2>Imvert2canonical-Kadaster.xsl</IMVERTOR_METAMODEL_Imvertor_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_Imvertor_VALIDATE_XSLPATH>Imvert2validation-Kadaster.xsl</IMVERTOR_METAMODEL_Imvertor_VALIDATE_XSLPATH>
+      
       <IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH>
       <IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH_2>Imvert2canonical-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>Imvert2validation-Kadaster.xsl</IMVERTOR_METAMODEL_Kadaster_VALIDATE_XSLPATH>
       
       <IMVERTOR_METAMODEL_BOM_CANONICAL_XSLPATH>Imvert2canonical-bom.xsl</IMVERTOR_METAMODEL_BOM_CANONICAL_XSLPATH>
       <IMVERTOR_METAMODEL_BOM_VALIDATE_XSLPATH>Imvert2validation-bom.xsl</IMVERTOR_METAMODEL_BOM_VALIDATE_XSLPATH>
@@ -55,7 +68,9 @@
       <IMVERTOR_METAMODEL_KINGSIM_VALIDATE_XSLPATH>Imvert2validation-KINGSIM.xsl</IMVERTOR_METAMODEL_KINGSIM_VALIDATE_XSLPATH>
       
       <!-- formal unique name of this release, will be used as zip file name and result folder name -->
-      <RELEASE_NAME>${appinfo/project-name}-${appinfo/application-name}-${appinfo/version}-${appinfo/phase}-${appinfo/release}${system/documentation-release}-at-${system/generation-id}</RELEASE_NAME>
+      <RELEASE_NAME>${appinfo/project-name}-${appinfo/application-name}-${appinfo/version}-${appinfo/phase}-${appinfo/release}${system/documentation-release}</RELEASE_NAME>
+      <!-- TODO Full release name is a formal name part of documentation? -->
+      <FULL_RELEASE_NAME>${properties/RELEASE_NAME}-at-${system/generation-id}</FULL_RELEASE_NAME>
       
       
    </properties>

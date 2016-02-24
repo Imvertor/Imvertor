@@ -2,7 +2,7 @@
 <config>
    <id>
       <name>XML schema compiler</name>
-      <version-control>$Id: parms.xml 7358 2015-12-21 12:49:59Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7415 2016-02-08 09:02:51Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -68,15 +68,11 @@
          <required>false</required>
       </cli-parm>
    </cli-parms>
-   <migrate>
-      <short-prefix>${cli/shortprefix}</short-prefix>
-      <buildcollection>${cli/buildcollection}</buildcollection>
-   </migrate>
-   
+  
    <properties>
    
       <LOCALIZE_XSD_XSLPATH>localize-xsd.xsl</LOCALIZE_XSD_XSLPATH>
-      <LOCAL_SCHEMA_MAPPING_FILE>${cli/managedinputfolder}/xsd/local-schemas.xml</LOCAL_SCHEMA_MAPPING_FILE>
+      <LOCAL_SCHEMA_MAPPING_FILE>${system/managedinputfolder}/xsd/local-schemas.xml</LOCAL_SCHEMA_MAPPING_FILE>
     
       <!-- Kadaster : -->
      
@@ -87,7 +83,7 @@
       <IMVERTOR_FLATTEN_XSLPATH>flatten-xsd.xsl</IMVERTOR_FLATTEN_XSLPATH>
       <WORK_FLATTEN_FILE>${system/work-imvert-folder-path}/imvertor.26.flatten.html</WORK_FLATTEN_FILE>
       <!-- copy schemas -->
-      <EXTERNAL_XSD_FOLDER>${cli/managedinputfolder}/xsd</EXTERNAL_XSD_FOLDER>
+      <EXTERNAL_XSD_FOLDER>${system/managedinputfolder}/xsd</EXTERNAL_XSD_FOLDER>
       
       <!-- KINGUIM: -->
       
@@ -110,7 +106,7 @@
       <RESULT_ENDPRODUCT_XSD_FILE_PATH>${system/work-xsd-folder-path}/${appinfo/project-name}.xml</RESULT_ENDPRODUCT_XSD_FILE_PATH>
 
       <!-- locatie van de stuf onderlaag -->
-      <STUF_ONDERLAAG>${cli/managedinputfolder}/xsd/other/KING/stuf0301.xsd</STUF_ONDERLAAG>
+      <STUF_ONDERLAAG>${system/managedinputfolder}/xsd/other/KING/stuf0301.xsd</STUF_ONDERLAAG>
       
       <!-- common: -->
    

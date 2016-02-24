@@ -2,7 +2,7 @@
 <config>
    <id>
       <name>Standard initial parameters</name>
-      <version-control>$Id: parms.xml 7393 2016-01-25 13:11:40Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7417 2016-02-09 13:01:46Z arjan $</version-control>
    </id>
    
    <cli-parms>
@@ -73,29 +73,9 @@
          <required>true</required>
       </cli-parm> 
       <cli-parm>
-         <name>managedinputfolder</name>
-         <arg>filepath</arg>
-         <tip>Folder containing all common input material</tip>
-         <required>true</required>
-      </cli-parm> 
-      <cli-parm>
-         <name>managedoutputfolder</name>
-         <arg>filepath</arg>
-         <tip>Folder containing all result files: applications, releases and distributions</tip>
-         <required>true</required>
-      </cli-parm> 
-      <!--
-      <cli-parm>
-         <name>managedworkfolder</name>
-         <arg>filepath</arg>
-         <tip>Folder containing all common intermediate files</tip>
-         <required>true</required>
-      </cli-parm> 
-      -->
-      <cli-parm>
-         <name>managedinstallfolder</name><!-- TODO cli parameter managedinstallfolder must be removed -->
-         <arg>filepath</arg>
-         <tip>Folder containing all installation folders and files (such as /xsl and /bin)</tip>
+         <name>proxyurl</name>
+         <arg>URL</arg>
+         <tip>Reliable URL for testing internet connection</tip>
          <required>true</required>
       </cli-parm> 
       <cli-parm>
@@ -130,15 +110,11 @@
       </cli-parm>
    </cli-parms>
    
-   <system>
-      <final-etc-folder-path>${properties/APPLICATION_FOLDER}/etc</final-etc-folder-path>
-   </system>
-   
    <!-- properties zijn directe mapping vanuit imvertor.properties. Die moeten dus later netjes worden verwerkt -->
    <properties>
    
       <!-- default base folder, will be overwritten when more info is available -->
-      <APPLICATION_BASE_FOLDER>${cli/managedoutputfolder}/applications/${cli/project}/${cli/application}</APPLICATION_BASE_FOLDER>
+      <APPLICATION_BASE_FOLDER>${system/managedoutputfolder}/applications/${cli/project}/${cli/application}</APPLICATION_BASE_FOLDER>
       
       <!-- folder what will hold the release of this application --> 
       <APPLICATION_FOLDER>${properties/APPLICATION_BASE_FOLDER}/${appinfo/release}</APPLICATION_FOLDER>
@@ -152,27 +128,11 @@
       
    </properties>
    
-   <!-- migrate parms zijn onttrokken aan Imvert-common.xsl -->
-   <migrate>
-      
+   <system>
       <configuration-owner-file>${system/cfg-folder-path}/common/owners/${cli/owner}/${cli/owner}.xml</configuration-owner-file>
       <configuration-tvset-file>${system/cfg-folder-path}/common/tvsets/${cli/owner}/${cli/tvset}.xml</configuration-tvset-file>
       <configuration-schemarules-file>${system/cfg-folder-path}/common/schemarules/${cli/owner}/${cli/schemarules}.xml</configuration-schemarules-file>
       <configuration-metamodel-file>${system/cfg-folder-path}/common/metamodels/${cli/owner}/${cli/metamodel}.xml</configuration-metamodel-file>
-      
-      <stylesheet>${system-stylesheet-id}</stylesheet>
-      <imvertor-version>${run/version}</imvertor-version>
-      <generation-date>${run/start}</generation-date>
-      
-      <debug>${cli/debug}</debug>
-      <owner-name>${cli/owner}</owner-name>
-      <project-name>${cli/project}</project-name>
-      <application-package-name>${cli/application}</application-package-name>
-      
-      <!-- 
-         the release of the application is determined by XMI1imvert and set within that step 
-      --> 
-      <application-package-release>${application-package-release}</application-package-release>
-
-   </migrate>
+   </system>
+   
 </config>
