@@ -1,0 +1,39 @@
+<!-- 
+    SVN: $Id: realms.xml 7292 2015-10-27 12:12:27Z arjan $ 
+-->
+<realms>
+    <!-- 
+        tagged values realm includes names and values for tagged values 
+    -->
+    <realm name="tv">
+        <key name="pattern">
+            <map lang="nl">patroon</map>
+            <map lang="en">pattern</map>
+        </key>
+        <key name="pattern">
+            <map lang="nl">position</map><!--TODO must translate -->
+            <map lang="en">position</map>
+        </key>
+    </realm>
+    <!-- 
+        metamodel realm includes stereotypes and datatype names 
+    -->
+    <realm name="mm">
+        <key name="gegevensgroeptype">
+            <map lang="nl">gegevensgroeptype</map>
+            <map lang="en">composite type</map>
+        </key>
+        <key name="base">
+            <map lang="nl">base</map><!--TODO must translate -->
+            <map lang="en">base</map>
+        </key>
+        <key name="application">
+            <map lang="nl">application</map><!--TODO must translate -->
+            <map lang="en">application</map>
+        </key>
+        <key name="domain">
+            <map lang="nl">domain</map><!--TODO must translate -->
+            <map lang="en">domain</map>
+        </key>
+    </realm>
+</realms>

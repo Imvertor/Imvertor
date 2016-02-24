@@ -1,0 +1,131 @@
+<config>
+    <!-- 
+        @doc  ignore or include for documentation release filter: compare of all non-documentary information
+        @info ignore or include for information compare: full comparison of all informative aspects of the model.
+        @level specifies that the element is model or system level
+        
+        By default all information  elements are included in the comparison.
+    --> 
+    
+    <!-- system level: ignore in all comparisons -->
+    <elms doc="ignore" info="ignore" level="system">
+        <elm form="localSchemaSvnId">localSchemaSvnId</elm>
+        <elm form="conceptualschemaSvnId">conceptualschemaSvnId</elm>
+        <elm form="refMaster">Reference master</elm>
+        <elm form="id">Identifier</elm>
+        <elm form="typeId">ID of the class implementing the type</elm>
+        <elm form="typePackageId">ID of the package that implements the type</elm>
+        <elm form="copyDownTypeId">ID of the class from which to down-copy attributes</elm>
+    </elms>
+    <!-- system level: ignore in documentation release only -->
+    <elms doc="ignore" info="include" level="system">
+        <elm form="generated">Generation date</elm>
+        <elm form="generator">ID/version of the generator</elm>
+        <elm form="exported">Export date</elm>
+        <elm form="exporter">ID/version of the exporter</elm>
+        <elm form="author">Author</elm>
+        <elm form="created">Date of creation</elm>
+        <elm form="modified">Date last modified</elm>
+        
+        <elm form="svnAuthor">Author in SVN</elm> 
+        <elm form="svnFile">File in SVN</elm> 
+        <elm form="svnRevision">Revision number in SVN</elm> 
+        <elm form="svnDate">Date in SVN</elm> 
+        <elm form="svnTime">Time in SVN</elm> 
+        <elm form="svnUser">User in SVN</elm>
+        
+        <elm form="maxLength">Maximum string length</elm>
+        <elm form="fractionDigits">Nr of digits in decimal</elm>
+        <elm form="totalDigits">Total number of digits in decimal</elm>
+        
+    </elms>
+    <!-- system level: never ignore -->
+    <elms doc="include" info="include" level="system">
+        <elm form="nameApplication">Name of governing application</elm>
+        <elm form="namePackage">Name of governing package</elm>
+        <elm form="nameClass">Name of governing class</elm>
+        <elm form="nameAttribute">Name of governing attribute</elm>
+        <elm form="nameAssociation">Name of the governing association</elm>
+        <elm form="designation">Role of the construct</elm>
+        <elm form="attributeTypeDesignation">Role of the attribute type</elm>
+        <elm form="origin">Origin</elm>
+    </elms>
+    
+    <!-- model level: ignore in documentation release only -->
+    <elms doc="ignore" info="include" level="model">
+        <elm form="webLocation">Reference to the internet</elm>
+        <elm form="documentation">Documentation</elm>
+    </elms>
+    <!-- model level: never ignore -->
+    <elms doc="include" info="include" level="model">
+        
+        <elm form="Application">Application</elm>
+        
+        <elm form="project">Project</elm>
+        <elm form="packages">Packages</elm>
+        <elm form="classes">Classes</elm>
+        <elm form="supertypes">Supertypes</elm>
+        <elm form="attributes">Attributes</elm>
+        <elm form="associations">Associations</elm>
+        <elm form="enumeration">Enumeration</elm>
+        <elm form="associationClasses">Association classes</elm>
+        <elm form="substitutions">Substitutions</elm>
+        <elm form="localSchemas">Local schemas</elm>
+        <elm form="filters">Filters</elm>
+        
+        <elm form="Package">Package</elm>
+        
+        <elm form="Class">Class</elm>
+        <elm form="abstract">Abstract</elm>
+        <elm form="pattern">String pattern</elm>
+        <elm form="union">Union</elm>
+        <elm form="primitive">Primitive</elm>
+        <elm form="conceptualSchemaClassName">Conceptual schema class name</elm>
+        <elm form="subpackage">Subpackage</elm>
+        
+        <elm form="version">Version number</elm>
+        
+        <elm form="Type">Type</elm>
+        <elm form="typeName">Type name</elm>
+        <elm form="typeId">Type ID</elm>
+        <elm form="typePackage">Package of the type</elm>
+        <elm form="typePackageId">ID of the package of the type</elm>
+        <elm form="baretype">Type as entered</elm>
+        <elm form="stereotype">Stereotype</elm>
+        
+        <elm form="Attribute">Attribute</elm>
+        <elm form="maxLength">Maximum string length</elm>
+        <elm form="fractionDigits">Nr of digits in decimal</elm>
+        <elm form="totalDigits">Total number of digits in decimal</elm>
+        <elm form="dataLocation">Location of the data</elm>
+        <elm form="position">Position of the element in XML schema</elm>
+        <elm form="attributeTypeName">Name of the type of the attribute</elm>
+        <elm form="conceptualSchemaType">Type in the conceptual schema</elm>
+        
+        <elm form="Association">Association</elm>
+        <elm form="aggregation">Aggregation</elm>
+        
+        <elm form="Enum">Enumeration instance</elm>
+        <elm form="Value">Value of the enumeration</elm>
+        
+        <elm form="minOccurs">Minimum occurrence (of target)</elm>
+        <elm form="minOccursSource">Minimum occurrence (of target)</elm>
+        <elm form="maxOccurs">Maximum occurrence (of source)</elm>
+        <elm form="maxOccursSource">Maximum occurrence (of source)</elm>
+        
+        <elm form="AssociationClass">Association class</elm>
+        
+        <elm form="Substitution">Substitution</elm>
+        <elm form="supplier">Supplier</elm>
+        <elm form="supplierId">Supplier ID</elm>
+        <elm form="supplierPackage">Package of the supplier</elm>
+        <elm form="supplierPackageName">Name of the supplier package</elm>
+        
+        <elm form="LocalSchema">Local schema</elm>
+        
+        <elm form="Filter">Filter</elm>
+        <elm form="date">Date</elm>
+        <elm form="version">Version number</elm>
+    </elms>
+    
+</config>

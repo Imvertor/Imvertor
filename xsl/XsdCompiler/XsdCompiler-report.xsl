@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    SVN: $Id: XsdCompiler-report.xsl 7379 2016-01-14 07:39:34Z arjan $ 
+-->
+<xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:ext="http://www.imvertor.org/xsl/extensions"
+    xmlns:imvert="http://www.imvertor.org/schema/system"
+    xmlns:imf="http://www.imvertor.org/xsl/functions"
+    
+    exclude-result-prefixes="#all"
+    version="2.0">
+    
+    <!-- 
+         Reporting stylesheet for XSD compiler
+    -->
+    <xsl:import href="../common/Imvert-common.xsl"/>
+    <xsl:import href="../common/Imvert-common-report.xsl"/>
+   
+    <xsl:import href="Imvert2XSD-KING-common.xsl"/>
+    
+    <xsl:variable name="stylesheet">XsdCompiler-report.xsl</xsl:variable>
+    <xsl:variable name="stylesheet-version">$Id: XsdCompiler-report.xsl 7379 2016-01-14 07:39:34Z arjan $</xsl:variable>
+    
+    <xsl:variable name="document" select="imf:document(imf:get-config-string('properties','WORK_EMBELLISH_FILE'))"/>
+    
+    <xsl:variable name="selected-cols-names">
+        entiteittype
+        typeBericht
+        berichtcode
+        berichtnaam
+        alles-opnemen?
+        entiteit
+        relatie
+        attribuut
+        kardinaliteit
+        imvert-id
+    </xsl:variable>
+    <xsl:variable name="selected-cols" select="tokenize($selected-cols-names,'\s+')" as="xs:string+"/>
+    
+    <xsl:template match="/config">
+        <xsl:variable name="schema-created" select="imf:boolean(imf:get-config-string('cli','createxmlschema'))"/>
+        <xsl:variable name="schemarules" select="imf:get-config-string('cli','schemarules')"/>
+        <xsl:variable name="berichten-infoset" select="imf:document(imf:get-config-string('properties','RESULT_ENDPRODUCT_MSG_FILE_PATH'))"/>
+        <report>
+            <step-display-name>XML Schema compiler</step-display-name>
+            <xsl:choose>
+                <xsl:when test="not($schema-created)">
+                    <!-- skip -->
+                </xsl:when>
+                <xsl:when test="$schemarules = 'Kadaster'">
+                    <status/>
+                    <summary>
+                        <xsl:sequence select="imf:report-label('Schemas', '(TODO)')"/>
+                    </summary>
+                </xsl:when>
+                <xsl:when test="$schemarules = 'KINGUIM'">
+                    <xsl:variable name="berichten-table" select="imf:create-berichten-table($berichten-infoset/berichten/*)"/>
+                    <status/>
+                    <summary>
+                        <info label="XML schema generation">
+                            <xsl:sequence select="imf:report-label('Koppelvlak', concat(count($berichten-infoset/berichten/bericht),' berichtdefinities'))"/>
+                        </info>
+                    </summary>
+                    <page>
+                        <title>XML Schema info</title>
+                        <content>
+                            <div>
+                                <div class="intro">
+                                    <p>
+                                        Deze tabel geeft een opsomming van eigenschappen die moeten worden opgenomen in de berichtschema's.
+                                        Eigenschappen zijn attributen of relaties.
+                                    </p><p>    
+                                        Deze tabel moet als volgt worden gelezen.
+                                    </p>
+                                    <ul>
+                                        <li>Als een <b>typeBericht</b> bericht wordt gemaakt en daarin komt een <b>entiteit</b> voor, 
+                                            dan moet het <b>attribuut</b> worden opgenomen of verwijderd, 
+                                            afhankelijk van de opgegeven <b>kardinaliteit</b>. 
+                                            Dit kan een attribuut of een relatie betreffen.
+                                            Voorbeeld: In standaard antwoordberichten is van een natuurlijk persoon de achternaam verplicht.</li>
+                                        <li> Als de <b>kardinaliteit</b> 0 is, niet opnemen.
+                                            Voorbeeld: in speciaal bericht x moet de voornaam worden verwijderd.</li>
+                                        <li>Als een <b>relatie</b> is benoemd, dan moet de regel worden gevolgd alléén 
+                                            als de genoemde <b>entiteit</b> deze inkomende relate heeft.
+                                            Voorbeeld: van een natuurlijk persoon wordt alleen het BSN opgenomen als het als kind wordt opgenomen. 
+                                        </li>
+                                        <li>Als er een <b>berichtnaam</b> is opgegeven, dan betreft de regel alleen voor niet-standaard berichten,
+                                            dus die deze specifieke naam hebben.</li>
+                                        <li>De naam van het betreffende bericht is opgebouwd uit <b>entiteittype</b> en <b>berichtcode</b>, 
+                                            eventueel uitgebreid met de <b>berichtnaam</b>. 
+                                            Voorbeeld: npsLa01, npsLa01-alternatief.</li>
+                                    </ul>
+                                </div>     
+                                <table>
+                                    <xsl:variable name="header" select="string-join(for $c in $selected-cols[normalize-space(.)] return concat($c,':10'),',')"/>
+                                    <xsl:sequence select="imf:create-table-header($header)"/>
+                                    <xsl:apply-templates select="$berichten-table//row" mode="workbook-berichtschema"/>
+                                </table>
+                            </div>
+                        </content>
+                    </page>
+                                    
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:sequence select="imf:msg('FATAL','No such schemarules: [1]', $schemarules)"/>
+                </xsl:otherwise>
+            </xsl:choose>
+       </report>
+    </xsl:template>
+    
+    
+    <xsl:template match="row" mode="workbook-berichtschema">
+        <tr>
+            <xsl:apply-templates select="col[@naam = $selected-cols]" mode="#current"/>
+        </tr>
+    </xsl:template>
+
+    <xsl:template match="col" mode="workbook-berichtschema">
+        <td>
+            <xsl:apply-templates mode="#current"/>
+        </td>
+    </xsl:template>
+    
+    <xsl:template match="node()" mode="workbook-berichtschema">
+        <xsl:value-of select="."/>
+    </xsl:template>
+    
+</xsl:stylesheet>
