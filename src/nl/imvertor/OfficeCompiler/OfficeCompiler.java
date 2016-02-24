@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.OfficeCompiler;
 
 import nl.imvertor.common.Step;
@@ -37,7 +11,7 @@ public class OfficeCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(OfficeCompiler.class);
 	
 	public static final String STEP_NAME = "OfficeCompiler";
-	public static final String VC_IDENTIFIER = "$Id: OfficeCompiler.java 7369 2016-01-08 15:35:15Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: OfficeCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
 	
 	public boolean run() {
 		
@@ -45,8 +19,7 @@ public class OfficeCompiler extends Step {
 			// set up the configuration for this step
 			configurator.setActiveStepName(STEP_NAME);
 			prepare();
-			runner.info(logger,"Creating Office documentation");
-
+			
 			generateOfficeReport();
 			configurator.setStepDone(STEP_NAME);
 			
@@ -56,7 +29,7 @@ public class OfficeCompiler extends Step {
 			return runner.succeeds();
 
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}
@@ -75,6 +48,7 @@ public class OfficeCompiler extends Step {
 		if (op.equals("none")) {
 			// skip this
 		} else if (op.equals("html")) {
+			runner.info(logger,"Creating Office documentation");
 			Transformer transformer = new Transformer();
 			// creates a HTML file which is the basis for output
 			transformer.transformStep("properties/WORK_EMBELLISH_FILE","properties/WORK_OFFICE_FILE", "properties/IMVERTOR_METAMODEL_" + mm + "_OFFICE_XSLPATH");

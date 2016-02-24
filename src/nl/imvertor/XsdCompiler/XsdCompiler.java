@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.XsdCompiler;
 
 import java.io.File;
@@ -51,7 +25,7 @@ public class XsdCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XsdCompiler.class);
 	
 	public static final String STEP_NAME = "XsdCompiler";
-	public static final String VC_IDENTIFIER = "$Id: XsdCompiler.java 7354 2015-12-14 10:02:09Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: XsdCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
 
 	/**
 	 *  run the main translation
@@ -86,7 +60,7 @@ public class XsdCompiler extends Step {
 		    return runner.succeeds();
 			
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}
@@ -112,7 +86,7 @@ public class XsdCompiler extends Step {
 				
 		AnyFolder xsdApplicationFolder = new AnyFolder(configurator.getParm("properties","RESULT_XSD_APPLICATION_FOLDER"));
 		xsdApplicationFolder.mkdirs();
-		configurator.setParm("migrate","xsd-folder-path", xsdApplicationFolder.toURI().toString());
+		configurator.setParm("system","xsd-folder-path", xsdApplicationFolder.toURI().toString());
 	
 		runner.debug(logger,"Generating XML schemas to " + xsdApplicationFolder);
 		
@@ -155,7 +129,7 @@ public class XsdCompiler extends Step {
 				
 		AnyFolder xsdApplicationFolder = new AnyFolder(configurator.getParm("properties","RESULT_XSD_APPLICATION_FOLDER"));
 		xsdApplicationFolder.mkdirs();
-		configurator.setParm("migrate","xsd-folder-path", xsdApplicationFolder.toURI().toString());
+		configurator.setParm("system","xsd-folder-path", xsdApplicationFolder.toURI().toString());
 	
 		runner.debug(logger,"Generating XML schemas to " + xsdApplicationFolder);
 		

@@ -1,30 +1,4 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
-//SVN: $Id: Messenger.java 7323 2015-11-25 10:17:17Z arjan $
+//SVN: $Id: Messenger.java 7400 2016-01-29 09:25:38Z arjan $
 
 package nl.imvertor.common;
 
@@ -49,7 +23,7 @@ import nl.imvertor.common.wrapper.XMLConfiguration;
 public class Messenger extends SequenceWriter {
 
 	public static final Logger logger = Logger.getLogger(Messenger.class);
-	public static final String VC_IDENTIFIER = "$Id: Messenger.java 7323 2015-11-25 10:17:17Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Messenger.java 7400 2016-01-29 09:25:38Z arjan $";
 
 	private String fatalValue = "FATAL";
 	
@@ -59,16 +33,13 @@ public class Messenger extends SequenceWriter {
 	
 	@Override
 	/**
-	 * This method implements writing a message to the configuration element "/messages".
-	 * This method is called from within XSLT extension function only.
+	 * This method implements writing the contents of an XSLT message to the configuration element "/messages".
 	 * 
 	 * Each next step in the chain may pick up this messages, e.g. process them for documentation purposes.
 	 * 
-	 *  A message sent out takes the form of a single string, in which case the string is sent to the system.out stream, 
-	 *  or a sequence of elements with text content, in which case it is appended to the xml configuration.   
+	 * A message sent out takes the form of a 1/ single string, in which case the string is sent to the system.out stream, 
+	 * or 2/ a sequence of specific elements with text content, in which case it is appended to the xml configuration.   
 	 *  
-	 * Messages are written directly to the screen when they do not consist of a single *:message element.
-	 * 
 	 * A fatal message (FATAL) will result in an exception thrown. This ends the process (and logging).
 	 * 
 	 */
@@ -79,32 +50,29 @@ public class Messenger extends SequenceWriter {
 		
 		Runner runner = cfg.getRunner();
 
+		// deterrmine the document passed in the message
 		NodeInfo messageroot = ((NodeInfo) item).getDocumentRoot();
 		AxisIterator elements = messageroot.iterateAxis(AxisInfo.CHILD);
-		NodeInfo child = (NodeInfo) elements.next();
+		NodeInfo originalChild = (NodeInfo) elements.next();
+		NodeInfo child = originalChild;
 		NodeInfo sibling = (NodeInfo) elements.next();
-		// if only a text string is passed, this is a normal debugging message, and is shown directly
-		if (child.getNodeKind() == net.sf.saxon.type.Type.TEXT && sibling == null) {
-			System.out.println(child.getStringValue());
-		} else {
-			// determine the source, text and type of the message.
-			String type = "";
-			String text = "";
-			String name = "";
-			String src = "";
-			while (child != null) {
-				if (child.getNodeKind() == net.sf.saxon.type.Type.ELEMENT) {
-					String elementName = child.getLocalPart();
-					String elementValue = child.getStringValue();
-					if (elementName.equals("type")) type = elementValue;
-					if (elementName.equals("name")) name = elementValue;
-					if (elementName.equals("text")) text = elementValue;
-					if (elementName.equals("src")) src = elementValue;
-				}
-				child = sibling;
-				sibling = (NodeInfo) elements.next();
+		
+		// determine the source, text and type of the message, assuming it is a structured message.
+		String src = null, name = null, text = null, type = null;
+		while (child != null) {
+			if (child.getNodeKind() == net.sf.saxon.type.Type.ELEMENT) {
+				String elementName = child.getDisplayName();
+				String elementValue = child.getStringValue();
+				if (elementName.equals("imvert-message:type")) type = elementValue;
+				if (elementName.equals("imvert-message:name")) name = elementValue;
+				if (elementName.equals("imvert-message:text")) text = elementValue;
+				if (elementName.equals("imvert-message:src")) src = elementValue;
 			}
-			
+			child = sibling;
+			sibling = (NodeInfo) elements.next();
+		}
+		// Check if this is actually a structured message
+		if (src != null) {
 			// then signal to screen if needed, and die if fatal
 			String ctext = src + ": [" + name + "] " + text;
 			
@@ -130,6 +98,14 @@ public class Messenger extends SequenceWriter {
 			}
 			if (type.equals(fatalValue))
 				runner.fatal(logger,src + " - " + text,null);
+		} else { 
+			// otherwise return the string representation immediately, this is the regular XSLT message.
+			child = originalChild;
+			while (child != null) {
+				System.out.println(child.getStringValue());
+				child = sibling;
+				sibling = (NodeInfo) elements.next();
+			}
 		}
 	}
 	

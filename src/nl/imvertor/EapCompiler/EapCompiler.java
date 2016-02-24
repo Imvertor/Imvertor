@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.EapCompiler;
 
 import java.io.File;
@@ -49,7 +23,7 @@ public class EapCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "EapCompiler";
-	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7371 2016-01-11 11:07:16Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
 
 	private EapFile templateFile;
 	private String templateFileModelGUID;
@@ -67,7 +41,7 @@ public class EapCompiler extends Step {
 			// get the template file information, notably the GUID for the model in this template. 
 			templateFile = new EapFile(configurator.getParm("properties","TEMPLATE_TEMPLATE_FILE"));
 			templateFileModelGUID = (new AnyFile(configurator.getParm("properties","TEMPLATE_TEMPLATE_FILE_GUID"))).getContent();
-			configurator.setParm("migrate","template-file-model-guid", templateFileModelGUID);
+			configurator.setParm("system","template-file-model-guid", templateFileModelGUID);
 			
 			// compile EAP from template based on current Imvertor file.
 			boolean may = runner.getAppPhase() != Runner.APPLICATION_PHASE_CONCEPT;
@@ -100,7 +74,7 @@ public class EapCompiler extends Step {
 			return runner.succeeds();
 
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}

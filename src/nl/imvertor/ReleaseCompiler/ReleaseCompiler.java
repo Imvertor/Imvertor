@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.ReleaseCompiler;
 
 import nl.imvertor.common.Step;
@@ -37,7 +11,7 @@ public class ReleaseCompiler  extends Step {
 	protected static final Logger logger = Logger.getLogger(ReleaseCompiler.class);
 	
 	public static final String STEP_NAME = "ReleaseCompiler";
-	public static final String VC_IDENTIFIER = "$Id: ReleaseCompiler.java 7273 2015-09-21 14:26:27Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: ReleaseCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
 	
 	AnyFolder targetZipFolder;
 	AnyFolder targetUserZipFolder;
@@ -55,11 +29,13 @@ public class ReleaseCompiler  extends Step {
 				prepare();
 				runner.info(logger,"Compiling ZIP release");
 			
-				if (configurator.getParm("cli","zipfile").equals("<none>")) 
+				if (configurator.getParm("properties","USER_ZIP_FILE",false) == null) 
 					throw new Exception("No valid ZIP file path specified.");
 				
+				// local temporary spot to store the zip to.
 				targetZipFolder = new AnyFolder(configurator.getParm("properties","RELEASES_FOLDER"));
 				targetZipFolder.mkdirs();
+				// The place where to copy the zip result for distribution.
 				targetUserZipFolder = new AnyFolder(configurator.getParm("properties","USER_ZIP_FILE"));
 				targetUserZipFolder.mkdirs();
 				
@@ -76,7 +52,7 @@ public class ReleaseCompiler  extends Step {
 			return runner.succeeds();
 			
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}

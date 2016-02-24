@@ -1,30 +1,4 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
-//SVN: $Id: Configurator.java 7344 2015-12-09 08:43:49Z arjan $
+//SVN: $Id: Configurator.java 7417 2016-02-09 13:01:46Z arjan $
 
 package nl.imvertor.common;
 
@@ -35,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -86,7 +61,7 @@ import nl.imvertor.common.wrapper.XMLConfiguration;
 public class Configurator {
 
 	public static final Logger logger = Logger.getLogger(Configurator.class);
-	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7344 2015-12-09 08:43:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7417 2016-02-09 13:01:46Z arjan $";
 	public static final String PARMS_FILE_NAME = "parms.xml";
 	
 	public static final String NAMESPACE_EXTENSION_FUNCTIONS = "http://www.imvertor.org/xsl/extensions";
@@ -100,6 +75,8 @@ public class Configurator {
 	private AnyFolder baseFolder;
 	private AnyFolder workFolder;
 	private AnyFolder appFolder;   
+	private AnyFolder inputFolder;   
+	private AnyFolder outputFolder;   
 
 	private XMLConfiguration workConfiguration;
 	private XMLConfiguration stepConfiguration;
@@ -117,6 +94,8 @@ public class Configurator {
 	private Options options;
 	private HashMap<String,Boolean> requiredOption = new HashMap<String,Boolean> ();
 	
+	private PrintWriter pw = new PrintWriter(System.out);
+	
 	private Configurator()  {
 		
 		runner = new Runner();
@@ -125,19 +104,32 @@ public class Configurator {
 		try {
 			if (System.getProperty("install.dir") == null)
 				throw new ConfiguratorException("Missing system parameter install.dir, please pass as -Dinstall.dir=[filepath]");
-			if (System.getProperty("work.dir") == null)
-				System.setProperty("work.dir",System.getProperty("install.dir") + File.separator + "work");
-
-			workFolder = new AnyFolder(System.getProperty("work.dir"));
+			
 			baseFolder = new AnyFolder(System.getProperty("install.dir"));
-			appFolder = new AnyFolder(workFolder,"app");
 			
 			if (!baseFolder.isDirectory())
 				throw new ConfiguratorException("Not a folder: " + baseFolder.getCanonicalPath());
+			
+			if (System.getProperty("work.dir") == null)
+				throw new ConfiguratorException("Missing system parameter work.dir, please pass as -work.dir=[filepath]");
+			
+			workFolder = new AnyFolder(System.getProperty("work.dir"));
+			appFolder = new AnyFolder(workFolder,"app");
+			
 			if (!workFolder.isDirectory())
 				workFolder.mkdirs();
 			if (!appFolder.isDirectory())
 				appFolder.mkdirs();
+			
+			if (System.getProperty("input.dir") == null)
+				throw new ConfiguratorException("Missing system parameter input.dir, please pass as -Dinput.dir=[filepath]");
+			
+			inputFolder = new AnyFolder(System.getProperty("input.dir"));
+			
+			if (System.getProperty("output.dir") == null)
+				throw new ConfiguratorException("Missing system parameter output.dir, please pass as -Doutput.dir=[filepath]");
+			
+			outputFolder = new AnyFolder(System.getProperty("output.dir"));
 			
 			saxonConfig = new Configuration();
 		
@@ -218,8 +210,8 @@ public class Configurator {
 		return new AnyFolder(getOutputFolder() + sep + "applications" + sep + getParm("appinfo","project-name") + sep + getParm("appinfo","application-name") + sep + getParm("appinfo","release"));
 	}
 
-	private File getOutputFolder() throws IOException, ConfiguratorException {
-		return new File(getParm("cli","managedoutputfolder"));
+	private File getOutputFolder() {
+		return outputFolder;
 	}
 
 	/**
@@ -302,6 +294,10 @@ public class Configurator {
 		(new OutputFolder(getParm(workConfiguration,"system","work-app-folder-path",true))).clearIfExists(false);
 		(new OutputFolder(getParm(workConfiguration,"system","work-rep-folder-path",true))).clearIfExists(false);
 			
+		setParm(workConfiguration,"system","managedinputfolder", inputFolder.getCanonicalPath(), true);
+		setParm(workConfiguration,"system","managedoutputfolder", outputFolder.getCanonicalPath(), true);
+		setParm(workConfiguration,"system","managedinstallfolder", baseFolder.getCanonicalPath(), true);
+
 		setActiveStepName("common");
 		prepareStep();
 		
@@ -439,10 +435,10 @@ public class Configurator {
 			BasicParser parser = new BasicParser();
 			commandLine = parser.parse(options, args);
 			if (commandLine.hasOption("help")) 
-		        dieOnCli();
+		        dieOnCli(commandLine.getOptionValue("help"));
 		} catch (ParseException e) {
 			runner.error(logger, e.getMessage());
-			dieOnCli();
+			dieOnCli("error");
 		}
 		
 		// save all options as corresponding properties.
@@ -452,21 +448,19 @@ public class Configurator {
 			Option option = it.next();
 			String optionName = option.getOpt();
 			String v = commandLine.getOptionValue(optionName);
-			if (v != null) {
-				// if "arguments", load these from managed input file.
-				if (optionName.equals("arguments")) 
-					loadFromPropertyFile(v);
-				else
-					setParm(workConfiguration, "cli",optionName,v,true);
-				// and record this parameter as set.
-			}	
+			if (v != null)
+				setParm(workConfiguration, "cli",optionName,v,true);
 			setOptionIsReady(optionName, true);
 		}
+		
+		// check if "arguments" has been specified; if so, read them, but do not overwrite any.
+		if (commandLine.hasOption("arguments")) 
+			loadFromPropertyFiles(new File(baseFolder,"command-line"), commandLine.getOptionValue("arguments"));
 		
 		String missing = checkOptionsAreReady();
 		if (!missing.equals("")) {
 			runner.error(logger, "Missing required parameters: " + missing);
-			dieOnCli();
+			dieOnCli("program");
 		}
 		
 	    // record the metamodel used
@@ -480,12 +474,6 @@ public class Configurator {
 		// set the task
 		setParm(workConfiguration,"appinfo","task",getParm(workConfiguration,"cli","task",true),true);
 		
-	    // if debugging, set debug level
-	    if (isTrue(getParm(workConfiguration,"cli", "debug",true))) {
-	    	Logger.getRootLogger().setLevel(Level.DEBUG);
-	    	getRunner().debug(logger,"Debugging started.");
-	    }
-	    
 	    // If forced compilation, try all steps irrespective of any errors
 	    forceCompile = isTrue(getParm(workConfiguration,"cli","forcecompile",true)); 
 	    
@@ -601,10 +589,17 @@ public class Configurator {
 	 * @throws ConfiguratorException
 	 */
 	private void setParm(XMLConfiguration xmlConfig, String group, String name, Object value, boolean replace) throws ConfiguratorException {
+		String gn = group + "/" + name;
 		if (replace)
-			xmlConfig.setProperty(group + "/" + name, (value == null) ? "" : value.toString());
+			xmlConfig.setProperty(gn, (value == null) ? "" : value.toString());
 		else 
-			xmlConfig.addProperty(group + "/" + name, (value == null) ? "" : value.toString());
+			xmlConfig.addProperty(gn, (value == null) ? "" : value.toString());
+		
+		// if this is a debug parameter, set debug level
+	    if (gn.equals("cli/debug") && isTrue(value.toString())) {
+	    	Logger.getRootLogger().setLevel(Level.DEBUG);
+	    	getRunner().debug(logger,"Debugging started.");
+	    }
 	}
 	
 	/**
@@ -724,12 +719,15 @@ public class Configurator {
 	 * Override existing property values.
 	 * 
 	 * Property file may also have an include property, set to a comma-separated list of relative paths to other property files to be included, in that order.
-	 *  
+	 * 
+	 * The file is located relative to the property file holding the include statement. 
+	 * If not available, it is assume it is available in the props folder of the managed input folder.
+	 * If not found there, an exception is raised. 
+	 * 
 	 * @param filePath
-	 * @throws IOException
-	 * @throws ConfiguratorException
+	 * @throws Exception 
 	 */
-	private void loadFromPropertyFile(String filePath) throws IOException, ConfiguratorException {
+	private void loadFromPropertyFile(String filePath) throws Exception {
 		File f = getFile(filePath);
 		runner.debug(logger,"Reading property file " + f.getAbsolutePath());
 		Properties properties = new Properties();
@@ -741,17 +739,39 @@ public class Configurator {
 		Enumeration<Object> e = properties.keys();
 		while (e.hasMoreElements()) {
 			String v = e.nextElement().toString();
-			// check if normal option or reference to another property file. These may be separated by ,
-			if (v.equals("include")) {
-				String[] files = properties.getProperty(v).split("\\s*,\\s*");
-				for (int i = 0; i < files.length; i++) {
-					File incFile = new File(f.getParentFile(),files[i]);
-					loadFromPropertyFile(incFile.getAbsolutePath());
-				}
-			} else {
+			// never overwrite
+			if (getParm(workConfiguration,"cli",v,false) == null) {
 				setParm(workConfiguration,"cli",v,properties.getProperty(v),true);
+				setOptionIsReady(v, true);
 			}
-			setOptionIsReady(v, true);
+		}
+		loadFromPropertyFiles(f,properties.getProperty("arguments"));
+	
+	}
+	
+	private void loadFromPropertyFiles(File curFile, String filenames) throws Exception {
+		if (filenames != null) {
+			String[] files = filenames.split("\\s*,\\s*");
+			for (int i = 0; i < files.length; i++) {
+				File incFile;
+				if (AnyFile.isAbsolutePath(files[i]))
+					incFile = new File(files[i]);
+				else 
+					incFile = new File(curFile.getParentFile(),files[i]);
+				loadFromPropertyFile(selectIncFile(incFile).getAbsolutePath());
+			}
+		}
+	}
+	
+	private File selectIncFile(File incFile) throws Exception {
+		if (incFile.exists())
+			return incFile;
+		else {
+			File commonIncFile = new File(inputFolder,"props/" + incFile.getName());
+			if (commonIncFile.exists())
+				return commonIncFile;
+			else
+				throw new Exception("Properties not found, tried files at " + incFile.getAbsolutePath() + " and " + commonIncFile.getAbsolutePath());
 		}
 	}
 	
@@ -825,10 +845,23 @@ public class Configurator {
 		setOptionIsReady(longKey,!isRequired);
 		options.addOption(option);
 		
+		// store the option to the configurator for final reporting
+		writeCli(stepName,longKey,description,argKey,isRequired);
+		
 	}
 	
 	public void createOption(String stepName, String shortKey, String longKey, String description, String argKey, boolean isRequired) throws Exception {
 		createOption(stepName, longKey, description, argKey, isRequired);
+	}
+	
+	private void writeCli(String stepName, String longKey, String description, String argKey, Boolean isRequired) {
+			int messageIndex = workConfiguration.getMaxIndex("clispecs/clispec") + 2;   // -1 when no messages.
+			workConfiguration.addProperty("clispecs/clispec", "");
+			workConfiguration.addProperty("clispecs/clispec[" + messageIndex + "]/stepName", stepName);
+			workConfiguration.addProperty("clispecs/clispec[" + messageIndex + "]/longKey", longKey);
+			workConfiguration.addProperty("clispecs/clispec[" + messageIndex + "]/description", description);
+			workConfiguration.addProperty("clispecs/clispec[" + messageIndex + "]/argKey", argKey);
+			workConfiguration.addProperty("clispecs/clispec[" + messageIndex + "]/isRequired", isRequired);
 	}
 	
 	/**
@@ -868,13 +901,33 @@ public class Configurator {
 			// and create the cli parameter from these settings
 			createOption(stepName, name, tip, arg, required);
 			
-			//TODO store the option to the configurator for final reporting
 		}
 	}
 	
-	private void dieOnCli() {
+	private void dieOnCli(String infotype) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "Imvertor", options );
+		int width = 118;
+		int leftpad = 2;
+		int descpad = 4;
+		
+		if (infotype.equals("program")) {
+			formatter.printHelp( pw, width, "Imvertor -param [value] (-param [value]...)", "Imvertor", options ,leftpad, descpad, "");
+		} else	if (infotype.equals("license")) {
+			formatter.printWrapped( pw, width, "The following information is shown because you specified -help license at the command line.");
+			formatter.printWrapped( pw, width, "");
+			formatter.printWrapped( pw, width, Release.getDetails());
+			formatter.printWrapped( pw, width, "");
+			formatter.printWrapped( pw, width, Release.getConditions());
+			formatter.printWrapped( pw, width, "");
+			formatter.printWrapped( pw, width, "Imvertor exits.");
+		} else { // assume "error"
+			formatter.printWrapped( pw, width, "Error occurred processing the command line. ");
+			formatter.printWrapped( pw, width, "Please specify:\nImvertor -param [value] (-param [value]...)");
+			formatter.printWrapped( pw, width, "Pass -help program for an overview of all program parameters.");
+			formatter.printWrapped( pw, width, "Imvertor exits.");
+		} 
+			
+		pw.flush();
 		System.exit(-1);
 	}
 	

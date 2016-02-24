@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.ImvertCompiler;
 
 import nl.imvertor.common.Step;
@@ -39,7 +13,7 @@ public class ImvertCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(ImvertCompiler.class);
 	
 	public static final String STEP_NAME = "ImvertCompiler";
-	public static final String VC_IDENTIFIER = "$Id: ImvertCompiler.java 7273 2015-09-21 14:26:27Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: ImvertCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
 
 	/**
 	 *  run the main translation
@@ -90,6 +64,11 @@ public class ImvertCompiler extends Step {
 			XmlFile oldModelFile = new XmlFile(etcFolder,an + ".model.imvert.xml");
 			infoSchemaFile.copyFile(oldModelFile); // IM-169 schema based imvertor output
 			
+			//TODO copy the xsd to the etc. folder
+			AnyFolder sourceXsdFolder = new AnyFolder(configurator.getParm("properties", "IMVERTOR_APPLICATION_LOCATION_SOURCE")); 
+			AnyFolder targetXsdFolder = new AnyFolder(configurator.getParm("properties", "IMVERTOR_APPLICATION_LOCATION_TARGET")); 
+			sourceXsdFolder.copy(targetXsdFolder);
+			
 			configurator.setStepDone(STEP_NAME);
 			
 			// save any changes to the work configuration for report and future steps
@@ -100,7 +79,7 @@ public class ImvertCompiler extends Step {
 		    return runner.succeeds();
 			
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}

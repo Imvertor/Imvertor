@@ -1,30 +1,4 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
-//SVN: $Id: Transformer.java 7271 2015-09-21 12:29:51Z arjan $
+//SVN: $Id: Transformer.java 7415 2016-02-08 09:02:51Z arjan $
 
 package nl.imvertor.common;
 
@@ -73,7 +47,7 @@ import org.apache.log4j.Logger;
 public class Transformer {
 
 	public static final Logger logger = Logger.getLogger(Transformer.class);
-	public static final String VC_IDENTIFIER = "$Id: Transformer.java 7271 2015-09-21 12:29:51Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Transformer.java 7415 2016-02-08 09:02:51Z arjan $";
 	
 	private ErrorListener errorListener;
 	private Messenger messageEmitter;
@@ -160,9 +134,6 @@ public class Transformer {
 			throw new Exception("No such input file: " + infile.getAbsolutePath());
 		if (!xslfile.isFile())
 			throw new Exception("No such XSL file: " + xslfile.getAbsolutePath());
-		
-		stylesheetIdentifier = FilenameUtils.getBaseName(xslfile.getName());
-		configurator.getXmlConfiguration().setProperty("system-stylesheet-id",stylesheetIdentifier);
 		
 		StreamSource source = new StreamSource(infile);
 		StreamSource xslt = new StreamSource(xslfile);

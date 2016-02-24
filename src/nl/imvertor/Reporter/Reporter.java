@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.Reporter;
 
 import nl.imvertor.common.Step;
@@ -44,7 +18,7 @@ public class Reporter extends Step {
 	protected static final Logger logger = Logger.getLogger(Reporter.class);
 	
 	public static final String STEP_NAME = "Reporter";
-	public static final String VC_IDENTIFIER = "$Id: Reporter.java 7299 2015-11-10 11:31:12Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Reporter.java 7419 2016-02-09 15:42:49Z arjan $";
 	
 	/**
 	 *  run the main translation
@@ -76,7 +50,7 @@ public class Reporter extends Step {
 			return runner.succeeds();
 
 		} catch (Exception e) {
-			runner.error(logger, "Step fails by system error.", e);
+			runner.fatal(logger, "Step fails by system error.", e);
 			return false;
 		} 
 	}

@@ -1,29 +1,3 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor;
 
 import nl.imvertor.ApcModifier.ApcModifier;
@@ -58,8 +32,11 @@ public class ChainTranslateAndReport {
 		Configurator configurator = Configurator.getInstance();
 		
 		try {
-			configurator.getRunner().info(logger, "Translate and report - " + Release.getVersionString());
+			// fixed: show copyright info
+			System.out.println("Imvertor - " + Release.getNotice());
 			
+			configurator.getRunner().info(logger, "Translate and report - " + Release.getVersionString());
+					
 			configurator.prepare(); // note that the process config is relative to the step folder path
 			configurator.getRunner().prepare();
 			
@@ -88,6 +65,8 @@ public class ChainTranslateAndReport {
 		
 		    configurator.save();
 		   
+		    configurator.getRunner().info(logger,"Processing application " + configurator.getParm("cli","project") +": "+ configurator.getParm("cli","application"));
+		    
 		    boolean succeeds = true;
 		    boolean forced = false;
 		    		    
@@ -130,7 +109,8 @@ public class ChainTranslateAndReport {
 				// TODO determine if this steps must be split into several steps
 			    succeeds = succeeds && (new ImvertCompiler()).run();
 				
-				// check if this only concerns a "documentation release". If so, must not be different from existing release.
+				// compare releases. 
+			    // Eg. check if this only concerns a "documentation release". If so, must not be different from existing release.
 			    succeeds = succeeds && (new ReleaseComparer()).run();
 							
 				// generate the XSD 

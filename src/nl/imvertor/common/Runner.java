@@ -1,40 +1,17 @@
-/*
-
-    Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
-
-*/
-
-/*
-
-    This file is part of Imvertor.
-
-    Imvertor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Imvertor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
-
 package nl.imvertor.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
-
-import nl.imvertor.common.exceptions.ConfiguratorException;
 
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+
+import nl.imvertor.common.exceptions.ConfiguratorException;
 
 /**
  * The Runner is an object that represents all state information of a single run.
@@ -48,7 +25,7 @@ public class Runner {
 
 	protected static final Logger logger = Logger.getLogger(Runner.class);
 	
-	public static final String VC_IDENTIFIER = "$Id: Runner.java 7371 2016-01-11 11:07:16Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Runner.java 7419 2016-02-09 15:42:49Z arjan $";
 	
 	public static final Integer APPLICATION_PHASE_CONCEPT = 0;
 	public static final Integer APPLICATION_PHASE_DRAFT = 1;
@@ -63,6 +40,8 @@ public class Runner {
 	private Boolean releasing = false;
 	private Boolean mayRelease = true;
 
+	private boolean internetAvailable = false;
+	
 	private Messenger messenger;
 	
 	public Runner() {
@@ -281,8 +260,12 @@ public class Runner {
 	public void fatal(Logger logger, String text, Exception e) {
 		imvertorErrors += 1;
 		messenger.writeMsg(logger.getName(), "FATAL", "", text);
-		logger.fatal(text, e);
-		info(logger, "Must stop due to previous error.");
+		logger.fatal(text);
+		info(logger, "");
+		info(logger, "Must stop.");
+		info(logger, "Please contact your system administrator.");
+		info(logger, "");
+		logger.fatal("Details on the error", e);
 		System.exit(-1);
 	}
 
@@ -324,8 +307,33 @@ public class Runner {
 		return Configurator.getInstance().getXmlConfiguration().getList("messages/message" + condition + "/type[. = 'ERROR' or . = 'FATAL']");
 	}
 
-	// TODO supprsess warnings werkt nog niet; waarom de warnings aan het einde op 0?
+	// TODO suppress warnings werkt nog niet; waarom de warnings aan het einde op 0?
 	public boolean hasWarnings() {
 		return imvertorWarnings > 0;
+	}
+	
+	/**
+	 * Try to access the internet. If this is not possible, try proxy. If not possible, record the internet as unavailable.
+	 * @throws ConfiguratorException 
+	 * @throws IOException 
+	 * @throws Exception
+	 */
+	public boolean activateInternet() throws IOException, ConfiguratorException {
+		if (!internetAvailable) {
+			debug(logger, "Try internet connection");
+			
+			String proxyTestUrl = Configurator.getInstance().getParm("cli", "proxyurl");
+			
+			URL address = new URL(proxyTestUrl);
+			try {
+				URLConnection con = address.openConnection();
+				con.getContentType();
+			} catch (Exception e) {
+				internetAvailable = false;
+				debug(logger, "No accessible internet connection detected");
+			}
+			internetAvailable = true;
+		}
+		return internetAvailable;
 	}
 }
