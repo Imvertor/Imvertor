@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <config>
    <id>
       <name>Imvert compiler</name>
-      <version-control>$Id: parms.xml 7427 2016-02-16 13:12:30Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7465 2016-03-09 09:13:09Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -65,7 +83,10 @@
       <WORK_EXPANDDOC_FILE>${system/work-imvert-folder-path}/imvertor.11.expanddoc.xml</WORK_EXPANDDOC_FILE>
       
       <IMVERTOR_DERIVATIONTREE_XSLPATH>Imvert2derivationTree.xsl</IMVERTOR_DERIVATIONTREE_XSLPATH>
-      <WORK_DERIVATIONTREE_FILE>${system/work-imvert-folder-path}/imvertor.15.tree.xml</WORK_DERIVATIONTREE_FILE>
+      <WORK_DERIVATIONTREE_FILE>${system/work-imvert-folder-path}/imvertor.15.1.tree.xml</WORK_DERIVATIONTREE_FILE>
+  
+      <IMVERTOR_DERIVATIONEXPAND_XSLPATH>Imvert2derivationExpand.xsl</IMVERTOR_DERIVATIONEXPAND_XSLPATH>
+      <WORK_DERIVATIONEXPAND_FILE>${system/work-imvert-folder-path}/imvertor.15.2.expand.xml</WORK_DERIVATIONEXPAND_FILE>
       
       <IMVERTOR_EMBELLISH_XSLPATH>Imvert2embellish.xsl</IMVERTOR_EMBELLISH_XSLPATH>
       <WORK_EMBELLISH_FILE>${system/work-imvert-folder-path}/imvertor.12.embellish.xml</WORK_EMBELLISH_FILE>

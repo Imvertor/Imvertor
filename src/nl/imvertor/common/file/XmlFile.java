@@ -1,4 +1,22 @@
-// SVN: $Id: XmlFile.java 7240 2015-09-07 13:46:20Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common.file;
 
@@ -15,8 +33,6 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 
-import net.sf.saxon.xpath.XPathFactoryImpl;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.DetailedDiff;
@@ -24,6 +40,7 @@ import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
@@ -32,6 +49,11 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import net.sf.saxon.xpath.XPathFactoryImpl;
+import nl.imvertor.common.Configurator;
+import nl.imvertor.common.Transformer;
+import nl.imvertor.common.xsl.extensions.ImvertorCompareXML;
 
 /**
  * An XmlFile represents an XmlFile on the file system.
@@ -213,7 +235,7 @@ public class XmlFile extends AnyFile implements ErrorHandler {
 	 * @throws Exception
 	 */
 	public void fileToCanonicalFile(XmlFile outfile) throws Exception {
- 		logger.debug("Canonizing " + this.getAbsolutePath());
+ 		logger.debug("Canonizing " + this.getCanonicalPath());
 		if (dom == null) dom = this.buildDom();
 		outfile.fromDocument(dom);
 	}
@@ -324,5 +346,92 @@ public class XmlFile extends AnyFile implements ErrorHandler {
 		s = s.replace("&", "&amp;");
 		s = s.replace("<", "&lt;");
 		return s;
+	}
+	
+	/**
+	 * See IM-147 Documentatie release ondersteunen.
+	 * 
+	 * This method compares the current XML file to any other XML file. Results are written to a listing XML file.
+	 * 
+	 * This XML file is the control XML file, and is compared to test XML file.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean compare(XmlFile testXmlFile, Configurator configurator) throws Exception {
+		
+		String compareLabel = configurator.getParm("system", "compare-label");
+		
+		// create a transformer
+		Transformer transformer = new Transformer();
+		transformer.setExtensionFunction(new ImvertorCompareXML());
+		
+		Boolean valid = true;
+		
+		//TODO Duplicate, redundant?
+		XmlFile ctrlNameFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_CONTROL_NAME_FILE")); // imvertor.20.docrelease.1.1.compare-control-name.xml
+		XmlFile testNameFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_TEST_NAME_FILE")); // imvertor.20.docrelease.1.2.compare-test-name.xml
+		XmlFile infoConfig   = new XmlFile(configurator.getParm("properties","IMVERTOR_COMPARE_CONFIG")); // Imvert-compare-config.xml
+	
+		// This transformer will pass regular XML parameters to the stylesheet. 
+		// This is because the compare core code is not part of the Imvertor framework, but developed separately.
+		// We therefore do not use the XMLConfiguration approach here.
+		transformer.setXslParm("identify-construct-by-function", "name"); // the name of the construct is the only identifier
+		//TODO name of id??
+		
+		transformer.setXslParm("info-config", infoConfig.toURI().toString());  
+		transformer.setXslParm("info-ctrlpath", this.getCanonicalPath());  
+		transformer.setXslParm("info-testpath", "(test path)");  
+
+		transformer.setXslParm("compare-label", compareLabel);
+		
+		// determine temporary files
+		XmlFile controlModelFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_CONTROL_MODEL_FILE")); // imvertor.20.docrelease.1.1.compare-control-model.xml
+		XmlFile testModelFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_TEST_MODEL_FILE")); // imvertor.20.docrelease.1.2.compare-test-model.xml
+		XmlFile controlSimpleFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_CONTROL_SIMPLE_FILE")); // imvertor.20.docrelease.1.1.compare-control-simple.xml
+		XmlFile testSimpleFile = new XmlFile(configurator.getParm("properties","WORK_COMPARE_TEST_SIMPLE_FILE")); // imvertor.20.docrelease.1.2.compare-test-simple.xml
+		
+		XmlFile diffXml = new XmlFile(configurator.getParm("properties","WORK_COMPARE_DIFF_FILE")); // imvertor.20.docrelease.2.compare-diff.xml
+		XmlFile listingXml = new XmlFile(configurator.getParm("properties","WORK_COMPARE_LISTING_FILE")); // imvertor.20.docrelease.3.compare-listing.xml
+			
+		XslFile tempXsl = new XslFile(configurator.getParm("properties","COMPARE_GENERATED_XSLPATH"));
+		
+		//clean 
+		XslFile cleanerXsl = new XslFile(configurator.getParm("properties","IMVERTOR_COMPARE_CLEAN_XSLPATH"));
+		XslFile simpleXsl = new XslFile(configurator.getParm("properties","IMVERTOR_COMPARE_SIMPLE_XSLPATH"));
+		
+		valid = valid && transformer.transform(this,controlModelFile,cleanerXsl);
+		valid = valid && transformer.transform(testXmlFile,testModelFile,cleanerXsl);
+		
+		// simplify
+		transformer.setXslParm("ctrl-name-mapping-filepath", ctrlNameFile.toURI().toString()); // file:/D:/.../Imvertor-OS-work/imvert/imvertor.20.compare-control-name.xml
+		transformer.setXslParm("test-name-mapping-filepath", testNameFile.toURI().toString());
+		
+		transformer.setXslParm("comparison-role", "ctrl");
+		valid = valid && transformer.transform(controlModelFile,controlSimpleFile,simpleXsl);
+		transformer.setXslParm("comparison-role", "test");
+		valid = valid && transformer.transform(testModelFile,testSimpleFile,simpleXsl);
+		
+		// compare 
+		XslFile compareXsl = new XslFile(configurator.getParm("properties","COMPARE_GENERATOR_XSLPATH"));
+		
+		transformer.setXslParm("ctrl-filepath", controlSimpleFile.getCanonicalPath());
+		transformer.setXslParm("test-filepath", testSimpleFile.getCanonicalPath());
+		transformer.setXslParm("diff-filepath", diffXml.getCanonicalPath());
+		
+		valid = valid && transformer.transform(controlSimpleFile, tempXsl, compareXsl);
+		
+		// create listing
+		XslFile listingXsl = new XslFile(configurator.getParm("properties","IMVERTOR_COMPARE_LISTING_XSLPATH"));
+		valid = valid && transformer.transform(controlSimpleFile,listingXml,listingXsl);
+		
+		// get the number of differences found
+		int differences = ((NodeList) listingXml.xpathToObject("/*/*",null,XPathConstants.NODESET)).getLength();
+		configurator.setParm("appinfo", "compare-differences-" + compareLabel, differences);
+
+		// Build report
+		boolean result = valid && (differences == 0);
+	
+		return result;
 	}
 }

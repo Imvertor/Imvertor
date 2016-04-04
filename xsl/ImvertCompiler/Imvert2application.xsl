@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2application.xsl 7401 2016-01-31 15:51:32Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -21,9 +36,6 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2application</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2application.xsl 7401 2016-01-31 15:51:32Z arjan $</xsl:variable>
-   
     <xsl:variable 
         name="external-packages" 
         select="//imvert:package[ancestor-or-self::imvert:package/imvert:stereotype=(imf:get-config-stereotypes(('stereotype-name-external-package','stereotype-name-system-package')))]" 
@@ -48,7 +60,7 @@
             <xsl:variable name="intro" select="*[not(self::imvert:package)]"/>
             <xsl:apply-templates select="$intro" mode="finalize"/>
             
-            <xsl:sequence select="imf:compile-imvert-filter($stylesheet, $stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-filter()"/>
             
             <xsl:sequence select="$application-package/imvert:supplier-project"/>
             <xsl:sequence select="$application-package/imvert:supplier-name"/>

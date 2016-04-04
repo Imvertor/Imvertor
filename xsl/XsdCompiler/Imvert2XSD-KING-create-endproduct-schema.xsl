@@ -35,21 +35,7 @@
 		<xs:schema targetNamespace="http://www.egem.nl/StUF/sector/bg/0310" elementFormDefault="qualified" attributeFormDefault="unqualified">
 			<xs:import namespace="http://www.egem.nl/StUF/StUF0301" schemaLocation="stuf0301.xsd"/>
 			<xsl:apply-templates select="imvert-ep:message"/>
-			<!--<xsl:for-each select="imvert-ep:message">
-				<xsl:apply-templates select="imvert-ep:class" mode="berichtenstructuur">
-					<xsl:with-param name="typeBericht" select="@typeBericht"/>
-					<xsl:with-param name="berichtCode" select="@berichtCode"/>
-					<xsl:with-param name="naam" select="@name"/>
-				</xsl:apply-templates>
-			</xsl:for-each>-->
-			<!--<xsl:for-each select="imvert-ep:message">
-				<xsl:apply-templates select="imvert-ep:class" mode="berichtencontent">
-					<xsl:with-param name="typeBericht" select="@typeBericht"/>
-					<xsl:with-param name="berichtCode" select="@berichtCode"/>
-					<xsl:with-param name="naam" select="@name"/>
-					<xsl:with-param name="toplevel" select="'yes'"/>
-				</xsl:apply-templates>
-			</xsl:for-each>-->
+			<?x xsl:apply-templates select="//imvert-ep:attribute[not(.//imvert-ep:attribute)]" mode="createSimpleTypes"/ x?>
 		</xs:schema>
 	</xsl:template>
 
@@ -60,45 +46,46 @@
 					<xs:element name="stuurgegevens">
 						<xs:complexType>
 							<xs:sequence>
-								<xsl:apply-templates select="imvert-ep:class/imvert-ep:associations/imvert-ep:class/imvert-ep:association[imvert-ep:name/@original='algemene stuurgegevens']" mode="stuurgegevens1"/>
-								<xsl:apply-templates select="imvert-ep:class/imvert-ep:associations/imvert-ep:class/imvert-ep:association[imvert-ep:name/@original='zender stuurgegevens']" mode="stuurgegevens2"/>
-								<xsl:apply-templates select="imvert-ep:class/imvert-ep:associations/imvert-ep:class/imvert-ep:association[imvert-ep:name/@original='ontvanger stuurgegevens']" mode="stuurgegevens3"/>
+								<xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='stuurgegevens']" mode="algemeneStuurgegevens"/>
+								<?x xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='zenderStuurgegevens']" mode="zenderStuurgegevens"/>
+								<xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='ontvangerStuurgegevens']" mode="ontvangerStuurgegevens"/ x?>
 							</xs:sequence>
 						</xs:complexType>				
 					</xs:element>
 					<xs:element name="parameters">
 						<xs:complexType>
 							<xs:sequence>
-								<xsl:apply-templates select="imvert-ep:class/imvert-ep:attributes/imvert-ep:attribute"/>
+								<?x xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='Parameters']" mode="parameters"/ x?>
+								<xsl:apply-templates select="imvert-ep:associations/imvert-ep:association[imvert-ep:name='parameters']" mode="parameters"/>
 							</xs:sequence>
 						</xs:complexType>				
 					</xs:element>
-					<xsl:apply-templates select="imvert-ep:class/imvert-ep:attributes/imvert-ep:class[@packageType='Bericht']/imvert-ep:attribute[imvert-ep:name/@original='melding']"/>
-					<xsl:apply-templates select="imvert-ep:class/imvert-ep:associations/imvert-ep:association" mode="content"/>
+					<xsl:apply-templates select="imvert-ep:attributes//imvert-ep:attribute[imvert-ep:name='melding']"/>
+					<?x xsl:apply-templates select="imvert-ep:associations/imvert-ep:association" mode="content"/ x?>
+					<xsl:apply-templates select="imvert-ep:associations/imvert-ep:association[imvert-ep:name!='parameters' and imvert-ep:name!='stuurgegevens']" mode="content"/>
 				</xs:sequence>
 			</xs:complexType>
 		</xs:element>
 	</xsl:template>
 	
-	<xsl:template match="imvert-ep:association" mode="stuurgegevens1">
-		<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:class/imvert-ep:attribute" mode="stuurgegevens"/>		
+	<xsl:template match="imvert-ep:association" mode="algemeneStuurgegevens">
+		<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute"/>
+		<?x xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute" mode="stuurgegevens"/ x?>
+		<xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='zender']" mode="zenderEnOntvangerStuurgegevens">
+			<xsl:with-param name="containerElement" select="'zender'"/>
+		</xsl:apply-templates>
+		<xsl:apply-templates select=".//imvert-ep:association[imvert-ep:name='ontvanger']" mode="zenderEnOntvangerStuurgegevens">
+			<xsl:with-param name="containerElement" select="'ontvanger'"/>			
+		</xsl:apply-templates>
 	</xsl:template>
 	
-	<xsl:template match="imvert-ep:association" mode="stuurgegevens2">
-		<xs:element name="zender">
+	<xsl:template match="imvert-ep:association" mode="zenderEnOntvangerStuurgegevens">
+		<xsl:param name="containerElement"/>
+		<xs:element name="{$containerElement}">
 			<xs:complexType>
 				<xs:sequence>
-					<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:class/imvert-ep:attribute" mode="stuurgegevens"/>		
-				</xs:sequence>
-			</xs:complexType>
-		</xs:element>				
-	</xsl:template>
-
-	<xsl:template match="imvert-ep:association" mode="stuurgegevens3">
-		<xs:element name="ontvanger">
-			<xs:complexType>
-				<xs:sequence>
-					<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:class/imvert-ep:attribute" mode="stuurgegevens"/>		
+					<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute"/>		
+					<?x xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute" mode="stuurgegevens"/ x?>		
 				</xs:sequence>
 			</xs:complexType>
 		</xs:element>				
@@ -108,52 +95,28 @@
 		<xs:element name="{imvert-ep:name}">
 			<xsl:attribute name="minOccurs" select="imvert-ep:min-occurs"/>
 			<xsl:attribute name="maxOccurs" select="imvert-ep:max-occurs"/>
-		</xs:element>		
-	</xsl:template>
-
-	<xsl:template match="imvert-ep:association" mode="content">
-		<xsl:comment select="'match=imvert-ep:association mode=content'"/>
-		<xsl:choose>
-			<xsl:when test="@packageType='Bericht'">
-				<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
-					<!--<xsl:if test="imvert-ep:attributes/imvert-ep:attribute or imvert-ep:associations/imvert-ep:association">-->
-						<xs:complexType>
-							<xs:sequence>
-								<xsl:apply-templates select="imvert-ep:attributes"/>
-								<xsl:apply-templates select="imvert-ep:associations"/>
-							</xs:sequence>
-						</xs:complexType>
-					<!--</xsl:if>-->
-				</xs:element>
-			</xsl:when>
-			<xsl:otherwise></xsl:otherwise>
-		</xsl:choose>	
-	</xsl:template>
-	
-	<xsl:template match="imvert-ep:attributes">
-		<xsl:param name="alias"/>
-		<xsl:param name="naam"/>
-		<xsl:comment select="'match=imvert-ep:attributes nomode'"/>
-		<xsl:apply-templates select="imvert-ep:class" mode="berichtenstructuur"/>
-		<xsl:apply-templates select="imvert-ep:attribute">
-			<xsl:with-param name="alias" select="$alias"/>
-		</xsl:apply-templates>
-	</xsl:template>
-
-	<xsl:template match="imvert-ep:attribute">
-		<xsl:param name="alias"/>
-		<xsl:param name="typeBericht"/>
-		<xsl:param name="berichtCode"/>
-		<xsl:param name="naam"/>
-		<xsl:comment select="'match=imvert-ep:attribute nomode'"/>
-		<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
 			<xsl:choose>
-				<xsl:when test="imvert-ep:class">
-					<xsl:apply-templates select="imvert-ep:class" mode="berichtencontent">
+				<?x xsl:when test="imvert-ep:complexType">
+					<xsl:apply-templates select="imvert-ep:complexType" mode="berichtencontent">
 						<xsl:with-param name="typeBericht" select="@typeBericht"/>
 						<xsl:with-param name="berichtCode" select="@berichtCode"/>
 						<xsl:with-param name="naam" select="@name"/>
 					</xsl:apply-templates>					
+				</xsl:when x?>
+				<xsl:when test="imvert-ep:attributes">
+					<xs:complexType>
+							<xsl:apply-templates select="imvert-ep:attributes">
+								<?x xsl:with-param name="alias" select="$alias"/ x?>
+							</xsl:apply-templates>
+					</xs:complexType>
+				</xsl:when>
+				<xsl:when test="imvert-ep:datatype[imvert-ep:enumeration]">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xsl:comment>Test1</xsl:comment>
+							<xsl:apply-templates select="imvert-ep:datatype/imvert-ep:enumeration"/>
+						</xs:restriction>
+					</xs:simpleType>
 				</xsl:when>
 				<xsl:when test="not(imvert-ep:type-package)">
 					<xs:simpleType>
@@ -163,7 +126,7 @@
 									<xsl:when test="imvert-ep:type-name = 'integer'">
 										<xsl:value-of select="'xs:int'"/>
 									</xsl:when>
-									<xsl:when test="imvert-ep:type-name = 'char'">
+									<xsl:when test="imvert-ep:type-name = 'string'">
 										<xsl:value-of select="'xs:string'"/>
 									</xsl:when>
 									<xsl:when test="imvert-ep:type-name = 'datetime'">
@@ -190,37 +153,374 @@
 					</xs:simpleType>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:choose>
-						<xsl:when test="imvert-ep:stereotype='enumeration'">
-							<xs:simpleType>
-								<xs:restriction base="xs:string">
-									<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute" mode="enumerationType"/>
-								</xs:restriction>
-							</xs:simpleType>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="type" select="concat(imvert-ep:type-name,imvert-ep:max-length)"/>
-						</xsl:otherwise>
-					</xsl:choose>
+					<xsl:attribute name="type" select="concat(imvert-ep:type-name,imvert-ep:max-length)"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xs:element>		
+	</xsl:template>
+
+	<xsl:template match="imvert-ep:association" mode="parameters">
+		<?x xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute" mode="parameters"/ x?>		
+		<xsl:apply-templates select="imvert-ep:attributes/imvert-ep:attribute"/>		
+	</xsl:template>
+	
+	<xsl:template match="imvert-ep:association" mode="content">
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:association mode=content'"/>
+		</xsl:if>	
+		<?x xsl:choose>
+			<xsl:when test="@packageType='Bericht'" x?>
+				<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
+					<!--<xsl:if test="imvert-ep:attributes/imvert-ep:attribute or imvert-ep:associations/imvert-ep:association">-->
+						<xs:complexType>
+							<xsl:apply-templates select="imvert-ep:attributes"/>
+							<xsl:apply-templates select="imvert-ep:associations"/>
+						</xs:complexType>
+					<!--</xsl:if>-->
+				</xs:element>
+			<?x /xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose x?>	
+	</xsl:template>
+	
+	<xsl:template match="imvert-ep:attributes">
+		<xsl:param name="alias" select="''"/>
+		<xsl:param name="naam"/>
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:attributes nomode'"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="imvert-ep:stereotype='UNION'">
+				<xs:choice>
+					<xsl:apply-templates select="imvert-ep:attributes-supertype">
+						<xsl:with-param name="alias" select="$alias"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="imvert-ep:attribute">
+						<xsl:with-param name="alias" select="$alias"/>
+					</xsl:apply-templates>
+				</xs:choice>
+			</xsl:when>
+			<?x xsl:when test="not(*) or not(.//imvert-ep:attribute and imvert-ep:attributes-supertype[.//imvert-ep:attribute])" x?>
+			<xsl:when test="not(*) or not(.//imvert-ep:attribute)">
+				<xsl:comment select="'match=imvert-ep:attributes nomode'"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xs:sequence>
+					<xsl:apply-templates select="imvert-ep:attributes-supertype">
+						<xsl:with-param name="alias" select="$alias"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="imvert-ep:attribute">
+						<xsl:with-param name="alias" select="$alias"/>
+					</xsl:apply-templates>
+				</xs:sequence>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template match="imvert-ep:attribute" mode="nieuwe-versie-van-bovenstaande-template">
+		<xsl:param name="alias"/>
+		<!--xsl:param name="typeBericht"/>
+		<xsl:param name="berichtCode"/>
+		<xsl:param name="naam"/-->
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:attribute nomode'"/>
+		</xsl:if>
+		<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
+			<xsl:choose>
+				<?x xsl:when test="imvert-ep:complexType">
+					<xsl:apply-templates select="imvert-ep:complexType" mode="berichtencontent">
+						<xsl:with-param name="typeBericht" select="@typeBericht"/>
+						<xsl:with-param name="berichtCode" select="@berichtCode"/>
+						<xsl:with-param name="naam" select="@name"/>
+					</xsl:apply-templates>					
+				</xsl:when x?>
+				<xsl:when test="imvert-ep:attributes">
+					<xs:complexType>
+						<xsl:apply-templates select="imvert-ep:attributes">
+							<xsl:with-param name="alias" select="$alias"/>
+						</xsl:apply-templates>
+					</xs:complexType>
+				</xsl:when>
+				<xsl:when test="imvert-ep:datatype[imvert-ep:enumeration]">
+					<xsl:attribute name="type" select="imvert-ep:datatype/@id"/>
+				</xsl:when>
+				<!-- Voor GML3 elementen is voorlopig deze when ingericht. -->
+				<xsl:when test="imvert-ep:type-package!='Bericht' and imvert-ep:type-package!='Model'">
+					<xs:simpleType>
+						<xs:restriction>
+							<xsl:attribute name="base" select="'xs:string'"/>
+						</xs:restriction>
+					</xs:simpleType>	
+				</xsl:when>
+				<xsl:when test="imvert-ep:type-name">
+					<xsl:attribute name="type" select="imvert-ep:datatype/@id"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="type" select="concat(imvert-ep:type-name,imvert-ep:max-length,'nogNietGecodeerd')"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xs:element>
 	</xsl:template>
 
-	<xsl:template match="imvert-ep:class" mode="berichtenstructuur">
-		<xsl:param name="withComplexType" select="'Yes'"/>
-		<xsl:comment select="concat('match=imvert-ep:class mode=berichtenstructuur withComplexType=',$withComplexType)"/>
-		<xsl:choose>
+	<xsl:template match="imvert-ep:attribute">
+		<xsl:param name="alias"/>
+		<!--xsl:param name="typeBericht"/>
+		<xsl:param name="berichtCode"/>
+		<xsl:param name="naam"/-->
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:attribute nomode'"/>
+		</xsl:if>
+		<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
+			<xsl:choose>
+				<?x xsl:when test="imvert-ep:complexType">
+					<xsl:apply-templates select="imvert-ep:complexType" mode="berichtencontent">
+						<xsl:with-param name="typeBericht" select="@typeBericht"/>
+						<xsl:with-param name="berichtCode" select="@berichtCode"/>
+						<xsl:with-param name="naam" select="@name"/>
+					</xsl:apply-templates>					
+				</xsl:when x?>
+				<xsl:when test="imvert-ep:attributes">
+					<xs:complexType>
+						<xsl:apply-templates select="imvert-ep:attributes">
+							<xsl:with-param name="alias" select="$alias"/>
+						</xsl:apply-templates>
+					</xs:complexType>
+				</xsl:when>
+				<xsl:when test="imvert-ep:datatype[imvert-ep:enumeration]">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xsl:comment>Test2</xsl:comment>
+							<xsl:apply-templates select="imvert-ep:datatype/imvert-ep:enumeration"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xsl:when>
+				<!-- Voor GML3 elementen is voorlopig deze when ingericht. -->
+				<xsl:when test="imvert-ep:type-package!='Bericht' and imvert-ep:type-package!='Model'">
+					<xs:simpleType>
+						<xs:restriction>
+							<xsl:attribute name="base" select="'xs:string'"/>
+						</xs:restriction>
+					</xs:simpleType>	
+				</xsl:when>
+				<xsl:when test="imvert-ep:type-name">
+					<xs:simpleType>
+						<xs:restriction>
+							<!-- De vulling van deze restriction moet nog compleet gemaakt en aan allerlei controles onderworpen worden. 
+								 Zo mag een xs:int bijv. geen xs:fractionDigits bevatten. Bepaalde datatypes (bijv. POSTCODE) moeten 
+								 wellicht in EA nog verder uitgewerkt worden. -->
+							<xsl:attribute name="base">
+								<xsl:choose>
+									<xsl:when test="imvert-ep:type-name = 'integer'">
+										<xsl:value-of select="'xs:int'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'decimal'">
+										<xsl:value-of select="'xs:decimal'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'string'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'datetime'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'boolean'">
+										<xsl:value-of select="'xs:boolean'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'MaximumAantal'">
+										<xsl:value-of select="'xs:int'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Tijdstip'">
+										<xsl:value-of select="'xs:date'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Sortering'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Berichtcode'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Refnummer'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Functie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Administratie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Applicatie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Gebruiker'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Organisatie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'POSTCODE'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>							
+									<!-- Voor de situaties waar sprake is van een andere package (bijv. GML3) moet nog code vervaardigd worden. -->
+								</xsl:choose>
+							</xsl:attribute>
+							<xsl:choose>
+								<xsl:when test="imvert-ep:max-length">
+									<xs:maxLength>
+										<xsl:attribute name="value" select="imvert-ep:max-length"/>
+									</xs:maxLength>
+								</xsl:when>
+								<xsl:when test="imvert-ep:total-digits">
+									<xs:totalDigits>
+										<xsl:attribute name="value" select="imvert-ep:total-digits"/>
+									</xs:totalDigits>
+								</xsl:when>
+								<xsl:when test="imvert-ep:fraction-digits">
+									<xs:fractionDigits>
+										<xsl:attribute name="value" select="imvert-ep:fraction-digits"/>
+									</xs:fractionDigits>
+								</xsl:when>
+								<!-- Het in EA gedefinieerde pattern moet omgezet worden naar een tagged value met een regular expression.
+									Dat moet hieronder gebruikt worden om een xs:pattern element te genereren. -->
+								<!--xsl:when test="imvert-ep:pattern">
+									<xs:maxLength>
+										<xsl:attribute name="value" select="imvert-ep:max-length"/>
+									</xs:maxLength>
+								</xsl:when-->
+							</xsl:choose>
+						</xs:restriction>
+					</xs:simpleType>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="type" select="concat(imvert-ep:type-name,imvert-ep:max-length,'nogNietGecodeerd')"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xs:element>
+	</xsl:template>
+	
+	<xsl:template match="imvert-ep:attribute" mode="createSimpleTypes">
+		<xsl:variable name="id" select="imvert:id"/>
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:attribute nomode'"/>
+		</xsl:if>
+			<xsl:choose>
+				<xsl:when test="imvert-ep:attributes"/>		
+				<xsl:when test="imvert-ep:datatype[imvert-ep:enumeration] and not(preceding-sibling::imvert-ep:datatype/@id=$id)">
+					<xs:simpleType name="{imvert-ep:datatype/@id}">
+						<xs:restriction base="xs:string">
+							<xsl:comment>Test2</xsl:comment>
+							<xsl:apply-templates select="imvert-ep:datatype/imvert-ep:enumeration"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xsl:when>
+				<!-- Voor GML3 elementen is voorlopig deze when ingericht. -->
+				<xsl:when test="imvert-ep:type-package!='Bericht' and imvert-ep:type-package!='Model'"/>
+				<xsl:when test="imvert-ep:type-name and not(preceding-sibling::imvert-ep:datatype/@id=$id)">
+					<xs:simpleType name="{imvert-ep:datatype/@id}">
+						<xs:restriction>
+							<!-- De vulling van deze restriction moet nog compleet gemaakt en aan allerlei controles onderworpen worden. 
+								 Zo mag een xs:int bijv. geen xs:fractionDigits bevatten. Bepaalde datatypes (bijv. POSTCODE) moeten 
+								 wellicht in EA nog verder uitgewerkt worden. -->
+							<xsl:attribute name="base">
+								<xsl:choose>
+									<xsl:when test="imvert-ep:type-name = 'integer'">
+										<xsl:value-of select="'xs:int'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'decimal'">
+										<xsl:value-of select="'xs:decimal'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'string'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'datetime'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'boolean'">
+										<xsl:value-of select="'xs:boolean'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'MaximumAantal'">
+										<xsl:value-of select="'xs:int'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Tijdstip'">
+										<xsl:value-of select="'xs:date'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Sortering'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Berichtcode'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Refnummer'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Functie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Administratie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Applicatie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Gebruiker'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'Organisatie'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>
+									<xsl:when test="imvert-ep:type-name = 'POSTCODE'">
+										<xsl:value-of select="'xs:string'"/>
+									</xsl:when>							
+									<!-- Voor de situaties waar sprake is van een andere package (bijv. GML3) moet nog code vervaardigd worden. -->
+								</xsl:choose>
+							</xsl:attribute>
+							<xsl:choose>
+								<xsl:when test="imvert-ep:max-length">
+									<xs:maxLength>
+										<xsl:attribute name="value" select="imvert-ep:max-length"/>
+									</xs:maxLength>
+								</xsl:when>
+								<xsl:when test="imvert-ep:total-digits">
+									<xs:totalDigits>
+										<xsl:attribute name="value" select="imvert-ep:total-digits"/>
+									</xs:totalDigits>
+								</xsl:when>
+								<xsl:when test="imvert-ep:fraction-digits">
+									<xs:fractionDigits>
+										<xsl:attribute name="value" select="imvert-ep:fraction-digits"/>
+									</xs:fractionDigits>
+								</xsl:when>
+								<!-- Het in EA gedefinieerde pattern moet omgezet worden naar een tagged value met een regular expression.
+									Dat moet hieronder gebruikt worden om een xs:pattern element te genereren. -->
+								<!--xsl:when test="imvert-ep:pattern">
+									<xs:maxLength>
+										<xsl:attribute name="value" select="imvert-ep:max-length"/>
+									</xs:maxLength>
+								</xsl:when-->
+							</xsl:choose>
+						</xs:restriction>
+					</xs:simpleType>
+				</xsl:when>
+				<xsl:otherwise/>
+			</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="imvert-ep:attributes-supertype">
+		<xsl:param name="alias" select="''"/>
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:attributes-supertype'"/>
+		</xsl:if>
+		<xsl:apply-templates select="imvert-ep:attribute">
+			<xsl:with-param name="alias" select="$alias"/>
+		</xsl:apply-templates>
+			<!--xsl:choose>
 			<xsl:when test="not(.[name()!='imvert:class' and name()!='imvert:name'])">
 				<xsl:comment select="'Robert1'"/>
-				<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:class" mode="berichtenstructuur">
+				<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:complexType" mode="berichtenstructuur">
 					<xsl:with-param name="withComplexType" select="'Yes'"/>
 				</xsl:apply-templates>			
 			</xsl:when>
 			<xsl:when test="@packageType='Bericht' and @stereotype='union' and (parent::imvert-ep:associations or parent::imvert-ep:attributes)">
 				<xsl:comment select="'Robert2'"/>
 				<xs:choice>
-					<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:class" mode="berichtenstructuur">
+					<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:complexType" mode="berichtenstructuur">
 						<xsl:with-param name="withComplexType" select="'Yes'"/>
 					</xsl:apply-templates>			
 				</xs:choice>
@@ -229,7 +529,7 @@
 				<xsl:comment select="'Robert3'"/>
 				<xs:complexType>
 					<xs:choice>
-						<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:class" mode="berichtenstructuur">
+						<xsl:apply-templates select="imvert-ep:attribute/imvert-ep:complexType" mode="berichtenstructuur">
 							<xsl:with-param name="withComplexType" select="'Yes'"/>
 						</xsl:apply-templates>			
 					</xs:choice>
@@ -238,7 +538,7 @@
 			<xsl:when test="@packageType='Model' and $withComplexType='Yes'">
 				<xsl:comment select="'Robert4'"/>
 				<xs:sequence>
-					<xsl:apply-templates select="imvert-ep:class" mode="berichtenstructuur">
+					<xsl:apply-templates select="imvert-ep:complexType" mode="berichtenstructuur">
 						<xsl:with-param name="withComplexType" select="'Yes'"/>
 					</xsl:apply-templates>			
 					<xsl:apply-templates select="imvert-ep:attribute"/>							
@@ -259,43 +559,82 @@
 			<xsl:otherwise>
 				<xsl:comment select="'Robert6'"/>
 			</xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose-->
 	</xsl:template>
 			
-	<xsl:template match="imvert-ep:attribute" mode="enumerationType">
-		<xs:enumeration value="{imvert-ep:name/@original}"/>
+	<xsl:template match="imvert-ep:enumeration">
+		<xs:enumeration value="{imvert-ep:name}"/>
 	</xsl:template>
 	
 	<xsl:template match="imvert-ep:associations">
 		<xsl:param name="alias"/>
-		<xsl:param name="typeBericht"/>
+		<!--xsl:param name="typeBericht"/>
 		<xsl:param name="berichtCode"/>
 		<xsl:param name="naam"/>
-		<xsl:param name="berichtNaam"/>
-		<xsl:comment select="'match=imvert-ep:associations nomode'"/>
-		<xsl:apply-templates select="imvert-ep:association">
-			<xsl:with-param name="alias" select="$alias"/>
-			<xsl:with-param name="typeBericht" select="$typeBericht"/>
+		<xsl:param name="berichtNaam"/-->
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:associations nomode'"/>
+		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="imvert-ep:stereotype='UNION'">
+				<xs:choice>
+					<xsl:apply-templates select="imvert-ep:associations-supertype" mode="berichtenstructuur"/>
+					<xsl:apply-templates select="imvert-ep:association">
+						<xsl:with-param name="alias" select="$alias"/>
+						<!--xsl:with-param name="typeBericht" select="$typeBericht"/>
 			<xsl:with-param name="berichtCode" select="$berichtCode"/>
 			<xsl:with-param name="naam" select="$naam"/>
-			<xsl:with-param name="berichtNaam" select="$berichtNaam"/>
-		</xsl:apply-templates>
-		<xsl:apply-templates select="imvert-ep:recursive-structure"/>
+			<xsl:with-param name="berichtNaam" select="$berichtNaam"/-->
+					</xsl:apply-templates>
+					<!-- Indien recursie voor gaat komen dan zal er een imvert-ep:recursive-structure element voor gaan komen in het input bestand.
+			In dat geval moeten we die situatie ook in dit stylesheet gaan ondervangen. -->
+					<!--xsl:apply-templates select="imvert-ep:recursive-structure"/-->
+				</xs:choice>
+			</xsl:when>
+			<xsl:when test="not(*) or not(.//imvert-ep:association and imvert-ep:associations-supertype[.//imvert-ep:association or .//imvert-ep:attribute])"/>
+			<xsl:otherwise>
+				<xs:sequence>
+					<xsl:apply-templates select="imvert-ep:associations-supertype" mode="berichtenstructuur"/>
+					<xsl:apply-templates select="imvert-ep:association">
+						<xsl:with-param name="alias" select="$alias"/>
+						<!--xsl:with-param name="typeBericht" select="$typeBericht"/>
+			<xsl:with-param name="berichtCode" select="$berichtCode"/>
+			<xsl:with-param name="naam" select="$naam"/>
+			<xsl:with-param name="berichtNaam" select="$berichtNaam"/-->
+					</xsl:apply-templates>
+					<!-- Indien recursie voor gaat komen dan zal er een imvert-ep:recursive-structure element voor gaan komen in het input bestand.
+			In dat geval moeten we die situatie ook in dit stylesheet gaan ondervangen. -->
+					<!--xsl:apply-templates select="imvert-ep:recursive-structure"/-->
+				</xs:sequence>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="imvert-ep:associations-supertype" mode="berichtenstructuur">
+		<xsl:param name="alias" select="''"/>
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=associations-supertype'"/>
+		</xsl:if>
+		<!-- Tijdelijk uitgeschakeld. -->
+		<!--xsl:apply-templates select="imvert-ep:association">
+			<xsl:with-param name="alias" select="$alias"/>
+		</xsl:apply-templates-->
+	</xsl:template>
+	
 	<xsl:template match="imvert-ep:association">
 		<xsl:param name="alias"/>
-		<xsl:param name="typeBericht"/>
+		<!--xsl:param name="typeBericht"/>
 		<xsl:param name="berichtCode"/>
 		<xsl:param name="naam"/>
-		<xsl:param name="berichtNaam"/>
-		<xsl:comment select="'match=imvert-ep:association nomode'"/>
+		<xsl:param name="berichtNaam"/-->
+		<xsl:if test="imf:boolean($debug)">
+			<xsl:comment select="'match=imvert-ep:association nomode'"/>
+		</xsl:if>
 		<xs:element name="{imvert-ep:name}" nillable="true" minOccurs="{imvert-ep:min-occurs}" maxOccurs="{imvert-ep:max-occurs}">
 			<xs:complexType>
 				<xs:sequence>
 					<xs:element name="gerelateerde" nillable="true">
 						<xs:complexType>
-							<xs:sequence>
 								<xsl:apply-templates select="imvert-ep:attributes">
 									<xsl:with-param name="alias" select="$alias"/>
 								</xsl:apply-templates>
@@ -306,28 +645,27 @@
 								<xs:element ref="stuf:extraElementen" minOccurs="0"/>
 								<xsl:apply-templates select="imvert-ep:associations">
 									<xsl:with-param name="alias" select="$alias"/>
-									<xsl:with-param name="typeBericht" select="$typeBericht"/>
+									<!--xsl:with-param name="typeBericht" select="$typeBericht"/>
 									<xsl:with-param name="berichtCode" select="$berichtCode"/>
 									<xsl:with-param name="naam" select="$naam"/>
-									<xsl:with-param name="berichtNaam" select="$berichtNaam"/>
+									<xsl:with-param name="berichtNaam" select="$berichtNaam"/-->
 								</xsl:apply-templates>
-							</xs:sequence>
 							<xs:attribute ref="stuf:entiteittype" use="required" fixed="{$alias}"/>
 						</xs:complexType>
 					</xs:element>
-					<xsl:apply-templates select="imvert-ep:association-class">
+					<xsl:apply-templates select="imvert-ep:relation">
 						<xsl:with-param name="alias" select="$alias"/>
-						<xsl:with-param name="typeBericht" select="$typeBericht"/>
+						<!--xsl:with-param name="typeBericht" select="$typeBericht"/>
 						<xsl:with-param name="berichtCode" select="$berichtCode"/>
 						<xsl:with-param name="naam" select="$naam"/>
-						<xsl:with-param name="berichtNaam" select="$berichtNaam"/>
+						<xsl:with-param name="berichtNaam" select="$berichtNaam"/-->
 					</xsl:apply-templates>
 					<xs:element name="inOnderzoek" type="stuf:StatusMetagegevenNoValue" nillable="true" minOccurs="0"/>
 					<!--<xs:element name="brondocument" type="{concat('BG:Brondocument',$alias)}" minOccurs="0"/>-->
 					<xs:element name="brondocument" type="xs:string" minOccurs="0">
 						<xsl:comment select="'De code voor het genereren van het complexType voor dit element moet nog worden geimplementeerd'"/>
 					</xs:element>
-					<xsl:apply-templates select="imvert-ep:association-class/imvert-ep:associations"/>
+					<xsl:apply-templates select="imvert-ep:relation/imvert-ep:associations"/>
 					<xsl:apply-templates select="imvert-ep:associations"/>
 				</xs:sequence>
 				<xs:attribute ref="stuf:entiteittype" use="required" fixed="???"/>
@@ -335,13 +673,13 @@
 		</xs:element>
 	</xsl:template>
 	
-	<xsl:template match="imvert-ep:association-class">
+	<xsl:template match="imvert-ep:relation">
 		<xsl:param name="alias"/>
-		<xsl:param name="typeBericht"/>
+		<!--xsl:param name="typeBericht"/>
 		<xsl:param name="berichtCode"/>
 		<xsl:param name="naam"/>
-		<xsl:param name="berichtNaam"/>
-		<xsl:comment select="'match=imvert-ep:association-class nomode'"/>
+		<xsl:param name="berichtNaam"/-->
+		<xsl:comment select="'match=imvert-ep:relation nomode'"/>
 		<xsl:apply-templates select="imvert-ep:attributes">
 			<xsl:with-param name="alias" select="$alias"/>
 		</xsl:apply-templates>
@@ -351,18 +689,18 @@
 		<xs:element ref="stuf:extraElementen" minOccurs="0"/>-->
 		<xsl:apply-templates select="imvert-ep:associations">
 			<xsl:with-param name="alias" select="$alias"/>
-			<xsl:with-param name="typeBericht" select="$typeBericht"/>
+			<!--xsl:with-param name="typeBericht" select="$typeBericht"/>
 			<xsl:with-param name="berichtCode" select="$berichtCode"/>
 			<xsl:with-param name="naam" select="$naam"/>
-			<xsl:with-param name="berichtNaam" select="$berichtNaam"/>
+			<xsl:with-param name="berichtNaam" select="$berichtNaam"/-->
 		</xsl:apply-templates>
 	</xsl:template>
 
-	<xsl:template match="imvert-ep:association" mode="formerlyClass">
-		<xsl:param name="typeBericht"/>
+	<?x xsl:template match="imvert-ep:association" mode="formerlyClass">
+		<!--xsl:param name="typeBericht"/>
 		<xsl:param name="berichtCode"/>
 		<xsl:param name="naam"/>
-		<xsl:param name="berichtNaam"/>
+		<xsl:param name="berichtNaam"/-->
 		<xsl:variable name="alias" select="imvert-ep:alias"/>
 		<xsl:comment select="'match=imvert-ep:association mode=formerlyClass'"/>
 		<xsl:choose>
@@ -402,7 +740,7 @@
 			<xsl:when test="$typeBericht='KennisgevingBericht'">
 			</xsl:when>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template x?>
 	
 	<xsl:template match="imvert-ep:recursive-structure">
 		<xsl:comment select="'Moet nog worden ingevuld'"/>
@@ -410,12 +748,12 @@
 
 	<!-- (Nog) niet gebruikte templates -->
 
-	<xsl:template match="imvert-ep:class" mode="berichtenstructuur-oud">
-		<xsl:param name="typeBericht"/>
-		<xsl:param name="berichtCode"/>
+	<xsl:template match="imvert-ep:complexType" mode="berichtenstructuur-oud">
+		<!--xsl:param name="typeBericht"/>
+		<xsl:param name="berichtCode"/-->
 		<xsl:param name="naam"/>
 		<xsl:variable name="alias" select="imvert-ep:alias"/>
-		<xsl:if test="not(preceding-sibling::imvert-ep:class[imvert-ep:alias = $alias])">
+		<xsl:if test="not(preceding-sibling::imvert-ep:complexType[imvert-ep:alias = $alias])">
 			<xsl:variable name="volledigeBerichtCode">
 				<xsl:value-of select="concat(lower-case($alias),$berichtCode)"/>
 			</xsl:variable>
@@ -597,7 +935,7 @@
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="imvert-ep:class" mode="berichtencontent">
+	<xsl:template match="imvert-ep:complexType" mode="berichtencontent">
 		<xsl:param name="typeBericht"/>
 		<xsl:param name="berichtCode"/>
 		<xsl:param name="naam"/>

@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.XsdCompiler;
 
 import java.io.File;
@@ -25,7 +45,7 @@ public class XsdCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XsdCompiler.class);
 	
 	public static final String STEP_NAME = "XsdCompiler";
-	public static final String VC_IDENTIFIER = "$Id: XsdCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: XsdCompiler.java 7487 2016-04-02 07:27:03Z arjan $";
 
 	/**
 	 *  run the main translation
@@ -43,7 +63,9 @@ public class XsdCompiler extends Step {
 				if (schemarules.equals("Kadaster")) {
 					generateXsdKadaster();
 					supplyExternalSchemas();
-				} else if (schemarules.equals("KINGUIM")) {
+				} else if (schemarules.equals("KINGUGM")) {
+					generateXsdKING();
+				} else if (schemarules.equals("KINGBSM")) {
 					generateXsdKING();
 				} else
 					runner.error(logger,"Schemarules not implemented: " + schemarules);
@@ -71,7 +93,6 @@ public class XsdCompiler extends Step {
 	 * @throws Exception
 	 */
 	public boolean generateXsdKadaster() throws Exception {
-		runner.info(logger,"Generating XSD");
 		
 		// create a transformer
 		Transformer transformer = new Transformer();
@@ -113,7 +134,6 @@ public class XsdCompiler extends Step {
 	 * @throws Exception
 	 */
 	public boolean generateXsdKING() throws Exception {
-		runner.info(logger,"Generating XSD");
 		
 		// create a transformer
 		Transformer transformer = new Transformer();
@@ -133,20 +153,22 @@ public class XsdCompiler extends Step {
 	
 		runner.debug(logger,"Generating XML schemas to " + xsdApplicationFolder);
 		
-		String infoXsdSourceFilePath = configurator.getParm("properties", "IMVERTOR_METAMODEL_KINGUIM_XSDSOURCE"); // system or model
+		String infoXsdSourceFilePath = configurator.getParm("properties", "IMVERTOR_METAMODEL_KINGUGM_XSDSOURCE"); // system or model
 
 		// when system, use the embellish file; when model use the model.
 		if (infoXsdSourceFilePath.equals("system")) {
-			valid = valid && transformer.transformStep("properties/WORK_EMBELLISH_FILE","properties/RESULT_ENDPRODUCT_MSG_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_MSG_XSLPATH");
-			valid = valid && transformer.transformStep("properties/WORK_EMBELLISH_FILE","properties/RESULT_ENDPRODUCT_XML_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XML_XSLPATH");
-			valid = valid && transformer.transformStep("properties/RESULT_ENDPRODUCT_XML_FILE_PATH","properties/RESULT_ENDPRODUCT_XSD_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XSD_XSLPATH");
+			//valid = valid && transformer.transformStep("properties/WORK_EMBELLISH_FILE","properties/RESULT_ENDPRODUCT_MSG_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_MSG_XSLPATH");
+			valid = valid && transformer.transformStep("properties/WORK_EMBELLISH_FILE","properties/RESULT_ENDPRODUCT_XML_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XML_XSLPATH");
+			valid = valid && transformer.transformStep("properties/RESULT_ENDPRODUCT_XML_FILE_PATH","properties/RESULT_ENDPRODUCT_XSD_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XSD_XSLPATH");
+			// temporary: transform to the new EP format.
+			valid = valid && transformer.transformStep("properties/RESULT_ENDPRODUCT_XML_FILE_PATH","properties/RESULT_ENDPRODUCT-patch1_XML_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT-patch1_XML_XSLPATH");
 		
 			// and copy the onderlaag
 			XmlFile onderlaag = new XmlFile(configurator.getParm("properties", "STUF_ONDERLAAG"));
 			onderlaag.copyFile(configurator.getParm("properties", "RESULT_XSD_APPLICATION_FOLDER") + File.separator + onderlaag.getName());
 			
 		} else // model
-			valid = valid && transformer.transformStep("properties/WORK_SCHEMA_FILE","properties/RESULT_XSD_XML_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUIM_XSD_XSLPATH");
+			valid = valid && transformer.transformStep("properties/WORK_SCHEMA_FILE","properties/RESULT_XSD_XML_FILE_PATH", "properties/IMVERTOR_METAMODEL_KINGUGM_XSD_XSLPATH");
 		
 		configurator.setParm("system","schema-created","true");
 		

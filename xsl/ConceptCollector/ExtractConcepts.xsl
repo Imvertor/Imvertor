@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: ExtractConcepts.xsl 7427 2016-02-16 13:12:30Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -25,7 +40,7 @@
     -->
 	
 	<xsl:variable name="stylesheet">ExtractConcepts</xsl:variable>
-	<xsl:variable name="stylesheet-version">$Id: ExtractConcepts.xsl 7427 2016-02-16 13:12:30Z arjan $</xsl:variable>
+	<xsl:variable name="stylesheet-version">$Id: ExtractConcepts.xsl 7440 2016-03-01 15:28:37Z arjan $</xsl:variable>
 
 	<xsl:variable name="concept-documentation-url-mapping" select="imf:get-config-string('properties','CONCEPT_DOCUMENTATION_URL_MAPPING')"/>
 	<!-- this parameter may have the infixes [year], [month] and [day] --> 
@@ -44,7 +59,7 @@
 		<!-- we only write concepts, but processing context document is the imvert file -->
 			
 		<imvert:concepts>
-			<xsl:sequence select="imf:compile-imvert-filter($stylesheet, $stylesheet-version)"/>
+			<xsl:sequence select="imf:compile-imvert-filter()"/>
 			<xsl:variable name="concepts" select="imf:get-rdf-document($concept-documentation-listing-uri-expanded)"/>
 			<xsl:variable name="publication-url" select="($concepts/rdf:RDF/rdf:Description/rdfs:isDefinedBy)[1]/@rdf:resource"/>
 			<xsl:choose>
@@ -74,6 +89,7 @@
 		<xsl:variable name="about-id" select="imf:map-kenniskluis-about(@rdf:about)"/> <!-- example: ondergronds_bouwwerk -->
 		<xsl:variable name="rdf-uri" select="imf:map-kenniskluis-uri(skos:inScheme/@rdf:resource,$about-id)"/>
 		<xsl:variable name="info" select="imf:get-rdf-document($rdf-uri)/rdf:RDF/rdf:Description"/>
+		<xsl:sequence select="imf:msg('DEBUG','Concept [1]',$info/*:naam)"/>
 		<imvert:concept>
 			<imvert:id>
 				<xsl:value-of select="imf:map-kenniskluis-about(@rdf:about)"/>

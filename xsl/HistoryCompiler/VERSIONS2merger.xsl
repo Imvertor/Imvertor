@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: VERSIONS2merger.xsl 7379 2016-01-14 07:39:34Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -28,14 +43,11 @@
     <!-- path to history file for this application;  --> 
     <xsl:variable name="imvert-history-path" select="imf:file-to-url(imf:get-config-string('properties','WORK_HISTORY_FILE'))"/>
 
-    <xsl:variable name="stylesheet">VERSIONS2merger</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: VERSIONS2merger.xsl 7379 2016-01-14 07:39:34Z arjan $</xsl:variable>
-
     <xsl:template match="/imvert:package-dependencies">
         <imvert-history:versions>
             <imvert-history:filter>
                 <imvert-history:name>
-                    <xsl:value-of select="$stylesheet"/>
+                    <xsl:value-of select="$xml-stylesheet-name"/>
                 </imvert-history:name>
                 <imvert-history:date>
                     <xsl:value-of select="current-dateTime()"/>
@@ -111,7 +123,7 @@
         <xsl:param name="project-name" as="xs:string"/>
         <xsl:param name="application-name" as="xs:string"/>
         <xsl:param name="application-release" as="xs:string"/>
-        <xsl:value-of select="imf:file-to-url(concat($applications-folder-path,'/',$project-name,'/',$application-name,'/',$application-release,'/etc/',$application-name,'.history.imvert.xml'))"/>
+        <xsl:value-of select="imf:file-to-url(concat($applications-folder-path,'/',$project-name,'/',$application-name,'/',$application-release,'/etc/history.imvert.xml'))"/>
     </xsl:function>
     
     <xsl:function name="imf:get-application-identifier" as="xs:string">

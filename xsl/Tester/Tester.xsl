@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Tester.xsl 7295 2015-11-04 11:24:37Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -16,9 +31,6 @@
         Introduce wrappers to the extension functions
     -->
     <xsl:import href="../common/Imvert-common.xsl"/>
-    
-    <xsl:variable name="stylesheet">Tester.xsl</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Tester.xsl 7295 2015-11-04 11:24:37Z arjan $</xsl:variable>
     
     <xsl:output indent="yes"/>
     
@@ -38,7 +50,7 @@
                 
                 <!-- A message that should be handeled as a true signal of error, warning or the like -->
                 <xsl:message>
-                    <xsl:sequence select="imf:create-output-element('src',$stylesheet)"/>
+                    <xsl:sequence select="imf:create-output-element('src',$xml-stylesheet-name)"/>
                     <xsl:sequence select="imf:create-output-element('type','ERROR')"/>
                     <xsl:sequence select="imf:create-output-element('name','name1')"/>
                     <xsl:sequence select="imf:create-output-element('text','text1')"/>

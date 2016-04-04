@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2schema.xsl 7421 2016-02-10 10:31:52Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -9,6 +24,8 @@
     xmlns:imvert="http://www.imvertor.org/schema/system"
     xmlns:ext="http://www.imvertor.org/xsl/extensions"
     xmlns:imf="http://www.imvertor.org/xsl/functions"
+    xmlns:html="http://www.w3.org/1999/xhtml"  
+    
     xmlns:imvert-result="http://www.imvertor.org/schema/imvertor/application/v20160201"
 
     exclude-result-prefixes="#all"
@@ -20,9 +37,6 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2schema</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2schema.xsl 7421 2016-02-10 10:31:52Z arjan $</xsl:variable>
-   
     <xsl:variable name="imvertor-application-location-url" select="imf:get-config-string('properties','IMVERTOR_APPLICATION_LOCATION_URL')"/>
     
     <xsl:template match="/imvert:packages">
@@ -325,6 +339,11 @@
             <xsl:apply-templates/>
         </xsl:variable>
         <xsl:sequence select="imf:create-group(imf:correct-name(local-name(.)),$group)"/>
+    </xsl:template>
+    
+    <!-- copy HTML elements to result -->
+    <xsl:template match="html:*">
+        <xsl:copy-of select="."/>
     </xsl:template>
     
     <xsl:template match="node()">

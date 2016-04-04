@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2derivation.xsl 7379 2016-01-14 07:39:34Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -32,9 +47,6 @@
     <xsl:import href="../common/Imvert-common.xsl"/>
     <xsl:import href="../common/Imvert-common-validation.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2derivation</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2derivation.xsl 7379 2016-01-14 07:39:34Z arjan $</xsl:variable>
-   
     <xsl:variable name="pairs" select="imf:document($derivationtree-file-url)/imvert:layers-set/imvert:layer"/>
     
     <!-- all classes defined by supplier -->
@@ -188,26 +200,26 @@
     <xsl:function name="imf:check-baretype-related" as="element()*">
         <xsl:param name="client"/>
         <xsl:param name="supplier"/>
-        <xsl:variable name="supplier-is-char" select="$supplier/imvert:type-name = 'char'"/>
+        <xsl:variable name="supplier-is-string" select="$supplier/imvert:type-name = 'string'"/>
         <xsl:variable name="supplier-is-int" select="$supplier/imvert:type-name = 'integer'"/>
         <xsl:variable name="supplier-is-dec" select="$supplier/imvert:type-name = 'decimal'"/>
        
         <xsl:choose>
-            <xsl:when test="$client/imvert:type-name = 'char'">
+            <xsl:when test="$client/imvert:type-name = 'string'">
                 <!-- okay in all cases, may become more specific -->
-                <xsl:sequence select="imf:report-warning($client,not($supplier-is-char),
+                <xsl:sequence select="imf:report-warning($client,not($supplier-is-string),
                     'Client type not tested, as supplier type [1] is not character type',
                     ($supplier/imvert:type-name))"/>
-                <xsl:sequence select="imf:report-error($client,$supplier-is-char and $supplier/imvert:max-length and not($client/imvert:max-length),
+                <xsl:sequence select="imf:report-error($client,$supplier-is-string and $supplier/imvert:max-length and not($client/imvert:max-length),
                     'Client type size must be specified and equal or smaller than [1]',
                     ($supplier/imvert:max-length))"/>
-                <xsl:sequence select="imf:report-error($client,$supplier-is-char and xs:integer($supplier/imvert:max-length) lt xs:integer($client/imvert:max-length),
+                <xsl:sequence select="imf:report-error($client,$supplier-is-string and xs:integer($supplier/imvert:max-length) lt xs:integer($client/imvert:max-length),
                     'Client type size must be equal or smaller than [1]',
                     ($supplier/imvert:max-length))"/>
-                <xsl:sequence select="imf:report-warning($client,$supplier-is-char and $client/imvert:pattern and $supplier/imvert:pattern and not($client/imvert:pattern eq $supplier/imvert:pattern),
+                <xsl:sequence select="imf:report-warning($client,$supplier-is-string and $client/imvert:pattern and $supplier/imvert:pattern and not($client/imvert:pattern eq $supplier/imvert:pattern),
                     'Client pattern [1] not tested, must denote a subset of supplier pattern [2]',
                     ($client/imvert:pattern,$supplier/imvert:pattern))"/>
-                <xsl:sequence select="imf:report-error($client,$supplier-is-char and not($client/imvert:pattern ) and $supplier/imvert:pattern,
+                <xsl:sequence select="imf:report-error($client,$supplier-is-string and not($client/imvert:pattern ) and $supplier/imvert:pattern,
                     'Client must specialize or conform to supplier pattern [1]',
                     ($supplier/imvert:pattern))"/>
             </xsl:when>

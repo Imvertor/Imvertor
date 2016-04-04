@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Reporter-report.xsl 7371 2016-01-11 11:07:16Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -17,9 +32,6 @@
          Create the full HTML report, and compile a summary ("overview") from the individual steps.
     -->
     <xsl:import href="../common/Imvert-common.xsl"/>
-    
-    <xsl:variable name="stylesheet">Reporter-report.xsl</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Reporter-report.xsl 7371 2016-01-11 11:07:16Z arjan $</xsl:variable>
     
     <!--
         Compile the full documentation on the run by accessing the reports of each of the previous step.

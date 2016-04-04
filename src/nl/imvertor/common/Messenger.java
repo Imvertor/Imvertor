@@ -1,4 +1,22 @@
-//SVN: $Id: Messenger.java 7400 2016-01-29 09:25:38Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common;
 
@@ -23,7 +41,7 @@ import nl.imvertor.common.wrapper.XMLConfiguration;
 public class Messenger extends SequenceWriter {
 
 	public static final Logger logger = Logger.getLogger(Messenger.class);
-	public static final String VC_IDENTIFIER = "$Id: Messenger.java 7400 2016-01-29 09:25:38Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Messenger.java 7431 2016-02-24 12:46:42Z arjan $";
 
 	private String fatalValue = "FATAL";
 	

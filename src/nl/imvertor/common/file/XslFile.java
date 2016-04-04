@@ -1,8 +1,27 @@
-// SVN: $Id: XslFile.java 7329 2015-11-26 10:38:12Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common.file;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -44,15 +63,15 @@ public class XslFile extends XmlFile {
 	private HashMap<String, String> parms;
 	private HashMap<String, String> features;
 	
-	public XslFile(String pathname) throws TransformerConfigurationException {
+	public XslFile(String pathname) throws TransformerConfigurationException, IOException {
 		super(pathname);
 		init();
 	}
-	public XslFile(File file) throws TransformerConfigurationException {
+	public XslFile(File file) throws TransformerConfigurationException, IOException {
 		super(file.getAbsolutePath());
 		init();
 	}
-	public XslFile(File folder, String filename) throws TransformerConfigurationException {
+	public XslFile(File folder, String filename) throws TransformerConfigurationException, IOException {
 		super(folder,filename);
 		init();
 	}
@@ -79,8 +98,9 @@ public class XslFile extends XmlFile {
 	 * This means a base configuration and base transformer.
 	 * 
 	 * @throws TransformerConfigurationException
+	 * @throws IOException 
 	 */
-	private void init() throws TransformerConfigurationException {
+	private void init() throws TransformerConfigurationException, IOException {
 		getInitialParms();
 		getInitialFeatures();
 	}
@@ -88,10 +108,11 @@ public class XslFile extends XmlFile {
 	 * Return a parms table for XSLT processing holding some initial key/values on the XSLT file.
 	 * 
 	 * @return
+	 * @throws IOException 
 	 */
-	public HashMap<String, String> getInitialParms() {
+	public HashMap<String, String> getInitialParms() throws IOException {
 		parms = new HashMap<String, String>();
-		parms.put("system.xslfile.filepath", this.getAbsolutePath());
+		parms.put("system.xslfile.filepath", this.getCanonicalPath());
 		parms.put("system.xslfile.datetime", this.getIsoDateTime());
 		return parms;
 	}
@@ -122,7 +143,7 @@ public class XslFile extends XmlFile {
 	 */
     public void transform(XmlFile infile, File outfile, HashMap<String, String> parms, HashMap<String, String> features) throws Exception {
 		
-    	logger.debug("Transforming " + this.getAbsolutePath() + " using " + this.getName());
+    	logger.debug("Transforming " + this.getCanonicalPath() + " using " + this.getName());
 		
     	features = (features == null) ? this.features : features;
     	parms = (parms == null) ? this.parms : parms;

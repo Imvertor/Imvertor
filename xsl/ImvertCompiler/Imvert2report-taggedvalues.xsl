@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2report-taggedvalues.xsl 7378 2016-01-12 14:12:42Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -30,7 +45,7 @@
                             This table reports all tagged value found within the application. 
                         </p>
                         <p>
-                            The list shows the name, the number of times it ioccurs, and the constructs that bear that tagged value. 
+                            The list shows the name, the number of times it occurs, and the constructs that holds that tagged value. 
                         </p>
                     </div>               
                     <table>
@@ -62,11 +77,13 @@
                     <div class="intro">
                         <p>
                             The list provids a complete overview of all <i>specified</i> tagged value names and values. 
+                            If derived, the applicationrelease is specified ("origin"), otherwise "(here)" is shown.
+                            Note that some tagged values of the supplier are not derived, an therefore not shown here.
                         </p>
                         <p>The following system defined tagged values are not shown: <xsl:value-of select="string-join($system-defined-tagged-value-names,', ')"/></p>
                     </div>               
                     <table>
-                        <xsl:sequence select="imf:create-table-header('construct:50,tagged value name:20,value:30')"/>
+                        <xsl:sequence select="imf:create-table-header('construct:30,tagged value name:20,value:20,origin:30')"/>
                         <xsl:for-each select=".//*[imvert:tagged-values/* and exists(@display-name)]">
                             <xsl:sort select="@display-name"/>
                             <xsl:variable name="display-name" select="@display-name"/>
@@ -79,7 +96,11 @@
                                         <xsl:value-of select="imvert:name/@original"/>
                                     </td>
                                     <td>
-                                        <xsl:sequence select="imf:format-documentation-to-html(imvert:value)"/>
+                                        <xsl:variable name="value" select="if (exists(imvert:value/@original)) then imvert:value/@original else imvert:value"/>
+                                        <xsl:sequence select="imf:format-documentation-to-html($value)"/>
+                                    </td>
+                                    <td>
+                                        <xsl:sequence select="if (imf:boolean(@derivation-local)) then '(here)' else string-join((@derivation-project,@derivation-application,@derivation-release),', ')"/>
                                     </td>
                                 </tr>
                             </xsl:for-each>

@@ -1,8 +1,27 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.common;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -25,7 +44,7 @@ public class Runner {
 
 	protected static final Logger logger = Logger.getLogger(Runner.class);
 	
-	public static final String VC_IDENTIFIER = "$Id: Runner.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Runner.java 7431 2016-02-24 12:46:42Z arjan $";
 	
 	public static final Integer APPLICATION_PHASE_CONCEPT = 0;
 	public static final Integer APPLICATION_PHASE_DRAFT = 1;

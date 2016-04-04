@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.EapCompiler;
 
 import java.io.File;
@@ -23,7 +43,7 @@ public class EapCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "EapCompiler";
-	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7479 2016-03-23 15:24:08Z arjan $";
 
 	private EapFile templateFile;
 	private String templateFileModelGUID;
@@ -93,13 +113,13 @@ public class EapCompiler extends Step {
 
 		// create a transformer
 		Transformer transformer = new Transformer();
-		transformer.transformStep("system/xmi-file-path","properties/WORK_TEMPLATE_FILE", "properties/IMVERTOR_TEMPLATE_XSLPATH");
+		transformer.transformStep("system/xmi-export-file-path","properties/WORK_TEMPLATE_FILE", "properties/IMVERTOR_TEMPLATE_XSLPATH");
 	
 		// Create template file by copying the template file, and importing the XMI
 		runner.debug(logger,"Importing XMI into EAP: " + localCopyFile.getName());
 		templateFile.copyFile(localCopyFile);
 		localCopyFile.open();
-		localCopyFile.importFromXmiFile(transformer.getXslFile().getAbsolutePath());
+		localCopyFile.importFromXmiFile(configurator.getParm("properties","WORK_TEMPLATE_FILE"));
 		localCopyFile.close();
 		
 		return localCopyFile;
@@ -133,6 +153,7 @@ public class EapCompiler extends Step {
 		XmlFile tempXmiFile = new XmlFile(configurator.getParm("properties", "WORK_TEMP_XMI_FILE"));
 		XmlFile fullXmiFile = new XmlFile(configurator.getParm("properties", "WORK_FULL_XMI_FILE"));
 	
+		// TODO opening EA files is time consuming; can this be enhanced?
 		eapFile.open();
 		try {
 			eapFile.exportToXmiFile(tempXmiFile.getCanonicalPath());

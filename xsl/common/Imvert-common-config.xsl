@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert-common-config.xsl 7417 2016-02-09 13:01:46Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -121,6 +136,11 @@
         <xsl:sequence select="imf:prepare-config-name-element(.,'tv-name')"/>
     </xsl:template>
     
+    <xsl:template match="tv/declared-values/value" mode="prepare-config">
+        <xsl:variable name="norm" select="(../../@norm,'space')[1]"/>
+        <xsl:sequence select="imf:prepare-config-tagged-value-element(.,$norm)"/>
+    </xsl:template>
+    
     <xsl:template match="tv/stereotypes/stereo" mode="prepare-config">
         <xsl:sequence select="imf:prepare-config-name-element(.,'stereotype-name')"/>
     </xsl:template>
@@ -129,16 +149,30 @@
         <xsl:sequence select="imf:prepare-config-name-element(.,'stereotype-name')"/>
     </xsl:template>
     
-    <xsl:function name="imf:prepare-config-name-element" as="element()">
+    <xsl:function name="imf:prepare-config-name-element" as="element()?">
         <xsl:param name="name-element" as="element()"/>
         <xsl:param name="name-type" as="xs:string"/>
-        <xsl:element name="{name($name-element)}">
-            <xsl:apply-templates select="$name-element/@*" mode="prepare-config"/>
-            <xsl:attribute name="original" select="$name-element/text()"/>
-            <xsl:value-of select="imf:get-normalized-name($name-element,$name-type)"/>
-        </xsl:element>
+        <xsl:if test="$name-element/@lang = ($language,'#all')">
+            <xsl:element name="{name($name-element)}">
+                <xsl:apply-templates select="$name-element/@*" mode="prepare-config"/>
+                <xsl:attribute name="original" select="$name-element/text()"/>
+                <xsl:value-of select="imf:get-normalized-name($name-element,$name-type)"/>
+            </xsl:element>
+        </xsl:if>
     </xsl:function>
-
+    
+    <xsl:function name="imf:prepare-config-tagged-value-element" as="element()?">
+        <xsl:param name="value-element" as="element()"/>
+        <xsl:param name="norm-rule" as="xs:string"/>
+        <xsl:if test="($value-element/ancestor-or-self::*/@lang)[1] = ($language,'#all')">
+            <xsl:element name="{name($value-element)}">
+                <xsl:apply-templates select="$value-element/@*" mode="prepare-config"/>
+                <xsl:attribute name="original" select="$value-element/text()"/>
+                <xsl:value-of select="imf:get-tagged-value-norm-prepare($value-element,$norm-rule)"/>
+            </xsl:element>
+        </xsl:if>
+    </xsl:function>
+    
     <!-- default -->
     <xsl:template match="@*|node()" mode="prepare-config">
         <xsl:copy>
@@ -188,10 +222,10 @@
         </xsl:choose>
     </xsl:function>
     
-    <xsl:variable name="naming-convention-package" select="$configuration-metamodel-file//naming/package/format"/>
-    <xsl:variable name="naming-convention-class" select="$configuration-metamodel-file//naming/class/format"/>
-    <xsl:variable name="naming-convention-property" select="$configuration-metamodel-file//naming/property/format"/>
-    <xsl:variable name="naming-convention-tv" select="$configuration-metamodel-file//naming/tv/format"/>
+    <xsl:variable name="naming-convention-package" select="($configuration-metamodel-file//naming/package/format)[last()]"/>
+    <xsl:variable name="naming-convention-class" select="($configuration-metamodel-file//naming/class/format)[last()]"/>
+    <xsl:variable name="naming-convention-property" select="($configuration-metamodel-file//naming/property/format)[last()]"/>
+    <xsl:variable name="naming-convention-tv" select="($configuration-metamodel-file//naming/tv/format)[last()]"/>
     
     <xsl:function name="imf:get-normalized-name-sub" as="xs:string">
         <xsl:param name="name-as-found" as="xs:string"/>
@@ -255,6 +289,44 @@
         <xsl:param name="expected-name" as="xs:string*"/>
         <xsl:param name="scheme" as="xs:string"/>
         <xsl:sequence select="imf:get-normalized-name($found-name,$scheme) = (for $n in $expected-name return imf:get-normalized-name($n,$scheme))"/>
+    </xsl:function>
+    
+    <!-- return normalized string value, or HTML content when applicable -->
+    <xsl:function name="imf:get-tagged-value-norm-prepare" as="item()*"> 
+        <xsl:param name="value" as="xs:string?"/>
+        <xsl:param name="norm" as="xs:string?"/>
+        <xsl:if test="normalize-space($value)">
+            <xsl:sequence select="imf:get-tagged-value-norm-by-scheme($value,$norm,'tv')"/>
+        </xsl:if>
+    </xsl:function>
+    
+    <xsl:function name="imf:get-tagged-value-norm-by-scheme" as="xs:string?">
+        <xsl:param name="value"/>
+        <xsl:param name="normalization-rule"/>
+        <xsl:param name="normalization-scheme"/>
+        <xsl:choose>
+            <xsl:when test="not(normalize-space($normalization-rule))">
+                <xsl:value-of select="$value"/>
+            </xsl:when>
+            <xsl:when test="$normalization-scheme ='tv' and $normalization-rule = 'space'">
+                <xsl:value-of select="normalize-space($value)"/>
+            </xsl:when>
+            <xsl:when test="$normalization-scheme ='tv' and $normalization-rule = 'note'">
+                <xsl:value-of select="imf:import-ea-note($value)"/>
+            </xsl:when>
+            <xsl:when test="$normalization-scheme ='tv' and $normalization-rule = 'compact'">
+                <xsl:value-of select="imf:extract(upper-case($value),'[A-Z0-9]+')"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:sequence select="imf:msg('ERROR','Unknown normalization rule [1] in scheme [2], for value [3]', ($normalization-rule,$normalization-scheme,$value))"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:function>
+    
+    <!-- return all nodes the result from parsing the EA note string. This is a sequence of text line .-->  
+    <xsl:function name="imf:import-ea-note" as="item()*">
+        <xsl:param name="note-ea" as="xs:string"/>
+        <xsl:value-of select="$note-ea"/><!-- pass as-is -->
     </xsl:function>
     
 </xsl:stylesheet>

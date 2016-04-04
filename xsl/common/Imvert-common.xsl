@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert-common.xsl 7402 2016-02-02 13:55:57Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -14,6 +29,7 @@
     xmlns:imvert-history="http://www.imvertor.org/schema/history"
     xmlns:imvert-appconfig="http://www.imvertor.org/schema/appconfig"
     xmlns:imvert-message="http://www.imvertor.org/schema/message"
+    xmlns:imvert-ep="http://www.imvertor.org/schema/endproduct"
     
     xmlns:imf="http://www.imvertor.org/xsl/functions"
     xmlns:ekf="http://EliotKimber/functions"
@@ -38,6 +54,8 @@
     <xsl:variable name="baretype-pattern-ii">([\.,]?)(\d*)</xsl:variable>
     <xsl:variable name="baretype-pattern-p">(\+P)?</xsl:variable>
     <xsl:variable name="baretype-pattern" select="concat('^',$baretype-pattern-c,$baretype-pattern-i,$baretype-pattern-ii,$baretype-pattern-p,'$')"/>
+    
+    <xsl:variable name="stylesheet-version" select="imf:source-file-version($xml-stylesheet-name)"/>
     
     <!-- avoid SVN dollar-text-dollar pattern -->
     <xsl:variable name="char-dollar">$</xsl:variable>
@@ -314,11 +332,12 @@
     <!-- return a sequence of folder path and file name taken from a full path --> 
     <xsl:function name="imf:get-folder-path" as="xs:string*">
         <xsl:param name="filepath" as="xs:string"/>
-        <xsl:variable name="indexes" select="functx:index-of-string($filepath,'/')"/>
+        <xsl:variable name="filepath-normalized" select="replace($filepath,'\\','/')"/>
+        <xsl:variable name="indexes" select="functx:index-of-string($filepath-normalized,'/')"/>
         <xsl:sequence select="
             if (empty($indexes)) 
-            then ('',$filepath) 
-            else (substring($filepath,1,$indexes[last()] - 1),substring($filepath,$indexes[last()] + 1))"/>
+            then ('',$filepath-normalized) 
+            else (substring($filepath-normalized,1,$indexes[last()] - 1),substring($filepath-normalized,$indexes[last()] + 1))"/>
     </xsl:function>
     
     <!-- 
@@ -380,19 +399,15 @@
     <!-- compile a header for imvert file; only packages are processed after this part -->
     <xsl:function name="imf:compile-imvert-header" as="element()*">
         <xsl:param name="packages" as="element()"/>
-        <xsl:param name="stylesheet-name" as="xs:string"/>
-        <xsl:param name="stylesheet-svn" as="xs:string"/>
         <xsl:sequence select="$packages/*[not(self::imvert:package or self::imvert:filter)]"/>
         <xsl:sequence select="$packages/imvert:filter"/>
-        <xsl:sequence select="imf:compile-imvert-filter($stylesheet-name, $stylesheet-svn)"/>
+        <xsl:sequence select="imf:compile-imvert-filter()"/>
     </xsl:function>
     
     <xsl:function name="imf:compile-imvert-filter" as="element()">
-        <xsl:param name="stylesheet-name" as="xs:string"/>
-        <xsl:param name="stylesheet-svn" as="xs:string"/>
         <imvert:filter>
             <imvert:name>
-                <xsl:value-of select="$stylesheet"/>
+                <xsl:value-of select="$xml-stylesheet-name"/>
             </imvert:name>
             <imvert:date>
                 <xsl:value-of select="current-dateTime()"/>

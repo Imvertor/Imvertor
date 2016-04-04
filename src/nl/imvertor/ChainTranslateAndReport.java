@@ -1,6 +1,29 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor;
 
+import org.apache.log4j.Logger;
+
 import nl.imvertor.ApcModifier.ApcModifier;
+import nl.imvertor.ComplyCompiler.ComplyCompiler;
 import nl.imvertor.ConceptCollector.ConceptCollector;
 import nl.imvertor.EapCompiler.EapCompiler;
 import nl.imvertor.HistoryCompiler.HistoryCompiler;
@@ -20,9 +43,6 @@ import nl.imvertor.XsdCompiler.XsdCompiler;
 import nl.imvertor.common.Configurator;
 import nl.imvertor.common.Release;
 
-import org.apache.log4j.Logger;
-
-
 public class ChainTranslateAndReport {
 
 	protected static final Logger logger = Logger.getLogger(ChainTranslateAndReport.class);
@@ -35,8 +55,9 @@ public class ChainTranslateAndReport {
 			// fixed: show copyright info
 			System.out.println("Imvertor - " + Release.getNotice());
 			
-			configurator.getRunner().info(logger, "Translate and report - " + Release.getVersionString());
-					
+			configurator.getRunner().info(logger, "Framework version - " + Release.getVersionString());
+			configurator.getRunner().info(logger, "Chain version - " + "Translate and report 0.9");
+	
 			configurator.prepare(); // note that the process config is relative to the step folder path
 			configurator.getRunner().prepare();
 			
@@ -55,6 +76,7 @@ public class ChainTranslateAndReport {
 			configurator.getCli(HistoryCompiler.STEP_NAME);
 			configurator.getCli(OfficeCompiler.STEP_NAME);
 			configurator.getCli(EapCompiler.STEP_NAME);
+			configurator.getCli(ComplyCompiler.STEP_NAME);
 			configurator.getCli(RunAnalyzer.STEP_NAME);
 			configurator.getCli(Reporter.STEP_NAME);
 			configurator.getCli(ReadmeCompiler.STEP_NAME);
@@ -111,8 +133,9 @@ public class ChainTranslateAndReport {
 				
 				// compare releases. 
 			    // Eg. check if this only concerns a "documentation release". If so, must not be different from existing release.
+			    // also includes other types of release comparisons
 			    succeeds = succeeds && (new ReleaseComparer()).run();
-							
+			    			
 				// generate the XSD 
 			    succeeds = succeeds && (new XsdCompiler()).run();
 							
@@ -127,6 +150,9 @@ public class ChainTranslateAndReport {
 		
 				// compile templates and reports on UML EAP 
 			    succeeds = succeeds && (new EapCompiler()).run();
+		
+				// compile compliancy Excel
+			    succeeds = succeeds && (new ComplyCompiler()).run();
 		
 		    }
 			// analyze this run. 

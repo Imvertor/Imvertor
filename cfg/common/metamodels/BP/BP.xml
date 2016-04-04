@@ -1,6 +1,24 @@
-<?xml version="1.0" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <metamodel>
-    <svn>$Id: BP.xml 7424 2016-02-15 10:58:15Z arjan $</svn>
+    <svn>$Id: BP.xml 7439 2016-02-29 14:43:37Z arjan $</svn>
     <name>BP</name>
 
     <description>Metamodel for Dutch Best Practices based registrations</description>
@@ -11,8 +29,7 @@
             For each stereotype, define a formal name, the name(s) in UML, description, the construct(s) to which the stereotype applies, and possible rules.
         -->
         <stereo id="stereotype-name-system-package">
-            <name lang="en">system</name>
-            <name lang="nl">systeem</name>
+            <name lang="#all">system</name>
             <desc>Een package dat is opgebouwd door de software ten behoeve van verwerking.</desc>
             <construct>package</construct>
         </stereo>
@@ -30,7 +47,6 @@
         <stereo id="stereotype-name-domain-package">
             <name lang="en">domain</name>
             <name lang="nl">domein</name>
-            <name lang="nl">domein model</name>
             <desc>Een package waarvan de daarin opgenomen constructies ls één geheel worden beheerd, en waarvan dus een gezamenlijke versie wordt onderhouden</desc>
             <construct>package</construct>
         </stereo>
@@ -50,6 +66,7 @@
         </stereo>
         <stereo id="stereotype-name-project-package">
             <name lang="en">project</name>
+            <name lang="nl">project</name>
             <desc>Een package dat een project bevat, dwz. een base of application package, eventueel met external packages.</desc>
             <construct>package</construct>
         </stereo>
@@ -69,6 +86,7 @@
         </stereo>
 
         <stereo id="stereotype-name-composite">
+            <name lang="en">datagrouptype</name>
             <name lang="nl">gegevensgroeptype</name>
             <desc>
                 De verzameling van gegevens van een object van een type die gelijktijdig muteren en onderhouden worden.
@@ -78,17 +96,20 @@
             <construct>class</construct>
         </stereo>
         <stereo id="stereotype-name-attribute">
+            <name lang="en">attributekind</name>
             <name lang="nl">attribuutsoort</name>
             <desc>De soort waartoe een attribuut kan behoren.</desc>
             <construct>attribute</construct>
         </stereo>
         <stereo id="stereotype-name-relatiesoort">
+            <name lang="en">relationkind</name>
             <name lang="nl">relatiesoort</name>
             <desc>De soort waartoe een relatie kan behoren.</desc>
             <construct>association</construct>
         </stereo>
         <stereo id="stereotype-name-externekoppeling">
             <name lang="nl">externe koppeling</name>
+            <name lang="en">external link</name>
             <desc>Een associatie waarmee vanuit het perspectief van het eigen informatiemodel een objecttype van een extern informatiemodel 
                 gekoppeld wordt aan een objecttype uit het ‘eigen’ informatiemodel. </desc>
             <construct>association</construct>
@@ -96,11 +117,13 @@
         <!-- IM-215 -->
         <stereo id="stereotype-name-data-element">
             <name lang="nl">data element</name>
+            <name lang="en">data element</name>
             <desc>Een onderdeel van een Complex datatype uitgedrukt in een eigenschap van een class (attribute).</desc>
             <construct>attribute</construct>
         </stereo>
         <stereo id="stereotype-name-interface">
             <name lang="en">interface</name>
+            <name lang="nl">interface</name>
             <desc>Een constructie in een external package, welke een compleet modelelement in dat externe package representeert.</desc>
             <construct>class</construct>
             <construct>datatype</construct>
@@ -108,6 +131,7 @@
 
         <stereo id="stereotype-name-association-to-composite">
             <name lang="nl">gegevensgroep compositie</name>
+            <name lang="en">datagroup compositon</name>
             <desc>
                 Een verbijzondering van een relatiesoort waarbij een object van het objecttype of een 
                 gegevensgroep van een gegevensgroeptype of een asscociationclass van een relatieklasse 	samengesteld is uit gegevensgroepen 
@@ -117,6 +141,7 @@
         </stereo>
 
         <stereo id="stereotype-name-union">
+            <name lang="nl">union</name>
             <name lang="en">union</name>
             <desc>
                 Gestructureerd datatype zonder identiteit waarvan precies één van de
@@ -127,6 +152,7 @@
         </stereo>
         <stereo id="stereotype-name-union-element">
             <name lang="en">union element</name>
+            <name lang="nl">union element</name>
             <desc>
                 Een onderdeel van een Union uitgedrukt in een eigenschap van een class (attribute) die als keuze binnen de Union is gerepresenteerd.
                 Voorbeeld: union element Line, union element Polygon beiden onderdeel uitmakend van Union LineOrPolygon
@@ -136,6 +162,7 @@
 
         <stereo id="stereotype-name-enumeration">
             <name lang="en">enumeration</name>
+            <name lang="nl">enumeration</name>
             <desc>
                 Een lijst met een opsomming van de mogelijke domeinwaarden oftewel constanten van een Docent789
                 attribuutsoort die onveranderlijk is.
@@ -145,16 +172,19 @@
         </stereo>
         <stereo id="stereotype-name-enum">
             <name lang="en">enum</name>
+            <name lang="nl">enum</name>
             <desc>Één element in een enumeratie.</desc>
             <construct>attribute</construct>
         </stereo>
         <stereo id="stereotype-name-datatype">
             <name lang="en">datatype</name>
+            <name lang="nl">datatype</name>
             <desc></desc>
             <construct>datatype</construct>
         </stereo>
         <stereo id="stereotype-name-complextype">
             <name lang="en">complex datatype</name>
+            <name lang="nl">complex datatype</name>
             <desc>
                 Gestructureerd datatype zonder identiteit samengesteld uit minimaal twee onderdelen.
                 Voorbeeld: Complex datatype Bedrag bestaat uit de data elementen som en valuta.
@@ -166,6 +196,7 @@
         <!-- a imvert:stereotype value -->
         <stereo id="stereotype-name-objecttype">
             <name lang="en">objecttype</name>
+            <name lang="nl">objecttype</name>
             <desc>
                 De soort waartoe een object kan behoren.
                 Toelichting:
@@ -180,8 +211,9 @@
             <construct>class</construct>
         </stereo>
         
-        <stereo id="stereotype-name-view">
+        <stereo id="stereotype-name-view-package">
             <name lang="en">view</name>
+            <name lang="nl">view</name>
             <desc>Een groepering van objecttypen die gespecificeerd zijn in een extern informatiemodel en vanuit het perspectief van het 
                 eigen informatiemodel inzicht geeft welke gegevens van deze objecttypen relevant zijn binnen het eigen informatiemodel.</desc>
             <construct>package</construct>
@@ -189,7 +221,7 @@
 
         <stereo id="stereotype-name-referentielijst">
             <name lang="nl">referentielijst</name>
-            <name deprecated="true" lang-="nl">referentiegegeven</name>
+            <name lang="en">reference list</name>
             <desc>
                 Een lijst met een opsomming van de mogelijke domeinwaarden van een attribuutsoort die in de loop van de tijd kan veranderen.
                 Voorbeeld: referentielijst LAND, referentielijst NATIONALITEIT
@@ -200,6 +232,7 @@
         </stereo>
         <stereo id="stereotype-name-referentieelement">
             <name lang="nl">referentie element</name>
+            <name lang="en">reference element</name>
             <desc>
                 Een eigenschap van een referentielijst in de vorm van een gegeven.
                 Voorbeeld: referentie element Landcode ISO bij referentielijst LAND, referentie element 	
@@ -210,6 +243,7 @@
         </stereo>
 
         <stereo id="stereotype-name-recyclebin">
+            <name lang="nl">prullenbak</name>
             <name lang="en">recyclebin</name>
             <construct>package</construct>
         </stereo>
@@ -217,6 +251,7 @@
         <!-- designations of constructs: -->
         <stereo id="stereotype-name-designation-datatype">
             <name lang="en">datatype</name>
+            <name lang="nl">datatype</name>
             <construct>class</construct>
             <construct>datatype</construct>
         </stereo>
@@ -225,45 +260,63 @@
         
         <stereo id="stereotype-name-variant-package">
             <name lang="nl">variant</name>
+            <name lang="en">variant</name>
             <construct>class</construct>
         </stereo>
         <stereo id="stereotype-name-components-package">
             <name lang="en">components</name>
+            <name lang="nl">componenten</name>
             <construct>package</construct>
         </stereo>
-          <stereo id="stereotype-name-variant-remove">
-              <name lang="en">variant-remove</name>
+        <stereo id="stereotype-name-variant-remove">
+            <name lang="en">variant-remove</name>
+            <name lang="nl">variant-remove</name>
         </stereo>
         <stereo id="stereotype-name-variant-redefine">
             <name lang="en">variant-redefine</name>
+            <name lang="nl">variant-redefine</name>
         </stereo>
         <stereo id="stereotype-name-variant-merge">
             <name lang="en">variant-merge</name>
+            <name lang="nl">variant-merge</name>
         </stereo>
 
         <stereo id="stereotype-name-system-reference-package">
             <name lang="en">system-reference-package</name>
+            <name lang="nl">system-reference-package</name>
             <desc>Een package dat door het systeem is aangemaakt om referentie-elementen te bevatten.</desc>
             <construct>package</construct>
         </stereo>
         <stereo id="stereotype-name-system-reference-class">
             <name lang="en">system-reference-class</name>
+            <name lang="nl">system-reference-class</name>
             <desc>Een class welke door het systeem is aangemaakt als referentie-element.</desc>
             <construct>class</construct>
         </stereo>
         <stereo id="stereotype-name-reference">
             <name lang="en">reference</name>
-            <desc>Een complex datatype met de naam *AltRef die door de gebruiker is geïntroduceerd als referentie klasse. Zie IM-137.</desc>
+            <name lang="nl">referentie</name>
+            <desc>Een complex datatype met de naam *AltRef die door de gebruiker is geïntroduceerd als referentie klasse. Zie IM-137. 
+                Het betreft een referentie naar een objecttype uit een ander informatiemodel. 
+                De referentie naar dit object zit in scope van het eigen model, maar het gerefereerde object niet. 
+                Voorbeeld: de referentie naar een Persoon uit de BRP, in de vorm van alleen de identificatie die de BRP aan dit objecttype heeft toegekend. 
+                Expliciet dus niet de BRP-Persoon zelf, noch een representatie hiervan in het eigen model.
+                Toelichting: dit stereotype is analoog aan het stereotype «Externe koppeling» met het verschil dat bij deze laatste het gerefereerde object met 
+                attributen is overgenomen naar het eigen model (in een package met stereotype «view»). Bij het stereotype «Referentie» wordt overname niet 
+                nodig geacht, omdat alleen de relatie naar het object voldoende is (aanvullend op de identificatie van het object geen verdere attributen). 
+            </desc>
             <construct>class</construct>
         </stereo>
         <stereo id="stereotype-name-codelist">
             <name lang="en">codelist</name>
+            <name lang="nl">codelist</name>
             <construct>class</construct>
             <construct>datatype</construct>
         </stereo>
         
         <stereo id="stereotype-name-composite-id">
             <name lang="en">isid</name>
+            <name lang="nl">isid</name>
             <desc>Aanduiding dat een relatiesoort onderdeel uitmaakt van de unieke aanduiding van een object.</desc>
             <construct>association</construct>
         </stereo>
@@ -271,6 +324,7 @@
         <!-- tracing -->
         <stereo id="stereotype-name-trace">
             <name lang="en">trace</name>
+            <name lang="nl">trace</name>
             <desc>Trace relatie tussen twee klassen. Trace relatie wordt niet als associatie opgenomen, maar als eigenschap van de client.</desc>
             <construct>class</construct>
             <construct>datatype</construct>

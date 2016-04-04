@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2office-Kadaster.xsl 7427 2016-02-16 13:12:30Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" 
@@ -19,16 +35,14 @@
        IM-284  Documentatie bij imkad/cdmkad in opgemaakte PDF vorm
     -->
     
+    <!--<xsl:import href="http://www.imvertor.org/imvertor/1.0/xslt/common/Imvert-common.xsl"/>-->
     <xsl:import href="../common/Imvert-common.xsl"/>
     <xsl:import href="../common/Imvert-common-derivation.xsl"/>
     <xsl:import href="../common/Imvert-common-report.xsl"/>
     
     <xsl:output method="html" indent="yes" omit-xml-declaration="yes"/>
     
-    <xsl:variable name="stylesheet">Imvert2office-Kadaster</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2office-Kadaster.xsl 7427 2016-02-16 13:12:30Z arjan $</xsl:variable>
-
-    <xsl:variable name="quot"><!--'--></xsl:variable>
+   <xsl:variable name="quot"><!--'--></xsl:variable>
     
     <xsl:variable name="pre-headed-result" as="item()*">
         <xsl:apply-templates select="/imvert:packages/imvert:package"/>

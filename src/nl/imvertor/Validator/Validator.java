@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.Validator;
 
 import nl.imvertor.common.Step;
@@ -18,7 +38,7 @@ public class Validator extends Step {
 	protected static final Logger logger = Logger.getLogger(Validator.class);
 	
 	public static final String STEP_NAME = "Validator";
-	public static final String VC_IDENTIFIER = "$Id: Validator.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Validator.java 7475 2016-03-23 10:54:06Z arjan $";
 
 	/**
 	 *  run the main translation
@@ -48,7 +68,7 @@ public class Validator extends Step {
 				String outname = "WORK_BASE_METAMODEL_FILE" + ((i == 1) ? "" : "_" + i);
 				if (configurator.getParm("properties", xslname, false) != null) {
 					// curpath is "properties/WORK_BASE_FILE", 
-					succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath","properties/" + outname, "properties/" + xslname, "cur-imvertor-filepath") : false ;
+					succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath","properties/" + outname, "properties/" + xslname, "system/cur-imvertor-filepath") : false ;
 					i += 1;
 				} else break;
 			}

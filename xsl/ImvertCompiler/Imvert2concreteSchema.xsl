@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2concreteSchema.xsl 7402 2016-02-02 13:55:57Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -21,9 +36,6 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2concreteSchema</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2concreteSchema.xsl 7402 2016-02-02 13:55:57Z arjan $</xsl:variable>
-   
     <xsl:variable name="conceptual-schema-mapping-name" select="imf:get-config-string('cli','mapping')"/>
     <xsl:variable name="conceptual-schema-mapping-file" select="imf:get-config-string('properties','CONCEPTUAL_SCHEMA_MAPPING_FILE')"/>
     <xsl:variable name="conceptual-schema-mapping" select="imf:document($conceptual-schema-mapping-file)/conceptual-schemas"/>
@@ -31,7 +43,7 @@
     <xsl:template match="/imvert:packages">
         <imvert:packages>
             <xsl:sequence select="imf:create-output-element('imvert:conceptual-schema-svn-id',$conceptual-schema-mapping/svn-id)"/>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="imvert:package"/>
         </imvert:packages>
     </xsl:template>

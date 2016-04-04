@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2XSD-KING-endproduct.xsl 38 2015-12-02 12:38:02Z ArjanLoeffen $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -28,9 +43,6 @@
 
    
     <xsl:output indent="yes" method="xml" encoding="UTF-8"/>
-    
-    <xsl:variable name="stylesheet">Imvert2XSD-KING-enrich-excel</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2XSD-KING-enrich-excel 1 2015-12-03 11:03:00Z RobertMelskens $</xsl:variable>
     
     <!-- for all exel handling -->
     

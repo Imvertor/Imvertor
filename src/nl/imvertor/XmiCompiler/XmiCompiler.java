@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.XmiCompiler;
 
 import nl.imvertor.common.Step;
@@ -24,7 +44,7 @@ public class XmiCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "XmiCompiler";
-	public static final String VC_IDENTIFIER = "$Id: XmiCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: XmiCompiler.java 7473 2016-03-22 07:30:03Z arjan $";
 
 	private AnyFile passedFile;
 	private XmlFile activeFile;
@@ -86,7 +106,7 @@ public class XmiCompiler extends Step {
 				// IM-108 speed up: do not read same EAP twice
 				String f1 = "";
 				activeFile = new XmlFile(configurator.getParm("properties","WORK_XMI_FOLDER") + File.separator + passedFile.getName() + ".xmi");
-				idFile = new AnyFile(activeFile.getAbsolutePath() + ".id");
+				idFile = new AnyFile(activeFile.getCanonicalPath() + ".id");
 				activeFile.getParentFile().mkdirs();
 				if (activeFile.exists()) 
 					f1 = (idFile.exists()) ? idFile.getContent() : "";
@@ -104,11 +124,11 @@ public class XmiCompiler extends Step {
 				activeFile = (XmlFile) passedFile;
 			}
 			
-			configurator.setParm("system","xmi-export-file-path",activeFile.getAbsolutePath());
-			configurator.setParm("system","xmi-file-path",activeFile.getAbsolutePath() + ".compact.xml");
+			configurator.setParm("system","xmi-export-file-path",activeFile.getCanonicalPath());
+			configurator.setParm("system","xmi-file-path",activeFile.getCanonicalPath() + ".compact.xml");
 			
 			// now compact the XMI file:remove all irrelevant sections
-			runner.debug(logger, "Compacting XMI: " + activeFile.getAbsolutePath());
+			runner.debug(logger, "Compacting XMI: " + activeFile.getCanonicalPath());
 			Transformer transformer = new Transformer();
 		    // transform 
 			boolean succeeds = true;

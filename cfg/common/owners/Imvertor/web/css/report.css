@@ -18,6 +18,10 @@ table {
     color: red;
     font-weight: bold;
 }
+p.supplierMark {
+    color: gray;
+}
+
 tr.tableHeader td {
     background-color: #EEEEEE;
     font-weight: bold;
@@ -60,4 +64,15 @@ a {
 a:hover {
     color: black;
     text-decoration: underline;
+}
+/* compare */
+table.compare tr:nth-child(even) {
+    background-color:#FFF;
+}
+table.compare tr:nth-child(odd) {  
+    background-color:#EEE;
+}
+tr.cmp-system {
+    color: #999;
+    font-style: oblique;
 }

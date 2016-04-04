@@ -1,61 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <tagset>
-    <svn>$Id: SBR.xml 7420 2016-02-10 08:17:30Z arjan $</svn>
+    <svn>$Id: SBR.xml 7434 2016-02-26 12:37:57Z arjan $</svn>
     <name>SBR</name>
     <descr>Stelsel basisregistraties</descr>
     <web>http://stelselcatalogus.logius.nl/over-de-stelselcatalogus/metadata/</web>
     
     <tagged-values xml:id="tagset">
         <tv norm="space" id="Herkomst">
-            <name>Herkomst</name>
+            <name lang="nl">Herkomst</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="yes">Objecttype</stereo>
-                <stereo required="yes">Complex datatype</stereo>
-                <stereo required="yes">Data element</stereo>
-                <stereo required="yes">Attribuutsoort</stereo>
-                <stereo required="yes">Relatiesoort</stereo>
-                <stereo required="yes">Gegevensgroeptype</stereo>
-                <stereo required="yes">Referentielijst</stereo>
-                <stereo required="yes">Referentie element</stereo>
-                <stereo required="yes">Union</stereo>
-                <stereo required="yes">Union element</stereo>
+                <stereo required="yes" lang="nl">Objecttype</stereo>
+                <stereo required="yes" lang="nl">Complex datatype</stereo>
+                <stereo required="yes" lang="nl">Data element</stereo>
+                <stereo required="yes" lang="nl">Attribuutsoort</stereo>
+                <stereo required="yes" lang="nl">Relatiesoort</stereo>
+                <stereo required="yes" lang="nl">Gegevensgroeptype</stereo>
+                <stereo required="yes" lang="nl">Referentielijst</stereo>
+                <stereo required="yes" lang="nl">Referentie element</stereo>
+                <stereo required="yes" lang="nl">Union</stereo>
+                <stereo required="yes" lang="nl">Union element</stereo>
             </stereotypes>
         </tv>
         <tv norm="space" id="HerkomstDefinitie">
-            <name>Herkomst definitie</name>
+            <name lang="nl">Herkomst definitie</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="yes">Objecttype</stereo>
-                <stereo required="yes">Attribuutsoort</stereo>
-                <stereo required="yes">Gegevensgroeptype</stereo>
-                <stereo required="yes">Relatiesoort</stereo>
+                <stereo required="yes" lang="nl">Objecttype</stereo>
+                <stereo required="yes" lang="nl">Attribuutsoort</stereo>
+                <stereo required="yes" lang="nl">Gegevensgroeptype</stereo>
+                <stereo required="yes" lang="nl">Relatiesoort</stereo>
             </stereotypes>
         </tv>
         
         <!-- TODO Vaststellen per tagged value of deze derived moeten worden of niet. -->
         <tv norm="space" id="Eigenaar">
-            <name>Eigenaar</name>
+            <name lang="nl">Eigenaar</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="no">Objecttype</stereo> <!-- TODO anders dan metamodel -->
-                <stereo required="no">Attribuutsoort</stereo> <!-- TODO anders dan metamodel -->
-                <stereo required="no">Gegevensgroeptype</stereo> <!-- TODO anders dan metamodel -->
+                <stereo required="no" lang="nl">Objecttype</stereo> <!-- TODO anders dan metamodel -->
+                <stereo required="no" lang="nl">Attribuutsoort</stereo> <!-- TODO anders dan metamodel -->
+                <stereo required="no" lang="nl">Gegevensgroeptype</stereo> <!-- TODO anders dan metamodel -->
             </stereotypes>
         </tv>
         <tv norm="note" id="Populatie">
-            <name>Populatie</name>
+            <name lang="nl">Populatie</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="no">Objecttype</stereo>
+                <stereo required="no" lang="nl">Objecttype</stereo>
             </stereotypes>
         </tv>
         <tv norm="space" id="Kwaliteit">
-            <name>Kwaliteitsbegrip</name>
-            <name>Kwaliteit</name>
+            <name lang="nl">Kwaliteit</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="no">Objecttype</stereo>
+                <stereo required="no" lang="nl">Objecttype</stereo>
             </stereotypes>
         </tv>
         <!-- Authentiek wel onderdeel van SBR, maar niet in metamodel.
@@ -63,31 +80,31 @@
             <name>Authentiek</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="yes">Attribuutsoort</stereo>
-                <stereo required="yes">Gegevensgroeptype</stereo>
-                <stereo required="yes">Relatiesoort</stereo>
+                <stereo required="yes" lang="nl">Attribuutsoort</stereo>
+                <stereo required="yes" lang="nl">Gegevensgroeptype</stereo>
+                <stereo required="yes" lang="nl">Relatiesoort</stereo>
             </stereotypes>
         </tv>
         -->
         <tv norm="note" id="Regels">
-            <name>Regels</name>
+            <name lang="nl">Regels</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="no">Attribuutsoort</stereo>
-                <stereo required="no">Gegevensgroeptype</stereo>
-                <stereo required="no">Relatiesoort</stereo>
+                <stereo required="no" lang="nl">Attribuutsoort</stereo>
+                <stereo required="no" lang="nl">Gegevensgroeptype</stereo>
+                <stereo required="no" lang="nl">Relatiesoort</stereo>
             </stereotypes>
         </tv>
         <tv norm="note" id="Toelichting">
-            <name>Toelichting</name>
+            <name lang="nl">Toelichting</name>
             <derive>yes</derive>
             <stereotypes>
-                <stereo required="no">Objecttype</stereo>
-                <stereo required="no">Attribuutsoort</stereo>
-                <stereo required="no">Gegevensgroeptype</stereo>
-                <stereo required="no">Relatiesoort</stereo>
-                <stereo required="no">Referentielijst</stereo>
-                <stereo required="no">Referentie element</stereo>
+                <stereo required="no" lang="nl">Objecttype</stereo>
+                <stereo required="no" lang="nl">Attribuutsoort</stereo>
+                <stereo required="no" lang="nl">Gegevensgroeptype</stereo>
+                <stereo required="no" lang="nl">Relatiesoort</stereo>
+                <stereo required="no" lang="nl">Referentielijst</stereo>
+                <stereo required="no" lang="nl">Referentie element</stereo>
             </stereotypes>
         </tv> 
     </tagged-values>

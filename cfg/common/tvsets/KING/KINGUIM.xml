@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<tagset xmlns:xi="http://www.w3.org/2001/XInclude">
+    <svn>$Id: KINGUIM.xml 7434 2016-02-26 12:37:57Z arjan $</svn>
+    <name>KINGUIM</name>
+    
+    <xi:include href="../BP/BP.xml"/>
+    
+    <tagged-values>
+        <!-- tagtged values in BIM context-->
+        <tv norm="space" validate="boolean" id="IsFormeel">
+            <name lang="nl">isFormeel</name>
+            <desc>Dit bericht vereist (al dan niet) formele historie.</desc>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="boolean" id="IsMaterieel">
+            <name lang="nl">isMaterieel</name>
+            <desc>Dit bericht vereist (al dan niet) materiële historie.</desc>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="boolean" id="IsInkomend">
+            <name lang="nl">isInkomend</name>
+            <desc>Dit bericht is (al dan niet) een inkomend berichttype.</desc>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="boolean" id="IsSynchroon">
+            <name lang="nl">isSynchroon</name>
+            <desc>Dit bericht is (al dan niet) een synchroon berichttype.</desc>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        
+        <!-- 
+            tagged values op vraagberichten 
+        -->
+        <!-- TODO Vaststellen per tagged value of deze derived moeten worden of niet. -->
+        <tv norm="space" validate="eigenschappen" id="ConfigGelijk">
+            <name lang="nl">config-gelijk</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigVanaf">
+            <name lang="nl">config-vanaf</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigTotEnMet">
+            <name lang="nl">config-tot-en-met</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigStart">
+            <name lang="nl">config-start</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigScope">
+            <name lang="nl">config-scope</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        
+        <!-- 
+            tagged values op vrije berichten 
+        -->
+        <tv norm="space" validate="eigenschappen" id="ConfigEntiteit">
+            <name lang="nl">config-entiteit</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigSelectie">
+            <name lang="nl">config-selectie</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigUpdate">
+            <name lang="nl">config-update</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <!--TODO hier ook antwoord maar dat is ambigue -->
+        
+        
+        <!-- 
+            tagged values op standaard berichten 
+        -->
+        <tv norm="space" validate="eigenschappen" id="ConfigAntwoord">
+            <name lang="nl">config-antwoord</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" validate="eigenschappen" id="ConfigKennisgeving">
+            <name lang="nl">config-kennisgeving</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Gegevensgroeptype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+        
+        <!-- 
+            tagged values op berichten 
+        -->
+        <tv norm="space" id="ConfigAfhandeling">
+            <name lang="nl">config-afhandeling</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        <tv norm="space" id="ConfigBerichttype">
+            <name lang="nl">config-berichttypes</name>
+            <derive>no</derive><!-- TODO wat moet dit zijn?-->
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+            </stereotypes>
+        </tv>
+        
+        <!-- 
+            verstuffings info 
+        -->
+        <tv norm="space" id="Verstuffing">
+            <name lang="nl">verstuffing</name>
+            <derive>yes</derive>
+            <stereotypes>
+                <stereo lang="nl">Objecttype</stereo>
+                <stereo lang="nl">Attribuutsoort</stereo>
+                <stereo lang="nl">Relatiesoort</stereo>
+            </stereotypes>
+        </tv>
+
+    </tagged-values>
+</tagset>

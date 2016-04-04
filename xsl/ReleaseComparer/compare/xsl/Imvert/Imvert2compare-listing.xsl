@@ -1,3 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
@@ -23,20 +42,24 @@
     
     <xsl:output indent="no"/>
     
-    <xsl:variable name="stylesheet">Imvert2compare-listing</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2compare-listing.xsl 7409 2016-02-06 07:31:41Z arjan $</xsl:variable>
-    
     <xsl:variable name="ctrl-url" select="concat('file:/', replace($ctrl-filepath,'\\','/'))"/>
     <xsl:variable name="test-url" select="concat('file:/', replace($test-filepath,'\\','/'))"/>
     
     <xsl:variable name="ctrl-doc" select="document($ctrl-url)"/>
     <xsl:variable name="test-doc" select="document($test-url)"/>
 
+    <xsl:variable name="diffs">
+        <xsl:apply-templates select="$ctrl-doc/*" mode="compare"/> <!-- returns a sequence of diff elements -->
+    </xsl:variable>
+    
     <xsl:template match="/">
         <imvert:report>
-            <xsl:variable name="diffs">
-                <xsl:apply-templates select="$ctrl-doc/*" mode="compare"/> <!-- returns a sequence of diff elements -->
-            </xsl:variable>
+            <imvert:ctrl>
+                <xsl:value-of select="$ctrl-url"/>
+            </imvert:ctrl>           
+            <imvert:test>
+                <xsl:value-of select="$test-url"/>
+            </imvert:test>           
             <xsl:for-each-group select="$diffs/imvert:diff" group-by="@ctrl-id">
                 <imvert:diffs ctrl-id="{@ctrl-id}">
                     <xsl:for-each select="current-group()">
@@ -92,6 +115,9 @@
                     <xsl:value-of select="'removed'"/>
                 </xsl:when>
                 <xsl:when test="$desc-raw = 'presence of child node' and exists($test)">
+                    <xsl:value-of select="'added'"/>
+                </xsl:when>
+                <xsl:when test="$desc-raw = 'presence of child nodes to be' and exists($test)"> <!-- TODO check this, is this correct? -->
                     <xsl:value-of select="'added'"/>
                 </xsl:when>
                 <xsl:when test="$desc-raw = 'text value'">

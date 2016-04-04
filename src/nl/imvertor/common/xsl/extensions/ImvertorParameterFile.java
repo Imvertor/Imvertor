@@ -1,4 +1,22 @@
-//SVN: $Id: ImvertorParameterFile.java 7265 2015-09-17 11:14:19Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common.xsl.extensions;
 
@@ -30,11 +48,11 @@ public class ImvertorParameterFile extends ExtensionFunctionDefinition {
 	}
 
 	public int getMinimumNumberOfArguments() {
-		return 4;
+		return 5;
 	}
 
 	public int getMaximumNumberOfArguments() {
-		return 4;
+		return 5;
 	}
 
 	public SequenceType[] getArgumentTypes() {
@@ -43,6 +61,7 @@ public class ImvertorParameterFile extends ExtensionFunctionDefinition {
 				SequenceType.OPTIONAL_STRING,
 				SequenceType.OPTIONAL_STRING,
 				SequenceType.OPTIONAL_STRING,
+				SequenceType.OPTIONAL_STRING
 				};
 	}
 
@@ -59,13 +78,14 @@ public class ImvertorParameterFile extends ExtensionFunctionDefinition {
 		public Sequence call(XPathContext context, Sequence[] arguments) throws XPathException {
 
 			try {
-				if (arguments.length != 4)
+				if (arguments.length != 5)
 					throw new Exception("Invalid number of arguments: " + arguments.length);
 				
 				String operationType = Transformer.getStringvalue(arguments[0]);
 				String variableGroup = Transformer.getStringvalue(arguments[1]);
 				String variableName = Transformer.getStringvalue(arguments[2]);
 				String variableValue = Transformer.getStringvalue(arguments[3]);
+				String variableOption = Transformer.getStringvalue(arguments[4]);
 				
 				switch (operationType) {
 					case "GET": // get a parameter by name
@@ -73,7 +93,8 @@ public class ImvertorParameterFile extends ExtensionFunctionDefinition {
 						if (v == null) return EmptySequence.getInstance();
 						else return StringValue.makeStringValue(v);
 					case "SET": // set a parameter value
-						Configurator.getInstance().setParm(variableGroup,variableName,variableValue);
+						boolean overwrite = variableOption.equals("true");
+						Configurator.getInstance().setParm(variableGroup,variableName,variableValue, overwrite);
 						return EmptySequence.getInstance();
 					case "SAVE": // write map to disk
 						Configurator.getInstance().save();

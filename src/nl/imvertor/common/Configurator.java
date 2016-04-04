@@ -1,4 +1,22 @@
-//SVN: $Id: Configurator.java 7417 2016-02-09 13:01:46Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common;
 
@@ -61,7 +79,7 @@ import nl.imvertor.common.wrapper.XMLConfiguration;
 public class Configurator {
 
 	public static final Logger logger = Logger.getLogger(Configurator.class);
-	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7417 2016-02-09 13:01:46Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7484 2016-03-28 11:42:35Z arjan $";
 	public static final String PARMS_FILE_NAME = "parms.xml";
 	
 	public static final String NAMESPACE_EXTENSION_FUNCTIONS = "http://www.imvertor.org/xsl/extensions";
@@ -204,10 +222,26 @@ public class Configurator {
 	 * @throws ConfiguratorException 
 	 * @throws IOException 
 	 */
-	
 	public AnyFolder getApplicationFolder() throws IOException, ConfiguratorException {
+		return getApplicationFolder(getParm("appinfo","release"));
+	}
+
+	/**
+	 * Return the path to the folder where all results are recorded.
+	 * This is the folder especially created for this current application release. 
+	 * 
+	 * Example: D:\projects\validprojects\Kadaster-Imvertor\Imvertor-output\applications\cdmkad\CDMKAD\20150601
+	 * 
+	 * @param releaseNumber The release number. This is usually a string in the form YYYYMMDD.
+	 * 
+	 * @return Folder of the application that should hold all Imvert result files.
+	 * 
+	 * @throws ConfiguratorException 
+	 * @throws IOException 
+	 */
+	public AnyFolder getApplicationFolder(String releaseNumber) throws IOException, ConfiguratorException {
 		String sep = File.separator;
-		return new AnyFolder(getOutputFolder() + sep + "applications" + sep + getParm("appinfo","project-name") + sep + getParm("appinfo","application-name") + sep + getParm("appinfo","release"));
+		return new AnyFolder(getOutputFolder() + sep + "applications" + sep + getParm("appinfo","project-name") + sep + getParm("appinfo","application-name") + sep + releaseNumber);
 	}
 
 	private File getOutputFolder() {
@@ -281,19 +315,23 @@ public class Configurator {
 		String wf = workFolder.getCanonicalPath();
 		setParm(workConfiguration,"system","work-folder-path", wf, true);
 		
-		setParm(workConfiguration,"system","work-app-folder-path", wf + s + "app", true);
-		setParm(workConfiguration,"system","work-etc-folder-path", wf + s + "app" + s + "etc", true);
-		setParm(workConfiguration,"system","work-xsd-folder-path", wf + s + "app" + s + "xsd", true);
-		setParm(workConfiguration,"system","work-doc-folder-path", wf + s + "app" + s + "doc", true);
-		setParm(workConfiguration,"system","work-uml-folder-path", wf + s + "app" + s + "uml", true);
-		
-		setParm(workConfiguration,"system","work-rep-folder-path", wf + s + "rep", true);
+		setParm(workConfiguration,"system","work-app-folder-path",    wf + s + "app", true);
+		setParm(workConfiguration,"system","work-etc-folder-path", 	  wf + s + "app" + s + "etc", true);
+		setParm(workConfiguration,"system","work-xsd-folder-path",    wf + s + "app" + s + "xsd", true);
+		setParm(workConfiguration,"system","work-doc-folder-path",    wf + s + "app" + s + "doc", true);
+		setParm(workConfiguration,"system","work-uml-folder-path",    wf + s + "app" + s + "uml", true);
+		setParm(workConfiguration,"system","work-cmp-folder-path",    wf + s + "app" + s + "cmp", true);
+			
+		setParm(workConfiguration,"system","work-rep-folder-path",    wf + s + "rep", true);
 		setParm(workConfiguration,"system","work-imvert-folder-path", wf + s + "imvert", true);
+		setParm(workConfiguration,"system","work-comply-folder-path", wf + s + "comply", true);
 		
 		// clear the workfolder
 		(new OutputFolder(getParm(workConfiguration,"system","work-app-folder-path",true))).clearIfExists(false);
 		(new OutputFolder(getParm(workConfiguration,"system","work-rep-folder-path",true))).clearIfExists(false);
-			
+		(new OutputFolder(getParm(workConfiguration,"system","work-imvert-folder-path",true))).clearIfExists(false);
+		(new OutputFolder(getParm(workConfiguration,"system","work-comply-folder-path",true))).clearIfExists(false);
+				
 		setParm(workConfiguration,"system","managedinputfolder", inputFolder.getCanonicalPath(), true);
 		setParm(workConfiguration,"system","managedoutputfolder", outputFolder.getCanonicalPath(), true);
 		setParm(workConfiguration,"system","managedinstallfolder", baseFolder.getCanonicalPath(), true);
@@ -378,22 +416,25 @@ public class Configurator {
 	 */
 	public void windup() throws Exception {
 		
+		OutputFolder appWorkFolder = new OutputFolder(getParm("system","work-app-folder-path"));
+		OutputFolder appFinalFolder;
+	
 		if (runner.getMayRelease()) {
-			OutputFolder appWorkFolder = new OutputFolder(getParm("system","work-app-folder-path"));
-			OutputFolder appFinalFolder = new OutputFolder(getParm("properties","APPLICATION_FOLDER"));
-			
-			// copy the complete application folder to the final destination. Note that a zip release may already have been compiled.
-			appFinalFolder.clearIfExists(false);
-			appWorkFolder.copy(appFinalFolder);	
-			
-			if (runner.isFinal() && isTrue("system","schema-created")) { 
-				runner.info(logger, "Copying the result XML schemas to distribution folder");
-				AnyFolder sourceXsdFolder = new AnyFolder(getParm("system","work-xsd-folder-path"));
-				AnyFolder targetXsdFolder = new AnyFolder(getParm("properties","DISTRIBUTION_APPLICATION_FOLDER"));
-				runner.debug(logger,"Distributing " + sourceXsdFolder + " to " + targetXsdFolder);
-				targetXsdFolder.mkdirs();
-				sourceXsdFolder.copy(targetXsdFolder);
-			}
+			appFinalFolder = new OutputFolder(getParm("properties","APPLICATION_FOLDER"));
+		} else {
+			appFinalFolder = new OutputFolder(getParm("properties","INVALID_APPLICATION_FOLDER"));
+		}
+		// copy the complete application folder to the final destination. Note that a zip release may already have been compiled.
+		appFinalFolder.clearIfExists(false);
+		appWorkFolder.copy(appFinalFolder);	
+		
+		if (runner.isFinal() && isTrue("system","schema-created")) { 
+			runner.info(logger, "Copying the result XML schemas to distribution folder");
+			AnyFolder sourceXsdFolder = new AnyFolder(getParm("system","work-xsd-folder-path"));
+			AnyFolder targetXsdFolder = new AnyFolder(getParm("properties","DISTRIBUTION_APPLICATION_FOLDER"));
+			runner.debug(logger,"Distributing " + sourceXsdFolder + " to " + targetXsdFolder);
+			targetXsdFolder.mkdirs();
+			sourceXsdFolder.copy(targetXsdFolder);
 		}
 	}
 	
@@ -401,9 +442,15 @@ public class Configurator {
 	 * Return the full file path of the xml configuration file.
 	 * 
 	 * @return
+	 * @throws IOException 
 	 */
 	public String getConfigFilepath() {
-		return workConfigurationFile.getAbsolutePath();
+		try {
+			return workConfigurationFile.getCanonicalPath();
+		} catch (IOException e) {
+			runner.fatal(logger, "Cannot access the configiration file at " + workConfigurationFile, e);
+		}
+		return "";
 	}
 	
 	/**
@@ -431,6 +478,7 @@ public class Configurator {
 	 */
 	public void setParmsFromOptions(String[] args) throws Exception {
 		CommandLine commandLine = null;
+		File curFile = new File(baseFolder,"command-line"); // dummy.
 		try {
 			BasicParser parser = new BasicParser();
 			commandLine = parser.parse(options, args);
@@ -455,15 +503,15 @@ public class Configurator {
 		
 		// check if "arguments" has been specified; if so, read them, but do not overwrite any.
 		if (commandLine.hasOption("arguments")) 
-			loadFromPropertyFiles(new File(baseFolder,"command-line"), commandLine.getOptionValue("arguments"));
+			loadFromPropertyFiles(curFile, commandLine.getOptionValue("arguments"));
 		
 		String missing = checkOptionsAreReady();
 		if (!missing.equals("")) {
 			runner.error(logger, "Missing required parameters: " + missing);
 			dieOnCli("program");
 		}
-		
-	    // record the metamodel used
+
+		// record the metamodel used
 		metamodel = getParm(workConfiguration,"cli","metamodel",false);
 		metamodel = (metamodel == null) ? DEFAULT_METAMODEL : metamodel;
 		
@@ -729,7 +777,7 @@ public class Configurator {
 	 */
 	private void loadFromPropertyFile(String filePath) throws Exception {
 		File f = getFile(filePath);
-		runner.debug(logger,"Reading property file " + f.getAbsolutePath());
+		runner.debug(logger,"Reading property file " + f.getCanonicalPath());
 		Properties properties = new Properties();
 		FileInputStream s = new FileInputStream(f);
 		BufferedReader in = new BufferedReader(new InputStreamReader(s, "UTF-8"));
@@ -741,7 +789,16 @@ public class Configurator {
 			String v = e.nextElement().toString();
 			// never overwrite
 			if (getParm(workConfiguration,"cli",v,false) == null) {
-				setParm(workConfiguration,"cli",v,properties.getProperty(v),true);
+				// process file properties in context of the current file
+				String value = properties.getProperty(v);
+				if (v.equals("umlfile") | v.equals("zipfile") | v.equals("hisfile")) {
+					File parent = (new File(filePath)).getParentFile();
+					if (AnyFile.isAbsolutePath(value))
+						value = (new File(value)).getCanonicalPath();
+					else
+						value = (new File(parent, value)).getCanonicalPath();
+				} 
+				setParm(workConfiguration,"cli",v,value,true);
 				setOptionIsReady(v, true);
 			}
 		}
@@ -758,7 +815,7 @@ public class Configurator {
 					incFile = new File(files[i]);
 				else 
 					incFile = new File(curFile.getParentFile(),files[i]);
-				loadFromPropertyFile(selectIncFile(incFile).getAbsolutePath());
+				loadFromPropertyFile(selectIncFile(incFile).getCanonicalPath());
 			}
 		}
 	}
@@ -771,7 +828,7 @@ public class Configurator {
 			if (commonIncFile.exists())
 				return commonIncFile;
 			else
-				throw new Exception("Properties not found, tried files at " + incFile.getAbsolutePath() + " and " + commonIncFile.getAbsolutePath());
+				throw new Exception("Properties not found, tried files at " + incFile.getCanonicalPath() + " and " + commonIncFile.getCanonicalPath());
 		}
 	}
 	
@@ -916,8 +973,6 @@ public class Configurator {
 			formatter.printWrapped( pw, width, "The following information is shown because you specified -help license at the command line.");
 			formatter.printWrapped( pw, width, "");
 			formatter.printWrapped( pw, width, Release.getDetails());
-			formatter.printWrapped( pw, width, "");
-			formatter.printWrapped( pw, width, Release.getConditions());
 			formatter.printWrapped( pw, width, "");
 			formatter.printWrapped( pw, width, "Imvertor exits.");
 		} else { // assume "error"

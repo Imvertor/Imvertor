@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2XSD-KING-endproduct-xml.xsl 7417 2016-02-09 13:01:46Z arjan $ 
+    SVN: $Id: Imvert2XSD-KING-endproduct-xml.xsl 7487 2016-04-02 07:27:03Z arjan $ 
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -31,12 +31,12 @@
     <xsl:output indent="yes" method="xml" encoding="UTF-8"/>
     
     <xsl:variable name="stylesheet">Imvert2XSD-KING-endproduct-xml</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2XSD-KING-endproduct-xml.xsl 7417 2016-02-09 13:01:46Z arjan $</xsl:variable>  
+    <xsl:variable name="stylesheet-version">$Id: Imvert2XSD-KING-endproduct-xml.xsl 7487 2016-04-02 07:27:03Z arjan $</xsl:variable>  
     
     <!-- set the processing parameters of the stylesheets. -->
-    <xsl:variable name="debug" select="'no'"/>
-    <xsl:variable name="use-EAPconfiguration" select="'yes'"/>
+    <!--xsl:variable name="my-debug" select="'no'"/-->
     
+    <?x De volgende variable kan mogelijk nog nuttig blijken maar wordt op dit moment nog niet gebruikt. x?>
     <xsl:variable name="enriched-endproduct-base-config-excel">
         <result>
             <xsl:choose>
@@ -65,6 +65,8 @@
         </result>
     </xsl:variable>
     
+    <?x Volgens mij hebben de volgende variabelen geen functie meer en kunnen ze weg. x?>
+    <?x xsl:variable name="use-EAPconfiguration" select="'yes'"/>
     <xsl:variable name="enriched-endproduct-config-excel">
         <result>
             <xsl:choose>
@@ -105,23 +107,28 @@
                 </xsl:when>
             </xsl:choose>			
         </result>
-    </xsl:variable>
+    </xsl:variable x?>
     
 	<xsl:variable name="berichtNaam" select="/imvert:packages/imvert:application"/>
 	
     <xsl:variable name="imvert-endproduct">
-        <xsl:apply-templates select="//imvert:package[imvert:name/@original='Bericht']" mode="create-message-structure"/>
-        <!--<xsl:sequence select="//imvert:package[imvert:name/@original='Bericht']/imvert:package[imvert:name/@original='Objecttype']/*"/>-->
-        <!--<xsl:sequence select="/*"/>-->
+        <xsl:variable name="bericht" select="//imvert:package[imvert:name/@original='Bericht']"/>
+        <xsl:choose>
+            <xsl:when test="exists($bericht)">
+                <xsl:apply-templates select="$bericht" mode="create-message-structure"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:sequence select="imf:msg('ERROR','Geen Bericht package aangetroffen in de toepassing [1]', $application-package-name)"/>
+            </xsl:otherwise>
+        </xsl:choose>
      </xsl:variable>
     
     <xsl:template match="/">
-        <xsl:result-document href="file:/c:/temp/result.xml">
-            <xsl:sequence select="$enriched-endproduct-config-excel"/>
-        </xsl:result-document> 
-         <xsl:result-document href="file:/c:/temp/imvert-endproduct.xml">
+        <!--
+        <xsl:result-document href="file:/c:/temp/imvert-endproduct.xml">
             <xsl:sequence select="$imvert-endproduct/*"/>
         </xsl:result-document> 
+        -->
        <xsl:sequence select="$imvert-endproduct/*"/>
     </xsl:template>
     

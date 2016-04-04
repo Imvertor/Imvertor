@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2canonical-KING.xsl 7389 2016-01-18 15:03:45Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -15,15 +30,11 @@
 
     <!-- 
           Transform KING UML constructs to canonical UML constructs.
-          This canonization stylesheet is imported by sopecific UIM or SIM stylesheets.
+          This canonization stylesheet is imported by sopecific UGM or SIM stylesheets.
     -->
     
     <xsl:import href="Imvert2canonical-KING-common.xsl"/>
      
-    <xsl:variable name="stylesheet">Imvert2canonical-KING</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2canonical-KING.xsl 7389 2016-01-18 15:03:45Z arjan $</xsl:variable>
-    
-  
     <?x 
         CHECK OF DIT ALLEMAAL NOG STEEDS GELDT VOOR DE NIEUWE KING IMVERTOR EAP'S
           
@@ -42,7 +53,7 @@
     
     <xsl:template match="/imvert:packages">
         <imvert:packages>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="$project-package"/>
         </imvert:packages>
     </xsl:template>
@@ -240,7 +251,7 @@
     
     <xsl:template match="/imvert:packages">
         <imvert:packages>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="imvert:package"/>
         </imvert:packages>
     </xsl:template>

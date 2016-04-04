@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.common.file;
 
 import java.io.File;
@@ -27,7 +47,7 @@ public class EapFile extends AnyFile {
 	private Project project;
 	private String htmlReportStyle;
 
-	public int exportDiagrams = 0; // 0 = Do not export diagrams, 1 = Export diagrams, 2 = Export diagrams along with alternate images
+	public int exportDiagrams = 1; // 0 = Do not export diagrams, 1 = Export diagrams, 2 = Export diagrams along with alternate images
 	public int exportDiagramImage = -1; // DiagramImage:  - the format for diagram images to be created at the same time; accepted values: -1=NONE 0=EMF 1=BMP 2=GIF 3=PNG 4=JPG.
 	public int exportFormatXML = 1; // FormatXML:  - true if XML output should be formatted prior to saving.
 	public int exportUseDTD = 0; // UseDTD: - true if a DTD should be used.
@@ -71,7 +91,7 @@ public class EapFile extends AnyFile {
 	public XmlFile exportToXmiFile() throws Exception {
 		File outFile = File.createTempFile("exportToXmiFile", ".xml");
 		outFile.deleteOnExit();
-		return exportToXmiFile(outFile.getAbsolutePath());
+		return exportToXmiFile(outFile.getCanonicalPath());
 	}
 	
 	/**
@@ -107,7 +127,7 @@ public class EapFile extends AnyFile {
 	 * @throws Exception
 	 */
 	public void importFromXmiFile(String xmiFilePath) throws Exception {
-		importXML(getRootModel().GetPackageGUID(), nativePath(xmiFilePath));
+		importXML(project.GUIDtoXML(getRootModel().GetPackageGUID()), nativePath(xmiFilePath));
 	}
 	
 	/**
@@ -229,7 +249,7 @@ public class EapFile extends AnyFile {
 			if (root.exists())
 				FileUtils.deleteQuietly(folder);
 			else 
-				throw new Exception("Will not write to a non-EA output HTML folder: \"" + folder.getAbsolutePath() + "\"");
+				throw new Exception("Will not write to a non-EA output HTML folder: \"" + folder.getCanonicalPath() + "\"");
 		folder.mkdirs();
 		project.RunHTMLReport(project.GUIDtoXML(guid), folderPath, "PNG", htmlReportStyle, "html");
 	}
@@ -240,11 +260,13 @@ public class EapFile extends AnyFile {
 	 * Based on EA http://www.sparxsystems.com/uml_tool_guide/sdk_for_enterprise_architect/project_2.htm
 	 * ImportPackageXMI (string PackageGUID, string Filename, long ImportDiagrams, long StripGUID)
 	 * 
-	 * @param packageGUID
+	 * Note that an XML GUID must be passed, ie. project.GUIDtoXML(GUID).
+	 * 
+	 * @param packageXMLGUID
 	 * @param filepath
 	 */
-	public void importXML(String packageGUID, String filepath) {
-		project.ImportPackageXMI(packageGUID, filepath, 1, 1); // import diagrams AND strip GUIDs on import
+	public void importXML(String packageXMLGUID, String filepath) {
+		project.ImportPackageXMI(packageXMLGUID, filepath, 1, 1); // import diagrams AND strip GUIDs on import
 	}
 	
 	/**

@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: XsdCompiler-report.xsl 7379 2016-01-14 07:39:34Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -19,9 +34,6 @@
     <xsl:import href="../common/Imvert-common-report.xsl"/>
    
     <xsl:import href="Imvert2XSD-KING-common.xsl"/>
-    
-    <xsl:variable name="stylesheet">XsdCompiler-report.xsl</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: XsdCompiler-report.xsl 7379 2016-01-14 07:39:34Z arjan $</xsl:variable>
     
     <xsl:variable name="document" select="imf:document(imf:get-config-string('properties','WORK_EMBELLISH_FILE'))"/>
     
@@ -55,7 +67,7 @@
                         <xsl:sequence select="imf:report-label('Schemas', '(TODO)')"/>
                     </summary>
                 </xsl:when>
-                <xsl:when test="$schemarules = 'KINGUIM'">
+                <xsl:when test="$schemarules = ('KINGUGM','KINGBSM')">
                     <xsl:variable name="berichten-table" select="imf:create-berichten-table($berichten-infoset/berichten/*)"/>
                     <status/>
                     <summary>

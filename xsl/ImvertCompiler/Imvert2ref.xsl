@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2ref.xsl 7417 2016-02-09 13:01:46Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -22,12 +37,9 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2ref</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2ref.xsl 7417 2016-02-09 13:01:46Z arjan $</xsl:variable>
-   
     <xsl:template match="/imvert:packages">
         <imvert:packages>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="imvert:package"/>
         </imvert:packages>
     </xsl:template>
@@ -41,7 +53,7 @@
                 A reference package is created only for domain packages, that have at least one class that is linkable.
             -->
             <xsl:variable name="identifiable-classes" select="imvert:class[imf:is-linkable(.)]"/>
-            <xsl:if test="(imvert:stereotype = imf:get-config-stereotypes('stereotype-name-domain-package')) and $identifiable-classes">
+            <xsl:if test="(imvert:stereotype = imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))) and $identifiable-classes">
                 <!-- some of the classes are identifiable, so create a new package -->
                 <xsl:variable name="namespace" select="imvert:namespace"/>
                 <imvert:package>

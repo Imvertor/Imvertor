@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2XSD.xsl 7310 2015-11-17 14:27:47Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -29,9 +44,6 @@
    
     <xsl:output indent="yes" method="xml" encoding="UTF-8" exclude-result-prefixes="#all"/>
     
-    <xsl:variable name="stylesheet">Imvert2XSD-Kadaster</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2XSD.xsl 7310 2015-11-17 14:27:47Z arjan $</xsl:variable>
-
     <xsl:variable name="xsd-folder-path" select="imf:get-config-string('system','xsd-folder-path')"/>
 
     <!-- 
@@ -709,24 +721,15 @@
         <xsl:choose>
             <xsl:when test="$base-type"> 
                 <xsl:choose>
-                    <xsl:when test="$base-type='JAAR'">xs:gYear</xsl:when>
-                    <xsl:when test="$base-type='DATUM'">xs:date</xsl:when> 
-                    <xsl:when test="$base-type='DT'">xs:dateTime</xsl:when> 
-                    <xsl:when test="$base-type='INDIC'">xs:boolean</xsl:when>
-                    <xsl:when test="$base-type='URI'">xs:anyURI</xsl:when>
-                    <xsl:when test="$base-type='TXT'">xs:string</xsl:when> 
-                    
-                    <xsl:when test="$base-type='#ANY'">#any</xsl:when>
-                    <xsl:when test="$base-type='#MIX'">#mix</xsl:when>
-                    
-                    <!-- TODO the following types must be eliminated from the model! Nobody uses them. -->
-                    <xsl:when test="$base-type='CHAR'">xs:string</xsl:when> 
-                    <xsl:when test="$base-type='LETTER'">xs:string</xsl:when><!--KING--> 
+                    <xsl:when test="$base-type='CHAR'">xs:string</xsl:when> <!-- backward compat -->
+                    <xsl:when test="$base-type='STRING'">xs:string</xsl:when> 
                     <xsl:when test="$base-type='INTEGER'">xs:integer</xsl:when> <!-- xsd:integer — Signed integers of arbitrary length -->
                     <xsl:when test="$base-type='DECIMAL'">xs:decimal</xsl:when>
                     <xsl:when test="$base-type='DATETIME'">xs:dateTime</xsl:when>
                     <xsl:when test="$base-type='BOOLEAN'">xs:boolean</xsl:when>
-                    
+                    <xsl:when test="$base-type='URI'">xs:anyURI</xsl:when>
+                    <xsl:when test="$base-type='#ANY'">#any</xsl:when>
+                    <xsl:when test="$base-type='#MIX'">#mix</xsl:when>
                     <xsl:otherwise>
                         <xsl:value-of select="'xs:string'"/>
                         <xsl:sequence select="imf:msg('ERROR', 'Unknown native type: [1]', $base-type)"/>
@@ -975,6 +978,23 @@
                     <xsl:attribute name="maxOccurs" select="$this/imvert:max-occurs"/>
                     <xsl:sequence select="imf:debug($this,'No name and the type is external')"/>
                     <xsl:sequence select="imf:get-annotation($this,$data-location,())"/>
+                </xs:element>
+            </xsl:when>
+            <xsl:when test="$is-choice and $is-voidable"> 
+                <xs:element>
+                    <xsl:attribute name="name" select="$name"/>
+                    <xsl:attribute name="minOccurs" select="$this/imvert:min-occurs"/>
+                    <xsl:attribute name="maxOccurs" select="$this/imvert:max-occurs"/>
+                    <xsl:attribute name="nillable">true</xsl:attribute>
+                    <xsl:sequence select="imf:debug($this,'The type of this property is a union, and voidable')"/>
+                    <xsl:sequence select="imf:get-annotation($this)"/>
+                    <xs:complexType>
+                        <xs:complexContent>
+                            <xs:extension base="{$type}">
+                                <xsl:sequence select="imf:create-nilreason()"/>
+                            </xs:extension>
+                        </xs:complexContent>
+                    </xs:complexType>
                 </xs:element>
             </xsl:when>
             <xsl:when test="$is-choice"> 
@@ -1424,7 +1444,7 @@
 
     <xsl:function name="imf:create-nonempty-constraint" as="item()*">
         <xsl:param name="type" as="xs:string?"/>
-        <xsl:if test="$type=('char','xs:string', 'xs:anyURI') or not($type)">
+        <xsl:if test="$type=('char', 'string', 'uri') or not($type)">
             <xs:pattern value="\S.*"/> <!-- Note: do not use xs:minLength as this allows for a single space -->
         </xsl:if>
     </xsl:function>

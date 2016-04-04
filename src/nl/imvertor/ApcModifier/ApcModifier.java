@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.ApcModifier;
 
 import nl.imvertor.common.Step;
@@ -18,7 +38,7 @@ public class ApcModifier extends Step {
 	protected static final Logger logger = Logger.getLogger(ApcModifier.class);
 	
 	public static final String STEP_NAME = "ApcModifier";
-	public static final String VC_IDENTIFIER = "$Id: ApcModifier.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: ApcModifier.java 7475 2016-03-23 10:54:06Z arjan $";
 
 	/**
 	 *  run the main translation
@@ -49,10 +69,10 @@ public class ApcModifier extends Step {
 				// set up the appconfig file as an XML file
 				transformer.transformStep("properties/WORK_APPCONFIG_EXCEL_FILE", "properties/WORK_APPCONFIG_FILE", "properties/IMVERTOR_APPCONFIG_XSLPATH");
 				// Transform the base file while integrating the merged info. 
-				succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath", "properties/WORK_APPCONFIG_MERGED_FILE", "properties/IMVERTOR_APPCONFIG_MERGER_XSLPATH","cur-imvertor-filepath") : false ;
+				succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath", "properties/WORK_APPCONFIG_MERGED_FILE", "properties/IMVERTOR_APPCONFIG_MERGER_XSLPATH","system/cur-imvertor-filepath") : false ;
 			} else {
 				// identity transform, i.e. copy.
-				succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath", "properties/WORK_APPCONFIG_MERGED_FILE", "properties/IMVERTOR_IDENTITY_TRANSFORM_XSLPATH","cur-imvertor-filepath") : false ;
+				succeeds = succeeds ? transformer.transformStep("system/cur-imvertor-filepath", "properties/WORK_APPCONFIG_MERGED_FILE", "properties/IMVERTOR_IDENTITY_TRANSFORM_XSLPATH","system/cur-imvertor-filepath") : false ;
 			}
 			configurator.setStepDone(STEP_NAME);
 			

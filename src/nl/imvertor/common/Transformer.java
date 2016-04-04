@@ -1,4 +1,22 @@
-//SVN: $Id: Transformer.java 7415 2016-02-08 09:02:51Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common;
 
@@ -15,6 +33,12 @@ import java.util.regex.Pattern;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+import com.sun.org.apache.xml.internal.resolver.CatalogManager;
+import com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver;
 
 import net.sf.saxon.lib.ExtensionFunctionDefinition;
 import net.sf.saxon.om.Sequence;
@@ -33,10 +57,6 @@ import nl.imvertor.common.file.XslFile;
 import nl.imvertor.common.xsl.extensions.ImvertorFileSpec;
 import nl.imvertor.common.xsl.extensions.ImvertorParameterFile;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
 /**
  * This class represents a Saxon based transformer. 
  * 
@@ -47,7 +67,7 @@ import org.apache.log4j.Logger;
 public class Transformer {
 
 	public static final Logger logger = Logger.getLogger(Transformer.class);
-	public static final String VC_IDENTIFIER = "$Id: Transformer.java 7415 2016-02-08 09:02:51Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Transformer.java 7487 2016-04-02 07:27:03Z arjan $";
 	
 	private ErrorListener errorListener;
 	private Messenger messageEmitter;
@@ -72,6 +92,17 @@ public class Transformer {
 		configurator = Configurator.getInstance();
 		setXIncludeAware(true);
 		processor = new Processor(configurator.getSaxonConfiguration());
+		
+		if (System.getProperty("xml.catalog") != null) {
+			// OASIS catalog support
+			String catalog = System.getProperty("xml.catalog");
+			CatalogManager manager = CatalogManager.getStaticManager();
+			
+			CatalogResolver resolver = new CatalogResolver(manager); // note that CatalogManager.properties must be on the classpath!
+			resolver.getCatalog().parseCatalog(catalog);
+			compiler.setURIResolver(resolver);
+		}
+		
 		compiler = processor.newXsltCompiler();
 		compiler.setErrorListener(errorListener); // for compile time errors
 		messageEmitter = configurator.getMessenger();
@@ -123,7 +154,7 @@ public class Transformer {
 	 */
 	public boolean transform(File infile, File outfile, File xslfile) throws Exception {
 
-		logger.debug("Transforming " + infile.getAbsolutePath() + " using " + xslfile.getName());
+		logger.debug("Transforming " + infile.getCanonicalPath() + " using " + xslfile.getName());
 
 		// record for later inspection
 		this.infile = infile;
@@ -131,9 +162,9 @@ public class Transformer {
 		this.xslfile = xslfile;
 		
 		if (!infile.isFile())
-			throw new Exception("No such input file: " + infile.getAbsolutePath());
+			throw new Exception("No such input file: " + infile.getCanonicalPath());
 		if (!xslfile.isFile())
-			throw new Exception("No such XSL file: " + xslfile.getAbsolutePath());
+			throw new Exception("No such XSL file: " + xslfile.getCanonicalPath());
 		
 		StreamSource source = new StreamSource(infile);
 		StreamSource xslt = new StreamSource(xslfile);
@@ -160,13 +191,18 @@ public class Transformer {
 			transformer.setParameter(new QName(e.getKey().toString()),new XdmAtomicValue(e.getValue().toString()));
 		}
 		transformer.setParameter(new QName("xml-configuration-url"),new XdmAtomicValue(url));
+		transformer.setParameter(new QName("xml-input-name"),new XdmAtomicValue(infile.getName()));
+		transformer.setParameter(new QName("xml-output-name"),new XdmAtomicValue(outfile.getName()));
+		transformer.setParameter(new QName("xml-stylesheet-name"),new XdmAtomicValue(xslfile.getName()));
 		transformer.setSource(source);
 		transformer.setDestination(processor.newSerializer(outfile));
 		
 		configurator.save(); // may throw exception when config file not avail
 		transformer.transform();
+		if (!outfile.isFile())
+			throw new Exception("Transformation did not produce the expected file result " + outfile.getCanonicalPath());
 		
-		return (configurator.getRunner().getFirstErrorText(stylesheetIdentifier) == null);
+		return (configurator.forceCompile() || configurator.getRunner().getFirstErrorText(stylesheetIdentifier) == null);
 
 	}
 	
@@ -201,7 +237,7 @@ public class Transformer {
 	 * @throws Exception 
 	 */
 	
-	public boolean transformStep(String infileParm, String outfileParm, String xslfileParm, String resultName) throws Exception {
+	public boolean transformStep(String infileParm, String outfileParm, String xslfileParm, String resultParm) throws Exception {
 		Configurator configurator = Configurator.getInstance();
 		String[] p;
 		p = StringUtils.split(infileParm,"/");
@@ -210,7 +246,8 @@ public class Transformer {
 		String outFile = configurator.getParm(p[0],p[1]);
 		p = StringUtils.split(xslfileParm,"/");
 		String xslFile = configurator.getXslPath(configurator.getParm(p[0],p[1]));
-		if (resultName != null) configurator.setParm("system",resultName,outFile, true);
+		p = StringUtils.split(resultParm,"/");
+		if (resultParm != null) configurator.setParm(p[0],p[1],outFile, true);
 		return transform(inFile, outFile, xslFile);
 	}
 	

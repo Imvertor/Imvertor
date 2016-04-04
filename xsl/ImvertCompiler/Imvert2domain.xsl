@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2domain.xsl 7379 2016-01-14 07:39:34Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -25,9 +40,6 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     
-    <xsl:variable name="stylesheet">Imvert2domain</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2domain.xsl 7379 2016-01-14 07:39:34Z arjan $</xsl:variable>
-   
     <!-- bepaal welke package de applicatie bevat -->
     <xsl:variable name="base-package" select="
         $document-packages[imvert:name=imf:get-normalized-name($application-package-name,'package-name') 
@@ -37,6 +49,7 @@
 
     <xsl:variable name="known-package" select="(
         imf:get-config-stereotypes('stereotype-name-domain-package'),
+        imf:get-config-stereotypes('stereotype-name-view-package'),
         imf:get-config-stereotypes('stereotype-name-base-package'), 
         imf:get-config-stereotypes('stereotype-name-application-package'), 
         imf:get-config-stereotypes('stereotype-name-system-package'), 
@@ -45,7 +58,7 @@
     
     <xsl:variable name="domain-mapping" as="node()*">
         <xsl:for-each select="$base-package/descendant-or-self::imvert:package">
-            <xsl:variable name="domain" select="ancestor-or-self::imvert:package[imvert:stereotype=imf:get-config-stereotypes('stereotype-name-domain-package')][1]"/>
+            <xsl:variable name="domain" select="ancestor-or-self::imvert:package[imvert:stereotype=imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))][1]"/>
             <map sd-name="{imvert:name}" d-name="{if ($domain) then $domain/imvert:name else imvert:name}"/>
         </xsl:for-each>
     </xsl:variable>
@@ -69,7 +82,7 @@
             <xsl:sequence select="imf:create-output-element('imvert:release',$base-package/imvert:release)"/>
             <xsl:sequence select="imf:create-output-element('imvert:documentation',$base-package/imvert:documentation/node(),'',false(),false())"/>
             <xsl:sequence select="imvert:filter"/>
-            <xsl:sequence select="imf:compile-imvert-filter($stylesheet, $stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-filter()"/>
             
             <xsl:choose>
                 <xsl:when test="empty($base-package)">
@@ -93,7 +106,7 @@
     <!-- een package dat geen domain is en valt binnen een root package wordt verwijderd. -->
     <xsl:template match="imvert:package[not(imvert:stereotype=$known-package)]">
         <!-- een package dat ergens binnen een domein package is opgenomen wordt verwijderd -->
-        <xsl:if test="ancestor::imvert:package/imvert:stereotype=imf:get-config-stereotypes('stereotype-name-domain-package')">
+        <xsl:if test="ancestor::imvert:package/imvert:stereotype=imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))">
             <xsl:apply-templates select="imvert:class"/>
         </xsl:if>
         <xsl:apply-templates select="imvert:package"/>
@@ -123,6 +136,6 @@
     <!-- Return all packages that the element is part of, that are (within) a domain package -->
     <xsl:function name="imf:get-package-structure" as="element()*">
         <xsl:param name="this" as="element()"/>
-        <xsl:sequence select="$this/ancestor-or-self::imvert:package[ancestor-or-self::imvert:package/imvert:stereotype=imf:get-config-stereotypes('stereotype-name-domain-package')]"/>
+        <xsl:sequence select="$this/ancestor-or-self::imvert:package[ancestor-or-self::imvert:package/imvert:stereotype=imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))]"/>
     </xsl:function>
 </xsl:stylesheet>

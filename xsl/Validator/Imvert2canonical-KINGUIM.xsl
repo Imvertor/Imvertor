@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2canonical-KINGUIM.xsl 7389 2016-01-18 15:03:45Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -20,11 +35,8 @@
     
     <xsl:import href="Imvert2canonical-KING-common.xsl"/>
    
-    <xsl:variable name="stylesheet">Imvert2canonical-KINGUIM</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2canonical-KINGUIM.xsl 7389 2016-01-18 15:03:45Z arjan $</xsl:variable>
-    
     <xsl:variable name="application-package" select="$document-packages[imvert:name/@original = $application-package-name and imvert:stereotype = imf:get-config-stereotypes(('stereotype-name-application-package','stereotype-name-base-package'))][1]"/>
-    <xsl:variable name="application-domain-packages" select="$application-package//imvert:package[imvert:stereotype= imf:get-config-stereotypes('stereotype-name-domain-package')]"/>
+    <xsl:variable name="application-domain-packages" select="$application-package//imvert:package[imvert:stereotype= imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))]"/>
     <xsl:variable name="application-classes" select="$application-domain-packages//imvert:class"/>
     
     <xsl:variable name="all-copy-up-attributes" as="element()*">
@@ -67,7 +79,7 @@
 
     <xsl:template match="/imvert:packages">
         <imvert:packages>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="imvert:package"/>
         </imvert:packages>
     </xsl:template>
@@ -192,7 +204,7 @@
     <!-- Return the domain package for the contruct. -->
     <xsl:function name="imf:get-domain-package">
         <xsl:param name="this" as="element()"/>
-        <xsl:sequence select="$this/ancestor::imvert:package[imvert:stereotype = imf:get-config-stereotypes('stereotype-name-domain-package')]"/>
+        <xsl:sequence select="$this/ancestor::imvert:package[imvert:stereotype = imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))]"/>
     </xsl:function>
     
     <xsl:function name="imf:get-supers">

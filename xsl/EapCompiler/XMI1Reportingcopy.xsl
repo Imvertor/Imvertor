@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: XMI1Reportingcopy.xsl 7427 2016-02-16 13:12:30Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -28,10 +43,7 @@
     <xsl:import href="../common/Imvert-common-derivation.xsl"/>
     <xsl:import href="../common/Imvert-common-doc.xsl"/>
     
-    <xsl:variable name="stylesheet">XMI1Reportingcopy.xsl</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: XMI1Reportingcopy.xsl 7427 2016-02-16 13:12:30Z arjan $</xsl:variable>
-
-    <xsl:variable name="augmented" as="element()">
+       <xsl:variable name="augmented" as="element()">
         <xsl:apply-templates select="/*" mode="augment"/>
     </xsl:variable>
     
@@ -87,14 +99,14 @@
                     <xsl:variable name="cp-id" select="if (exists($classifier-role) and $collaboration-package/@xmi.id) then $collaboration-package/@xmi.id else ../../@xmi.id"/>
                     <xsl:variable name="general-construct" select="if (exists($cp-id)) then imf:get-construct-in-derivation-by-id($cp-id) else ()"/>
                     <xsl:variable name="compiled-documentation" select="imf:get-compiled-documentation($general-construct[1],$model-is-traced)"/>
-                    <xsl:variable name="compiled-tagged-values" select="imf:get-compiled-tagged-values($general-construct[1],$model-is-traced)"/>
+                    <xsl:variable name="compiled-tagged-values" select="imf:get-compiled-tagged-values($general-construct[1],$model-is-traced,false())"/>
                     <xsl:variable name="documentation-tv" as="element()*">
                         <xsl:if test="exists($compiled-tagged-values)">
                             <html:p>METADATA</html:p>
                             <html:ul>
                                 <xsl:for-each select="$compiled-tagged-values">
                                     <html:li>
-                                        <xsl:value-of select="concat(@name,': ',@value)"/>
+                                        <xsl:value-of select="concat(@original-name,': ',@original-value)"/>
                                     </html:li>
                                 </xsl:for-each>
                             </html:ul>

@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <config>
    <id>
       <name>Validator parameters</name>
-      <version-control>$Id: parms.xml 7417 2016-02-09 13:01:46Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7453 2016-03-04 10:44:25Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -21,6 +39,12 @@
          <name>validatetvmissing</name>
          <arg>yes|no</arg>
          <tip>Check if tagged values that are required are specified</tip>
+         <required>true</required>
+      </cli-parm> 
+      <cli-parm>
+         <name>validatedocmissing</name>
+         <arg>yes|no</arg>
+         <tip>Check if the notes fields that are reuqired are filled</tip>
          <required>true</required>
       </cli-parm> 
    </cli-parms>
@@ -57,10 +81,15 @@
       <IMVERTOR_METAMODEL_ISO19103_CANONICAL_XSLPATH>Imvert2canonical-ISO19103.xsl</IMVERTOR_METAMODEL_ISO19103_CANONICAL_XSLPATH>
       <IMVERTOR_METAMODEL_ISO19103_VALIDATE_XSLPATH>Imvert2validation-ISO19103.xsl</IMVERTOR_METAMODEL_ISO19103_VALIDATE_XSLPATH>
       
-      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH>
-      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_2>
-      <IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_3>Imvert2canonical-KINGUIM.xsl</IMVERTOR_METAMODEL_KINGUIM_CANONICAL_XSLPATH_3>
-      <IMVERTOR_METAMODEL_KINGUIM_VALIDATE_XSLPATH>Imvert2validation-KINGUIM.xsl</IMVERTOR_METAMODEL_KINGUIM_VALIDATE_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH_3>Imvert2canonical-KINGBSM.xsl</IMVERTOR_METAMODEL_KINGBSM_CANONICAL_XSLPATH_3>
+      <IMVERTOR_METAMODEL_KINGBSM_VALIDATE_XSLPATH>Imvert2validation-KINGBSM.xsl</IMVERTOR_METAMODEL_KINGBSM_VALIDATE_XSLPATH>
+      
+      <IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH_2>
+      <IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH_3>Imvert2canonical-KINGUGM.xsl</IMVERTOR_METAMODEL_KINGUGM_CANONICAL_XSLPATH_3>
+      <IMVERTOR_METAMODEL_KINGUGM_VALIDATE_XSLPATH>Imvert2validation-KINGUGM.xsl</IMVERTOR_METAMODEL_KINGUGM_VALIDATE_XSLPATH>
       
       <IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH>Imvert2canonical.xsl</IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH>
       <IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_2>Imvert2canonical-KING.xsl</IMVERTOR_METAMODEL_KINGSIM_CANONICAL_XSLPATH_2>

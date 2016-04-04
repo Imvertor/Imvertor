@@ -1,5 +1,3 @@
-// SVN: $Id: XMLGrammarBuilder.java 7362 2016-01-06 20:36:35Z arjan $
-
 package nl.imvertor.SchemaValidator.xerces;
 
 /*
@@ -39,7 +37,7 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
  * described at at http://xerces.apache.org/xerces2-j/faq-grammars.html#faq-3
  *
  * @author Neil Graham, IBM
- * @version $Id: XMLGrammarBuilder.java 7362 2016-01-06 20:36:35Z arjan $
+ * @version $Id: XMLGrammarBuilder.java 7431 2016-02-24 12:46:42Z arjan $
  */
 public class XMLGrammarBuilder implements XMLErrorHandler {
 

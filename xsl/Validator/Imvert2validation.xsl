@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2validation.xsl 7426 2016-02-15 14:47:02Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -26,9 +41,6 @@
     
     <xsl:import href="../common/Imvert-common.xsl"/>
     <xsl:import href="../common/Imvert-common-validation.xsl"/>
-    
-    <xsl:variable name="stylesheet">Imvert2validation</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: Imvert2validation.xsl 7426 2016-02-15 14:47:02Z arjan $</xsl:variable>
     
     <xsl:variable name="release-pattern">^(\d{8})$</xsl:variable>
     <xsl:variable name="phase-pattern">^(0|1|2|3)$</xsl:variable>
@@ -67,6 +79,7 @@
         <xsl:sequence select="imf:get-config-stereotypes('stereotype-name-system-package')"/>
         <xsl:sequence select="imf:get-config-stereotypes('stereotype-name-external-package')"/>
         <xsl:sequence select="imf:get-config-stereotypes('stereotype-name-domain-package')"/>
+        <xsl:sequence select="imf:get-config-stereotypes('stereotype-name-view-package')"/>
     </xsl:variable>
     <!-- Stereotypes that may occur in unions -->
     <xsl:variable name="union-element-stereotypes" as="xs:string*">
@@ -88,7 +101,7 @@
         The external package must also define any class that is referenced by the application.
     -->
     <xsl:variable name="external-package" select="//imvert:package[ancestor-or-self::imvert:package/imvert:stereotype=imf:get-config-stereotypes('stereotype-name-external-package') and (imvert:class/imvert:id = $application-package//(imvert:type-id | imvert:supertype/imvert:type-id)) or imvert:stereotype=imf:get-config-stereotypes('stereotype-name-system-package')]"/>
-    <xsl:variable name="domain-package" select="$application-package//imvert:package[imvert:stereotype=imf:get-config-stereotypes('stereotype-name-domain-package')]"/>
+    <xsl:variable name="domain-package" select="$application-package//imvert:package[imvert:stereotype=imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))]"/>
     <xsl:variable name="subdomain-package" select="$domain-package//imvert:package"/>
     
     <xsl:variable name="document-packages" select="($application-package,$domain-package,$subdomain-package,$external-package)"/>
@@ -284,7 +297,7 @@
     -->
     <xsl:template match="imvert:package[.=$domain-package]" priority="50">
         <!--setup-->
-        <xsl:variable name="is-schema-package" select="if (imvert:stereotype = imf:get-config-stereotypes('stereotype-name-domain-package')) then true() else false()"/>
+        <xsl:variable name="is-schema-package" select="if (imvert:stereotype = imf:get-config-stereotypes(('stereotype-name-domain-package','stereotype-name-view-package'))) then true() else false()"/>
         <xsl:variable name="classnames" select="distinct-values(imf:get-duplicates(.//imvert:class/imvert:name))" as="xs:string*"/>
         <xsl:variable name="xref-objects" select=".//imvert:class[imvert:stereotype=$xref-element-stereotypes]"/>
         <xsl:variable name="application" select="ancestor::imvert:package[imvert:stereotype=$top-package-stereotypes][1]"/>
@@ -948,14 +961,9 @@
         select="(
         '#any',
         '#mix',
-        'JAAR',
-        'JAARMAAND',
-        'DATUM',
-        'DT',
-        'INDIC',
-        'URI',
-        'TXT',
+        'uri',
         'char',
+        'string',
         'integer',
         'boolean',
         'decimal',
@@ -1114,7 +1122,7 @@
                 
                 <xsl:variable name="required-as-found" select="($declared/stereotypes/stereo[. = $stereotype]/@required)[last()]"/>
                 <xsl:variable name="value-required" select="imf:boolean(if ($required-as-found) then $required-as-found else 'false')"/>
-                <xsl:variable name="value-listing" select="$declared/declared-values/value"/>
+                <xsl:variable name="value-listing" select="($declared/declared-values)[last()]/value"/>
               
                 <xsl:variable name="valid-for-stereotype" select="$declared/stereotypes/stereo = $stereotype"/>
                 <xsl:variable name="valid-omitted" select="empty($stereotype) and $declared/stereotypes/stereo = $normalized-stereotype-none"/>
@@ -1180,6 +1188,10 @@
 
     <xsl:function name="imf:test-name-convention" as="xs:boolean">
         <xsl:param name="this" as="element()"/>
+        <xsl:sequence select="true()"/>
+        
+        <!-- TODO needed? we change names when creating the base imvert file, in canonization -->
+        <?T
         <xsl:variable name="type" select="local-name($this)"/>
         <xsl:variable name="convention" select="
             if ($type='package') then $convention-package-name-pattern
@@ -1189,8 +1201,9 @@
             else '?'"
         />
         <xsl:value-of select="matches($this/imvert:name,$convention)"/>
+        ?>
     </xsl:function>
-
+   
     <!-- 
         True if the release of the class which property is passed is newer than or equal to the release of the type 
         When the type release is not known, assume age compatibility. 

@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2compare-report-horizontal.xsl 7266 2015-09-17 12:42:54Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -19,24 +34,17 @@
     <xsl:variable name="test-name-map" select="document($test-name-mapping-filepath)/maps/map" as="element()*"/>
     
     <xsl:template name="fetch-comparison-report">
+        <xsl:param name="title"/>
+        <xsl:param name="info"/>
+        <xsl:param name="intro"/>
         <page>
-            <title>Release comparison</title>
+            <title><xsl:value-of select="$title"/></title>
             <info>
-                <xsl:value-of select="concat('(', count(/imvert:report/imvert:diffs/imvert:diff),' differences)')"/>
+                <xsl:sequence select="$info"/>
             </info>
             <content>
                 <div class="intro">
-                    <p>
-                        This table show all differences between two versions of an Imvert XML:
-                        <ul>
-                            <li>
-                                Control: The previous release.
-                            </li>
-                            <li>
-                                Test: the current release. 
-                            </li>
-                        </ul> 
-                    </p>
+                    <xsl:sequence select="$intro"/>
                 </div>   
                 <xsl:choose>
                     <xsl:when test="exists(/imvert:report/imvert:diffs)">
@@ -82,15 +90,19 @@
                 <xsl:if test="$info/../@level='system'">
                     <xsl:attribute name="class">cmp-system</xsl:attribute>
                 </xsl:if>
+                <!-- package -->
                 <td>
-                    <xsl:value-of select="$tokens[1]"/>
+                    <xsl:value-of select="if ($tokens[1] = 'AAROOT') then '(Model)' else $tokens[1]"/>
                 </td>
+                <!-- class -->
                 <td>
                     <xsl:value-of select="$tokens[2]"/>
                 </td>
+                <!-- Attrib/assoc -->
                 <td>
                     <xsl:value-of select="$tokens[3]"/>
                 </td>
+                <!-- property -->
                 <td>
                     <xsl:variable name="type" select="imvert:type"/>
                     <xsl:variable name="orig-tv-ctrl" select="$ctrl-name-map[@elm=$type]/@orig"/>
@@ -98,21 +110,26 @@
                     <xsl:variable name="orig-tv" select="if (exists($orig-tv-ctrl)) then $orig-tv-ctrl else $orig-tv-test"/>
                     <xsl:value-of select="if (starts-with($type,'tv_')) then $orig-tv else $type"/>
                 </td>
+                <!-- explain -->
                 <td>
                     <xsl:value-of select="$info"/>
                 </td>
+                <!-- lvl  -->
                 <td>
                     <xsl:value-of select="($info/../@level,'model')[1]"/>
                 </td>
+                <!-- change-->
                 <td>
                     <xsl:value-of select="imvert:change"/>
                 </td>
+                <!-- ctrl construct -->
                 <td>
                     <xsl:if test="imvert:change = 'value'">
                         <xsl:attribute name="class">code</xsl:attribute>
                     </xsl:if>
                     <xsl:value-of select="imvert:ctrl"/>
                 </td>
+                <!-- test construct -->
                 <td>
                     <xsl:if test="imvert:change = 'value'">
                         <xsl:attribute name="class">code</xsl:attribute>

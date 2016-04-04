@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert2report-trace.xsl 7266 2015-09-17 12:42:54Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -26,37 +41,41 @@
     <xsl:variable name="model-is-traced" select="imf:boolean(imf:get-config-string('cli','modelistraced'))"/>
     
     <xsl:template match="imvert:packages" mode="trace">
-        <page>
-            <title>Derivation Traces</title>
-            <content>
-                <div>
-                    <div class="intro">
-                        <p>
-                            This is a technical overview of all traces explicitly created between classes, attributes and associations. 
-                        </p>
-                        <p>
-                            The full name of the construct is show (Package::Class.property), along with the ID. Each column represents a next derivation model.
-                        </p>
-                        <p>
-                            Possible errors reported are 1/ recursion when an object traces an object already traced, 2/ missing suppliers, where a trace is set but the traced construct is not available.
-                        </p>
+        <!-- return a trace documentation page only when deriving -->
+        <xsl:if test="exists($pairs/imvert:supplier[2])">
+            <page>
+                <title>Derivation Traces</title>
+                <content>
+                    <div>
+                        <div class="intro">
+                            <p>
+                                This is a technical overview of all traces explicitly created between classes, attributes and associations. 
+                            </p>
+                            <p>
+                                The full name of the construct is show (Package::Class.property), along with the ID. Each column represents a next derivation model.
+                            </p>
+                            <p>
+                                Possible errors reported are 1/ recursion when an object traces an object already traced, 2/ missing suppliers, where a trace is set but the traced construct is not available.
+                            </p>
+                        </div>
+                        <table>
+                            <!-- <xsl:sequence select="imf:create-table-header('type:10,client:10,package:10,class:10,property:10,supplier:10,package:10,class:10,property:10')"/> -->
+                            <xsl:variable name="h" as="xs:string*">
+                                <xsl:for-each select="$pairs[1]/imvert:supplier">
+                                    <xsl:value-of select="@application"/>
+                                </xsl:for-each>
+                            </xsl:variable>
+                            <xsl:variable name="cols" select="count($pairs[1]/imvert:supplier)"/>
+                            <xsl:variable name="colwidth" select="90 div (if ($cols = 0) then 1 else $cols)"/>
+                            <xsl:variable name="h2" select="string-join(($h,''),concat(':',$colwidth,','))"/>
+                            <xsl:variable name="h3" select="concat('type:10,',$h2)"/>
+                            <xsl:sequence select="imf:create-table-header($h3)"/>    
+                            <xsl:apply-templates select="$pairs/imvert:supplier[1]" mode="trace"/>
+                        </table>
                     </div>
-                    <table>
-                        <!-- <xsl:sequence select="imf:create-table-header('type:10,client:10,package:10,class:10,property:10,supplier:10,package:10,class:10,property:10')"/> -->
-                        <xsl:variable name="h" as="xs:string*">
-                            <xsl:for-each select="$pairs[1]/imvert:supplier">
-                                <xsl:value-of select="@application"/>
-                            </xsl:for-each>
-                        </xsl:variable>
-                        <xsl:variable name="colwidth" select="90 div count($pairs[1]/imvert:supplier)"/>
-                        <xsl:variable name="h2" select="string-join(($h,''),concat(':',$colwidth,','))"/>
-                        <xsl:variable name="h3" select="concat('type:10,',$h2)"/>
-                       <xsl:sequence select="imf:create-table-header($h3)"/>    
-                        <xsl:apply-templates select="$pairs/imvert:supplier[1]" mode="trace"/>
-                    </table>
-                </div>
-            </content>
-        </page>
+                </content>
+            </page>
+        </xsl:if>
     </xsl:template>
  
     <xsl:template match="imvert:supplier" mode="trace">

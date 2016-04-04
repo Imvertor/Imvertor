@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: XMI1Imvert.xsl 7424 2016-02-15 10:58:15Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -24,9 +39,6 @@
     
     <!-- Transform XMI 1.1 to Imvert format. According to metamodel BP. -->
  
-    <xsl:variable name="stylesheet">XMI1Imvert</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: XMI1Imvert.xsl 7424 2016-02-15 10:58:15Z arjan $</xsl:variable>
-    
     <xsl:variable name="document" select="/"/>
 
     <xsl:variable 
@@ -101,7 +113,7 @@
             <xsl:sequence select="imf:create-output-element('imvert:generator',$imvertor-version)"/>
             <xsl:sequence select="imf:create-output-element('imvert:exported',concat(replace(/XMI/@timestamp,' ','T'),'Z'))"/>
             <xsl:sequence select="imf:create-output-element('imvert:exporter',concat(//XMI.documentation/XMI.exporter,' v ', //XMI.documentation/XMI.exporterVersion))"/>
-            <xsl:sequence select="imf:compile-imvert-filter($stylesheet, $stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-filter()"/>
             
             <xsl:variable name="project-name-shown" select="($project-name, concat($owner-name,': ',$project-name))" as="xs:string+"/>
             <xsl:variable name="root-package" select="$document-packages[imf:get-normalized-name(@name,'system-name') = $project-name-shown][imf:get-stereotypes(.)=imf:get-config-stereotypes('stereotype-name-project-package')]"/>
@@ -570,15 +582,8 @@
                         <xsl:variable name="pattern" select="regex-group(5)"/>
                         <!--<xsl:message select="string-join(($type-name, $type, $positions, $decimals,$pattern),', ')"></xsl:message>-->
                         <xsl:choose>
-                            <xsl:when test="$type='TXT'"><!-- TODO baretype TXT ocurs in which metamodel? -->
-                                <xsl:sequence select="imf:create-output-element('imvert:type-name','char')"/>
-                            </xsl:when>
-                            <xsl:when test="$type='A'"><!-- TODO baretype "A", KING requirement? -->
-                                <xsl:sequence select="imf:create-output-element('imvert:type-name','letter')"/>
-                                <xsl:sequence select="imf:create-output-element('imvert:max-length',$positions)"/>
-                            </xsl:when>
                             <xsl:when test="$type='AN'">
-                                <xsl:sequence select="imf:create-output-element('imvert:type-name','char')"/>
+                                <xsl:sequence select="imf:create-output-element('imvert:type-name','string')"/><!-- used to be 'char' -->
                                 <xsl:sequence select="imf:create-output-element('imvert:max-length',$positions)"/>
                             </xsl:when>
                             <xsl:when test="$type='N' and not($decimals)">
@@ -613,9 +618,13 @@
                 <xsl:sequence select="imf:create-output-element('imvert:baretype',$type-normname)"/>
                 <xsl:sequence select="imf:create-output-element('imvert:type-name','datetime')"/>
             </xsl:when>
-            <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('URI', 'TXT','POSTCODE')"> <!-- TODO postcode opnemen als native type is niet juist -->
+            <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('URI')">
                 <xsl:sequence select="imf:create-output-element('imvert:baretype',$type-normname)"/>
-                <xsl:sequence select="imf:create-output-element('imvert:type-name','char')"/>
+                <xsl:sequence select="imf:create-output-element('imvert:type-name','uri')"/>
+            </xsl:when>
+            <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('TXT','POSTCODE')"> <!-- TODO postcode opnemen als native type is niet juist -->
+                <xsl:sequence select="imf:create-output-element('imvert:baretype',$type-normname)"/>
+                <xsl:sequence select="imf:create-output-element('imvert:type-name','string')"/>
             </xsl:when>
             <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('INDIC','INDICATIE')">
                 <xsl:sequence select="imf:create-output-element('imvert:baretype','INDIC')"/>
@@ -780,13 +789,6 @@
     <xsl:function name="imf:get-tagged-values" as="item()*">
         <xsl:param name="this" as="node()"/>
         <xsl:param name="tagged-value-name" as="xs:string*"/>
-        <xsl:sequence select="imf:get-tagged-values($this,$tagged-value-name,'space')"/>
-    </xsl:function>
-    
-    <xsl:function name="imf:get-tagged-values" as="item()*">
-        <xsl:param name="this" as="node()"/>
-        <xsl:param name="tagged-value-name" as="xs:string*"/>
-        <xsl:param name="normalized" as="xs:string?"/>
         <!-- 
             this implements the equivalent of:
             if ($local-value) then $local-value else 
@@ -797,7 +799,7 @@
             ()
         -->
         <xsl:variable name="tagged-values" select="$this/UML:ModelElement.taggedValue/UML:TaggedValue[imf:name-match(@tag,$tagged-value-name,'tv-name')]"/>
-        <xsl:variable name="local-value" select="imf:get-tagged-value-norm($tagged-values[1],$normalized)"/>
+        <xsl:variable name="local-value" select="$tagged-values[1]"/>
         <xsl:choose>
             <xsl:when test="exists($local-value)">
                  <xsl:sequence select="$local-value"/>   
@@ -807,7 +809,7 @@
                 <xsl:if test="$tagged-values[2]"> 
                    <xsl:sequence select="imf:msg('WARN','Duplicate assignment of tagged value (2) [1] at [2]', ($tagged-value-name, $this/@name))"/>
                 </xsl:if>
-                <xsl:variable name="global-value" select="imf:get-tagged-value-norm($tagged-values[1],$normalized)"/>
+                <xsl:variable name="global-value" select="$tagged-values[1]"/>
                 <xsl:choose>
                     <xsl:when test="exists($global-value)">
                         <xsl:sequence select="$global-value"/>   
@@ -818,7 +820,7 @@
                         <xsl:if test="$tagged-values[2]"> 
                             <xsl:sequence select="imf:msg('WARN','Duplicate assignment of tagged value [1] within classifier role [2]', ($tagged-value-name,$crole/@name))"/>
                         </xsl:if>
-                        <xsl:variable name="local-cr-value" select="imf:get-tagged-value-norm($tagged-values[1],$normalized)"/>
+                        <xsl:variable name="local-cr-value" select="$tagged-values[1]"/>
                         <xsl:choose>
                             <xsl:when test="exists($local-cr-value)">
                                 <xsl:sequence select="$local-cr-value"/>   
@@ -828,7 +830,7 @@
                                 <xsl:if test="$tagged-values[2]"> 
                                     <xsl:sequence select="imf:msg('WARN','Duplicate assignment of tagged value [1] at classifier role [2]', ($tagged-value-name,$crole/@name))"/>
                                 </xsl:if>
-                                <xsl:variable name="global-cr-value" select="imf:get-tagged-value-norm($tagged-values[1],$normalized)"/>
+                                <xsl:variable name="global-cr-value" select="$tagged-values[1]"/>
                                 <xsl:choose>
                                     <xsl:when test="exists($global-cr-value)">
                                         <xsl:sequence select="$global-cr-value"/>   
@@ -839,7 +841,7 @@
                                         <xsl:if test="$tagged-values[2]"> 
                                             <xsl:sequence select="imf:msg('WARN','Duplicate assignment of tagged value [1] at root model [2]', ($tagged-value-name,$root-model/@name))"/>
                                         </xsl:if>
-                                        <xsl:variable name="root-model-value" select="imf:get-tagged-value-norm($tagged-values[1],$normalized)"/>
+                                        <xsl:variable name="root-model-value" select="$tagged-values[1]"/>
                                         <xsl:choose>
                                             <xsl:when test="exists($root-model-value)">
                                                 <xsl:sequence select="$root-model-value"/>   
@@ -853,6 +855,13 @@
                 </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:function>
+    
+    <xsl:function name="imf:get-tagged-values">
+        <xsl:param name="this" as="node()"/>
+        <xsl:param name="tagged-value-name" as="xs:string*"/>
+        <xsl:param name="normalized" as="xs:string"/>
+        <xsl:sequence select="for $tv in imf:get-tagged-values($this,$tagged-value-name) return imf:get-tagged-value-norm($tv,$normalized)"/>
     </xsl:function>
     
     <!-- return normalized string value, or HTML content when applicable -->
@@ -880,16 +889,12 @@
                     then $tv/XMI.extension/UML:Comment/@name
                     else $tokens[1]
             "/>
-            <!-- either "space" or "note" --> 
             <xsl:sequence select="
                 if (exists($value-select))
                 then 
-                    if ($norm = 'space') 
-                    then normalize-space($value-select) 
-                    else imf:import-ea-note($value-select)
+                    imf:get-tagged-value-norm-by-scheme($value-select,$norm,'tv')
                 else
                     ()"/>
-                    
         </xsl:if>
    </xsl:function>
     
@@ -1196,18 +1201,22 @@
         <xsl:param name="this" as="element()"/>
         <imvert:tagged-values>
             <xsl:for-each-group select="$additional-tagged-values" group-by="@id"> <!-- a set of tv elements, for a particular name -->
-                <xsl:for-each select="current-group()[1]">
+                <xsl:for-each select="current-group()[last()]">
                     <xsl:variable name="n" select="name"/> <!-- a normalized name <n original="">name ; may be multiple and may be duplicate -->
                     <xsl:for-each select="$n">
                         <xsl:variable name="nname" select="."/>
-                        <xsl:variable name="norm" select="@norm"/>
-                        <xsl:variable name="v" select="imf:get-tagged-value($this,$nname,$norm)"/>
-                        <xsl:if test="exists($v)">
+                        <xsl:variable name="norm" select="../@norm"/>
+                        <!-- TODO solve a duplicate (redundant) call here --> 
+                        <xsl:variable name="value-orig" select="imf:get-tagged-value($this,$nname)"/>
+                        <xsl:variable name="value-norm" select="imf:get-tagged-value($this,$nname,$norm)"/>
+                        <xsl:if test="exists($value-orig)">
                             <imvert:tagged-value>
                                 <imvert:name original="{$nname/@original}">
                                     <xsl:value-of select="$nname"/>         
                                 </imvert:name>
-                                <xsl:sequence select="imf:create-output-element('imvert:value',$v)"/>
+                                <imvert:value original="{$value-orig}">
+                                    <xsl:sequence select="$value-norm"/>
+                                </imvert:value>
                             </imvert:tagged-value>
                         </xsl:if>
                     </xsl:for-each>

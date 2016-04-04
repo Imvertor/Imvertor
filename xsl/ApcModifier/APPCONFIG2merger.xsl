@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: APPCONFIG2merger.xsl 7396 2016-01-26 13:02:55Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -24,9 +39,6 @@
     
     <xsl:output indent="no"/>
     
-    <xsl:variable name="stylesheet">APPCONFIG2merger.xsl</xsl:variable>
-    <xsl:variable name="stylesheet-version">$Id: APPCONFIG2merger.xsl 7396 2016-01-26 13:02:55Z arjan $</xsl:variable>
-    
     <xsl:variable name="imvert-appconfig-path" select="imf:get-config-string('properties','WORK_APPCONFIG_FILE')"/>
     <xsl:variable name="imvert-appconfig-url" select="imf:filespec($imvert-appconfig-path)[2]"/>
     
@@ -37,7 +49,7 @@
     
     <xsl:template match="/imvert:packages">
         <imvert:packages>
-            <xsl:sequence select="imf:compile-imvert-header(.,$stylesheet,$stylesheet-version)"/>
+            <xsl:sequence select="imf:compile-imvert-header(.)"/>
             <xsl:apply-templates select="imvert:package"/>
         </imvert:packages>
     </xsl:template>

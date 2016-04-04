@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.HistoryCompiler;
 
 import java.io.File;
@@ -16,7 +36,7 @@ public class HistoryCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "HistoryCompiler";
-	public static final String VC_IDENTIFIER = "$Id: HistoryCompiler.java 7419 2016-02-09 15:42:49Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: HistoryCompiler.java 7457 2016-03-05 08:43:43Z arjan $";
 
 	// TODO transformer per step?? as property like this?
 	Transformer transformer;
@@ -77,9 +97,8 @@ public class HistoryCompiler extends Step {
 	
 			// copy the file to the etc folder for future reference and comparisons
 			AnyFolder etcFolder = new AnyFolder(configurator.getParm("system","work-etc-folder-path"));
-			String an = configurator.getParm("appinfo","application-name");
 			XmlFile infoVersionsFile = new XmlFile(configurator.getParm("properties", "WORK_HISTORY_FILE"));	
-			XmlFile hisModelFile = new XmlFile(etcFolder,an + ".history.imvert.xml");	
+			XmlFile hisModelFile = new XmlFile(etcFolder,"history.imvert.xml");	
 			infoVersionsFile.copyFile(hisModelFile);
 			
 			return succeeds;

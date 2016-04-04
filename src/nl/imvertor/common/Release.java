@@ -1,4 +1,3 @@
-// SVN: $Id: Release.java 7427 2016-02-16 13:12:30Z arjan $
 /*
  * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
  * 
@@ -18,6 +17,7 @@
  * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package nl.imvertor.common;
 
 
@@ -31,9 +31,9 @@ public class Release {
 	// TODO determine a valid version identifier based on all resources, i.e. java and XSLT 
 	
 	// change version number manually here, on each adaptation made in the imvertor sources! 
-	private static String imvertorVersion = "Imvertor OS 0.69.1"; // 
+	private static String imvertorVersion = "Imvertor OS 0.85"; // 
 	
-	private static String imvertorSVNVersion = val("$Id: Release.java 7427 2016-02-16 13:12:30Z arjan $");
+	private static String imvertorSVNVersion = val("$Id: Release.java 7481 2016-03-28 08:40:41Z arjan $");
 	
 	public static String getVersion() {
 		return imvertorVersion;
@@ -53,8 +53,8 @@ public class Release {
 	
 	public static String getNotice() {
 		return 
-				"Copyright (C) 2016 Dienst voor het kadaster en de openbare registers\n" 
-				+ "This program comes with ABSOLUTELY NO WARRANTY; for details pass -help program\n" 
+				"Copyright (C) 2016 Dienst voor het Kadaster en de openbare registers.\n" 
+				+ "This program comes with ABSOLUTELY NO WARRANTY; for details pass -help program.\n" 
 				+ "This is free software, and you are welcome to redistribute it " 
 				+ "under certain conditions; pass -help license for full details.\n";
 	}
@@ -71,14 +71,6 @@ public class Release {
 				+ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
 				+ "GNU General Public License for more details.\n"
 				+ "\n"
-				+ "You should have received a copy of the GNU General Public License "
-				+ "along with Imvertor. If not, see <http://www.gnu.org/licenses/>.";
+				+ "A copy of the GNU General Public License is placed in install folder.";
 	}
-	
-	public static String getConditions() {
-		return 
-				".......conditions go here.....";
-	}
-	
-	
 }

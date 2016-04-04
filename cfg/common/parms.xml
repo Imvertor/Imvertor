@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <config>
    <id>
       <name>Standard initial parameters</name>
-      <version-control>$Id: parms.xml 7417 2016-02-09 13:01:46Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7434 2016-02-26 12:37:57Z arjan $</version-control>
    </id>
    
    <cli-parms>
@@ -20,9 +38,9 @@
       </cli-parm> 
       <cli-parm>
          <name>language</name>
-         <arg>code</arg>
-         <tip>A language code from ISO 639-1. If unspecified or unsupported, assume "en".</tip>
-         <required>false</required>
+         <arg>ISO 639-1</arg>
+         <tip>Langugage of the model configurations in UML. A language code from ISO 639-1. If unspecified or unsupported, assume "en".</tip>
+         <required>true</required>
       </cli-parm> 
       <cli-parm>
          <name>debug</name>
@@ -118,6 +136,9 @@
       
       <!-- folder what will hold the release of this application --> 
       <APPLICATION_FOLDER>${properties/APPLICATION_BASE_FOLDER}/${appinfo/release}</APPLICATION_FOLDER>
+      
+      <!-- folder what will hold the release of this application when it is invalid, and should not override existing application --> 
+      <INVALID_APPLICATION_FOLDER>${properties/APPLICATION_BASE_FOLDER}/${appinfo/release}-invalid</INVALID_APPLICATION_FOLDER>
       
       <!--  Excel to XML -->
       <WORKBOOK_DTD>${system/etc-folder-path}/dtd/workbook.dtd</WORKBOOK_DTD>

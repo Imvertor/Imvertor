@@ -1,4 +1,22 @@
-// SVN: $Id: ZipFile.java 7323 2015-11-25 10:17:17Z arjan $
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
 package nl.imvertor.common.file;
 
@@ -39,6 +57,10 @@ public class ZipFile extends AnyFile {
     
 	public ZipFile(String zipFilePath) throws IOException {
 		super(zipFilePath);
+		fileList = new ArrayList<String>();
+	}
+	public ZipFile(File folder, String file) throws IOException {
+		super(folder, file);
 		fileList = new ArrayList<String>();
 	}
 	
@@ -152,20 +174,22 @@ public class ZipFile extends AnyFile {
 		ZipEntry ze = zis.getNextEntry();
 
 		while(ze!=null){
-			String fileName = ze.getName();
-			// if the pattern specified, use a matcher. Otherwise accept any file.
-			Matcher m = (requestedFilePattern != null) ? requestedFilePattern.matcher(fileName) : null;
-			if (requestedFilePattern == null || m.find()) {
-				File newFile = new File(outputFolder + File.separator + fileName);
-				//create all non exists folders
-				//else you will hit FileNotFoundException for compressed folder
-				new File(newFile.getParent()).mkdirs();
-				FileOutputStream fos = new FileOutputStream(newFile);             
-				int len;
-				while ((len = zis.read(buffer)) > 0) {
-					fos.write(buffer, 0, len);
+			if (!ze.isDirectory()) {
+				String fileName = ze.getName();
+				// if the pattern specified, use a matcher. Otherwise accept any file.
+				Matcher m = (requestedFilePattern != null) ? requestedFilePattern.matcher(fileName) : null;
+				if (requestedFilePattern == null || m.find()) {
+					File newFile = new File(outputFolder + File.separator + fileName);
+					//create all non exists folders
+					//else you will hit FileNotFoundException for compressed folder
+					new File(newFile.getParent()).mkdirs();
+					FileOutputStream fos = new FileOutputStream(newFile);             
+					int len;
+					while ((len = zis.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
+					fos.close();   
 				}
-				fos.close();   
 			}
 			ze = zis.getNextEntry();
 		}
@@ -251,10 +275,10 @@ public class ZipFile extends AnyFile {
     	XmlFile contentFile = new XmlFile(serializeFolder,"__content.xml");
     	// test if this is a non-exitsing zip file
     	if (exists() && !replace)
-    		throw new Exception("ZIP file exists: " + getAbsolutePath());
+    		throw new Exception("ZIP file exists: " + getCanonicalPath());
     	//get the content file.
       	if (!serializeFolder.exists())
-    		throw new Exception("Serialized folder doesn't exist: " + serializeFolder.getAbsolutePath());
+    		throw new Exception("Serialized folder doesn't exist: " + serializeFolder.getCanonicalPath());
     	if (!contentFile.exists())
     		throw new Exception("Serialized folder has invalid format");
     	// process the XML and recreate the ZIP structure.
@@ -287,10 +311,12 @@ public class ZipFile extends AnyFile {
     				throw new Exception("Unknown result file type: \"" + fileType + "\"");
     		}
     	}
-    	// done; remove the __content.xml file, pack to result, and remove the work folder.
+    	// done; remove the __content.xml file, pack to result
     	contentFile.delete();
     	compress(serializeFolder);
-    	serializeFolder.deleteDirectory();
+    	
+    	// and remove the work folder.
+    	//serializeFolder.deleteDirectory();
     }
     
     /**

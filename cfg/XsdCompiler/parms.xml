@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <config>
    <id>
       <name>XML schema compiler</name>
-      <version-control>$Id: parms.xml 7415 2016-02-08 09:02:51Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7487 2016-04-02 07:27:03Z arjan $</version-control>
    </id>
    <cli-parms>
       <cli-parm>
@@ -85,16 +103,30 @@
       <!-- copy schemas -->
       <EXTERNAL_XSD_FOLDER>${system/managedinputfolder}/xsd</EXTERNAL_XSD_FOLDER>
       
-      <!-- KINGUIM: -->
+      <!-- KINGUGM: -->
       
-      <IMVERTOR_METAMODEL_KINGUIM_XSDSOURCE>system</IMVERTOR_METAMODEL_KINGUIM_XSDSOURCE>
-    
-      <IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_MSG_XSLPATH>Imvert2XSD-KING-endproduct-msg.xsl</IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_MSG_XSLPATH>
-      <IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XML_XSLPATH>Imvert2XSD-KING-endproduct-xml.xsl</IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XML_XSLPATH>
-      <IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XSD_XSLPATH>Imvert2XSD-KING-endproduct-xsd.xsl</IMVERTOR_METAMODEL_KINGUIM_ENDPRODUCT_XSD_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUGM_XSDSOURCE>system</IMVERTOR_METAMODEL_KINGUGM_XSDSOURCE>
+      
+      <IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_MSG_XSLPATH>Imvert2XSD-KING-endproduct-msg.xsl</IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_MSG_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XML_XSLPATH>Imvert2XSD-KING-endproduct-xml.xsl</IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XML_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XSD_XSLPATH>Imvert2XSD-KING-endproduct-xsd.xsl</IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT_XSD_XSLPATH>
       
       <!-- werkend op model: (oude situatie voor halffabrikaten) --> 
-      <IMVERTOR_METAMODEL_KINGUIM_XSD_XSLPATH>Imvert2XSD-KING.xsl</IMVERTOR_METAMODEL_KINGUIM_XSD_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGUGM_XSD_XSLPATH>Imvert2XSD-KING.xsl</IMVERTOR_METAMODEL_KINGUGM_XSD_XSLPATH>
+      
+      <!-- KINGBSM: berichten omzetten naar schema -->
+      <IMVERTOR_METAMODEL_KINGBSM_XSDSOURCE>system</IMVERTOR_METAMODEL_KINGBSM_XSDSOURCE>
+      
+      <IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_MSG_XSLPATH>Imvert2XSD-KING-endproduct-msg.xsl</IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_MSG_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_XML_XSLPATH>Imvert2XSD-KING-endproduct-xml.xsl</IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_XML_XSLPATH>
+      <IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_XSD_XSLPATH>Imvert2XSD-KING-endproduct-xsd.xsl</IMVERTOR_METAMODEL_KINGBSM_ENDPRODUCT_XSD_XSLPATH>
+      
+      <!-- werkend op model: (oude situatie voor halffabrikaten) --> 
+      <IMVERTOR_METAMODEL_KINGBSM_XSD_XSLPATH>Imvert2XSD-KING.xsl</IMVERTOR_METAMODEL_KINGBSM_XSD_XSLPATH>
+  
+        <!-- tijdelij: omzetten naar EP2 formaat (nieuwe formaat) -->
+      <IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT-patch1_XML_XSLPATH>Imvert2XSD-KING-endproduct-patch1-xml.xsl</IMVERTOR_METAMODEL_KINGUGM_ENDPRODUCT-patch1_XML_XSLPATH>
+      <RESULT_ENDPRODUCT-patch1_XML_FILE_PATH>${system/work-imvert-folder-path}/imvertor.28.endproduct-patch1-xml.xml</RESULT_ENDPRODUCT-patch1_XML_FILE_PATH>   
       
       
       <RESULT_XSD_XML_FILE_PATH>${system/work-xsd-folder-path}/${appinfo/project-name}.xml</RESULT_XSD_XML_FILE_PATH>   

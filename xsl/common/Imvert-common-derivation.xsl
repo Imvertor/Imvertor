@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <xsl:stylesheet    
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
@@ -86,13 +104,14 @@
 		<xsl:variable name="result" as="item()*">
 			<xsl:for-each select="$layers">
 				<xsl:if test="position() = 1 or imf:boolean($derive-documentation)">
-					<xsl:variable name="doc" select="*/imvert:documentation"/>
-						<xsl:if test="position() gt 1">
-							<html:p>
-								<xsl:value-of select="concat(imf:get-config-parameter('documentation-separator'),@application,' (', @release, ')',imf:get-config-parameter('documentation-separator'))"/>
-							</html:p>
-						</xsl:if>
-						<xsl:sequence select="$doc/node()"/>
+					<xsl:variable name="doc" select="*/imvert:documentation[*]"/>
+					<!-- if supplier has documentation, mark this as extracted from the supplier -->
+					<xsl:if test="position() gt 1 and exists($doc/node())">
+						<p class="supplierMark" xmlns="http://www.w3.org/1999/xhtml">
+							<xsl:value-of select="concat(imf:get-config-parameter('documentation-separator'),@application,' (', @release, ')',imf:get-config-parameter('documentation-separator'))"/>
+						</p>
+					</xsl:if>
+					<xsl:sequence select="$doc/node()"/>
 				</xsl:if>
 			</xsl:for-each>
 		</xsl:variable>
@@ -105,15 +124,40 @@
 	<xsl:function name="imf:get-compiled-tagged-values" as="element()*">
 		<xsl:param name="construct" as="element()"/> <!-- any construct that may have tagged values -->
 		<xsl:param name="is-traced" as="xs:boolean"/>
-		
+		<xsl:param name="include-empty" as="xs:boolean"/>
+			
 		<xsl:variable name="layers" select="imf:get-construct-in-all-layers($construct,true(),$is-traced)"/>
 		<xsl:variable name="tvs" as="element()*">
-			<xsl:for-each select="imf:get-config-tagged-values()"> <!-- returns tv elements -->
-				<xsl:variable name="tv-name" select="name"/>
-				<d name="{$tv-name}" value="{($layers/*/imvert:tagged-values/imvert:tagged-value[imvert:name=$tv-name]/imvert:value)[last()]}"/>
-			</xsl:for-each>
+			<xsl:for-each-group select="imf:get-config-tagged-values()" group-by="name"> <!-- returns tv elements -->
+				<xsl:for-each select="current-group()[last()]">
+					<!-- The tagged value is declared -->
+					<xsl:variable name="tv-name" select="name"/>
+					<xsl:variable name="tv" select="($layers/*/imvert:tagged-values/imvert:tagged-value[imvert:name=$tv-name])[last()]"/>
+					<xsl:if test="exists($tv)">
+						<!-- The tagged value is provided, there's a most specific value -->
+						<xsl:variable name="supplier" select="imf:get-supplier-from-layers($tv)"/>
+						<xsl:variable name="local" select="if (empty($supplier/preceding-sibling::*)) then 'true' else 'false'"/>
+						<d 
+							name="{$tv-name}" 
+							original-name="{$tv/imvert:name/@original}" 
+							value="{$tv/imvert:value}" 
+							original-value="{$tv/imvert:value/@original}" 
+							project="{$supplier/@project}"
+							application="{$supplier/@application}"
+							release="{$supplier/@release}"
+							local="{$local}"
+						/>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:for-each-group>
 		</xsl:variable>
-		<xsl:sequence select="$tvs[normalize-space(@value)]"/>
+		<xsl:sequence select="if ($include-empty) then $tvs else $tvs[normalize-space(@value)]"/>
+	</xsl:function>
+	
+	<xsl:function name="imf:get-supplier-from-layers">
+		<xsl:param name="construct" as="element()"/>
+		<xsl:variable name="construct-id" select="($construct/ancestor::*[imvert:id])[1]/imvert:id"/>
+		<xsl:sequence select="imf:get-construct-by-id($construct-id,$derivation-tree)/ancestor::imvert:supplier"/>
 	</xsl:function>
 	
 	<xsl:function name="imf:get-adapted-display-name" as="xs:string?">

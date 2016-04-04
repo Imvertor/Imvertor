@@ -1,5 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    SVN: $Id: Imvert-common-config.xsl 7189 2015-07-29 14:59:39Z arjan $ 
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     
@@ -18,7 +34,7 @@
         <xsl:param name="group"/>
         <xsl:param name="name"/>
         <xsl:sequence select="(
-            ext:imvertorParameterFile('GET',string($group),string($name),())
+            ext:imvertorParameterFile('GET',string($group),string($name),(),())
             )"/>      
     </xsl:function>
     
@@ -34,7 +50,7 @@
         <xsl:param name="group"/>
         <xsl:param name="name"/>
         <xsl:sequence select="(
-            ext:imvertorParameterFile('REMOVE',string($group),string($name),())
+            ext:imvertorParameterFile('REMOVE',string($group),string($name),(),())
             )"/>      
     </xsl:function>
     
@@ -43,13 +59,23 @@
         <xsl:param name="name"/>
         <xsl:param name="value"/>
         <xsl:sequence select="(
-            ext:imvertorParameterFile('SET',string($group),string($name),string($value))
+            ext:imvertorParameterFile('SET',string($group),string($name),string($value),'false')
+            )"/>      
+    </xsl:function>
+    
+    <xsl:function name="imf:set-config-string" as="item()*">
+        <xsl:param name="group"/>
+        <xsl:param name="name"/>
+        <xsl:param name="value"/>
+        <xsl:param name="overwrite"/>
+        <xsl:sequence select="(
+            ext:imvertorParameterFile('SET',string($group),string($name),string($value),if ($overwrite) then 'true' else 'false')
             )"/>      
     </xsl:function>
     
     <xsl:function name="imf:save-config-file" as="item()*">
         <xsl:sequence select="(
-            ext:imvertorParameterFile('SAVE',(),(),()) 
+            ext:imvertorParameterFile('SAVE',(),(),(),()) 
             )"/>      
     </xsl:function>
     

@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2016 Dienst voor het kadaster en de openbare registers
+ * 
+ * This file is part of Imvertor.
+ *
+ * Imvertor is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Imvertor is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Imvertor.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package nl.imvertor.common.file;
 
 import java.io.File;
@@ -53,11 +73,11 @@ public class AnyFolder extends AnyFile {
 		}
 	}
 
-	private void getFilesSub(Vector<String> list, File currentFile, boolean recurse) {
+	private void getFilesSub(Vector<String> list, File currentFile, boolean recurse) throws IOException {
 		File[] listOfFiles = currentFile.listFiles();
 		if (listOfFiles != null) // may be null when this is a LNK and not a folder or file 
 			for (File rFile : listOfFiles) {
-				list.add(rFile.getAbsolutePath());
+				list.add(rFile.getCanonicalPath());
 				if(rFile.isDirectory() && recurse) {
 					getFilesSub(list, rFile, recurse);
 				} 
