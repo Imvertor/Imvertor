@@ -20,10 +20,15 @@
 <config>
    <id>
       <name>XmiCompiler parameters</name>
-      <version-control>$Id: parms.xml 7431 2016-02-24 12:46:42Z arjan $</version-control>
+      <version-control>$Id: parms.xml 7492 2016-04-11 09:51:58Z arjan $</version-control>
    </id>
    <cli-parms>
-      <!-- none -->
+      <cli-parm>
+         <name>refreshxmi</name>
+         <arg>yes|no</arg>
+         <tip>Yes if the XMI file generated from EA must be recreated each time.</tip>
+         <required>false</required>
+      </cli-parm> 
    </cli-parms>
 
    <properties>

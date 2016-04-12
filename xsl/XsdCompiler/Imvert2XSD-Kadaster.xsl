@@ -726,6 +726,7 @@
                     <xsl:when test="$base-type='INTEGER'">xs:integer</xsl:when> <!-- xsd:integer — Signed integers of arbitrary length -->
                     <xsl:when test="$base-type='DECIMAL'">xs:decimal</xsl:when>
                     <xsl:when test="$base-type='DATETIME'">xs:dateTime</xsl:when>
+                    <xsl:when test="$base-type='TIME'">xs:time</xsl:when>
                     <xsl:when test="$base-type='BOOLEAN'">xs:boolean</xsl:when>
                     <xsl:when test="$base-type='URI'">xs:anyURI</xsl:when>
                     <xsl:when test="$base-type='#ANY'">#any</xsl:when>

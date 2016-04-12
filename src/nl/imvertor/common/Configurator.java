@@ -56,6 +56,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.tree.NodeCombiner;
 import org.apache.commons.configuration2.tree.OverrideCombiner;
 import org.apache.commons.configuration2.tree.xpath.XPathExpressionEngine;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.NodeList;
@@ -79,7 +80,7 @@ import nl.imvertor.common.wrapper.XMLConfiguration;
 public class Configurator {
 
 	public static final Logger logger = Logger.getLogger(Configurator.class);
-	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7484 2016-03-28 11:42:35Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: Configurator.java 7492 2016-04-11 09:51:58Z arjan $";
 	public static final String PARMS_FILE_NAME = "parms.xml";
 	
 	public static final String NAMESPACE_EXTENSION_FUNCTIONS = "http://www.imvertor.org/xsl/extensions";
@@ -489,21 +490,19 @@ public class Configurator {
 			dieOnCli("error");
 		}
 		
-		// save all options as corresponding properties.
 		@SuppressWarnings("unchecked")
 		Iterator<Option> it = commandLine.iterator();
 		while (it.hasNext()) {
 			Option option = it.next();
 			String optionName = option.getOpt();
-			String v = commandLine.getOptionValue(optionName);
-			if (v != null)
-				setParm(workConfiguration, "cli",optionName,v,true);
+			String[] v = commandLine.getOptionValues(optionName); // same option many times returns array of values.
+			if (v.length > 1)
+				throw new Exception("Duplicate argument -" + optionName + " on command line");
+			if (optionName.equals("arguments")) 
+				loadFromPropertyFiles(curFile,v[0]);
+			setParm(workConfiguration, "cli",optionName,v[0],true);
 			setOptionIsReady(optionName, true);
 		}
-		
-		// check if "arguments" has been specified; if so, read them, but do not overwrite any.
-		if (commandLine.hasOption("arguments")) 
-			loadFromPropertyFiles(curFile, commandLine.getOptionValue("arguments"));
 		
 		String missing = checkOptionsAreReady();
 		if (!missing.equals("")) {
@@ -638,13 +637,14 @@ public class Configurator {
 	 */
 	private void setParm(XMLConfiguration xmlConfig, String group, String name, Object value, boolean replace) throws ConfiguratorException {
 		String gn = group + "/" + name;
+		String svalue = (value == null) ? "" : StringUtils.trim(value.toString());
 		if (replace)
-			xmlConfig.setProperty(gn, (value == null) ? "" : value.toString());
+			xmlConfig.setProperty(gn, svalue);
 		else 
-			xmlConfig.addProperty(gn, (value == null) ? "" : value.toString());
+			xmlConfig.addProperty(gn, svalue);
 		
 		// if this is a debug parameter, set debug level
-	    if (gn.equals("cli/debug") && isTrue(value.toString())) {
+	    if (gn.equals("cli/debug") && isTrue(svalue)) {
 	    	Logger.getRootLogger().setLevel(Level.DEBUG);
 	    	getRunner().debug(logger,"Debugging started.");
 	    }
@@ -669,6 +669,7 @@ public class Configurator {
 	/**
 	 * Get parameter for a particular XML configuration.
 	 * When the parameter has multiple occurrences, return the last.
+	 * Leading and trailings spaces are trimmed.
 	 * 
 	 * @param xmlConfig
 	 * @param group
@@ -702,6 +703,7 @@ public class Configurator {
 	 * @throws ConfiguratorException 
 	 */
 	private void setFileParm(XMLConfiguration xmlConfig, String type, String name, String subpath, File rootFile) throws IOException, ConfiguratorException {
+		subpath = StringUtils.trim(subpath);
 		if (rootFile == null) rootFile = new File(System.getProperty("user.dir"));
 		File f = isFullPath(subpath) ? new File(subpath) : new File(rootFile, subpath);
 		setParm(xmlConfig, type, name, f.getCanonicalPath(),true);
@@ -764,9 +766,9 @@ public class Configurator {
 
 	/**
 	 * Read property file used to represent cli parameters, and put these in the work configuration.
-	 * Override existing property values.
+	 * Do not override existing property values.
 	 * 
-	 * Property file may also have an include property, set to a comma-separated list of relative paths to other property files to be included, in that order.
+	 * Property file may also have an arguments property, set to a comma-separated list of relative paths to other property files to be included, in that order.
 	 * 
 	 * The file is located relative to the property file holding the include statement. 
 	 * If not available, it is assume it is available in the props folder of the managed input folder.
@@ -783,27 +785,25 @@ public class Configurator {
 		BufferedReader in = new BufferedReader(new InputStreamReader(s, "UTF-8"));
 		properties.load(in); 
 		s.close();
-		// now create cli properties for each found.
+		
 		Enumeration<Object> e = properties.keys();
 		while (e.hasMoreElements()) {
-			String v = e.nextElement().toString();
-			// never overwrite
-			if (getParm(workConfiguration,"cli",v,false) == null) {
-				// process file properties in context of the current file
-				String value = properties.getProperty(v);
-				if (v.equals("umlfile") | v.equals("zipfile") | v.equals("hisfile")) {
-					File parent = (new File(filePath)).getParentFile();
-					if (AnyFile.isAbsolutePath(value))
-						value = (new File(value)).getCanonicalPath();
-					else
-						value = (new File(parent, value)).getCanonicalPath();
-				} 
-				setParm(workConfiguration,"cli",v,value,true);
-				setOptionIsReady(v, true);
+			String optionName = e.nextElement().toString();
+			String value = properties.getProperty(optionName);
+			// process file properties in context of the current file
+			if (optionName.equals("umlfile") | optionName.equals("zipfile") | optionName.equals("hisfile")) {
+				File parent = (new File(filePath)).getParentFile();
+				if (AnyFile.isAbsolutePath(value))
+					value = (new File(value)).getCanonicalPath();
+				else
+					value = (new File(parent, value)).getCanonicalPath();
+			} else if (optionName.equals("arguments")) {
+				loadFromPropertyFiles(f,value);
 			}
+			setParm(workConfiguration,"cli",optionName,value,true); 
+			setOptionIsReady(optionName, true);
+			
 		}
-		loadFromPropertyFiles(f,properties.getProperty("arguments"));
-	
 	}
 	
 	private void loadFromPropertyFiles(File curFile, String filenames) throws Exception {

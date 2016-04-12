@@ -43,7 +43,7 @@ public class EapCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "EapCompiler";
-	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7479 2016-03-23 15:24:08Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: EapCompiler.java 7492 2016-04-11 09:51:58Z arjan $";
 
 	private EapFile templateFile;
 	private String templateFileModelGUID;
@@ -71,18 +71,21 @@ public class EapCompiler extends Step {
 			boolean can = (new AnyFile(configurator.getParm("cli","umlfile"))).getExtension().equals("eap");
 		
 			// generate UML template
-			if (may) { 
-				if (wantTemplate || must) createEapTemplate();
-			} else 
-				runner.warn(logger,"Model is in phase 0 (concept), no template generated.");
-
+			if (may) 
+				if (wantTemplate)
+					if (must || can) 
+						createEapTemplate();
+			// messages
+			if (wantTemplate && !can) runner.warn(logger,"Model is in phase 0 (concept), no template generated.");
+			
 			// generate UML report
-			if (may) { 
+			if (may)
 				if (wantDocument)
-					if (can) generateUmlReport();
-					else runner.warn(logger,"An UML document can only be generated for EAP source UML files.");
-			} else 
-				runner.warn(logger,"Model is in phase 0 (concept), no document generated.");
+					if (can) 
+						generateUmlReport();
+			// messages
+			if (wantDocument && !can) runner.warn(logger,"An UML document can only be generated for EAP source UML files.");
+			if (wantDocument && !may) runner.warn(logger,"Model is in phase 0 (concept), no document generated.");
 			
 			configurator.setStepDone(STEP_NAME);
 			

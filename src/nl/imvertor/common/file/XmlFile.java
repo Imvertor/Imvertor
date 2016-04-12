@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -104,6 +105,16 @@ public class XmlFile extends AnyFile implements ErrorHandler {
 	
 	private int wfcode = WFCODE_OKAY; // a code indicating the Wellformedness of the XML file.
 	
+	private Vector<String> messages = new Vector<String>();
+	
+	public static void main(String[] args) {
+		
+		//XmlFile file = new XmlFile("D:\\projects\\arjan\\Java development\\CommonHandlers\\sandbox\\EHcache\\config\\ehcache.xml");
+		XmlFile file = new XmlFile("D:\\projects\\validprojects\\Kadaster-Imvertor\\Imvertor-OS-work\\default\\comply\\template\\xl\\worksheets\\sheet1.xml");
+		System.out.println(file.isValid());
+		file.getMessages();
+		
+	}
 	
 	public XmlFile(String pathname) {
 		super(pathname);
@@ -241,20 +252,49 @@ public class XmlFile extends AnyFile implements ErrorHandler {
 	}
 		
 	public boolean isWellFormed() {
+		messages.removeAllElements();
 		try {
+			wfcode = WFCODE_OKAY;
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setValidating(false);
 			factory.setNamespaceAware(true);
+			factory.setXIncludeAware(true);
+			
+			DocumentBuilder builder = factory.newDocumentBuilder();
+	
+			builder.setErrorHandler(this);    
+			builder.parse(new InputSource(this.getCanonicalPath()));
+			
+		} catch (Exception e) {
+			wfcode = WFCODE_FATAL;
+		}
+		return wfcode < WFCODE_ERROR;
+	}
+	
+	public boolean isValid() {
+		messages.removeAllElements();
+		try {
+			wfcode = WFCODE_OKAY;
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setValidating(true);
+			factory.setNamespaceAware(true);
+			factory.setXIncludeAware(true);
+			factory.setAttribute(
+				    "http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+				    "http://www.w3.org/2001/XMLSchema");
 	
 			DocumentBuilder builder = factory.newDocumentBuilder();
 	
 			builder.setErrorHandler(this);    
 			builder.parse(new InputSource(this.getCanonicalPath()));
-			wfcode = WFCODE_OKAY;
 		} catch (Exception e) {
 			wfcode = WFCODE_FATAL;
 		}
 		return wfcode < WFCODE_ERROR;
+	}
+	
+	public Vector<String> getMessages() {
+		return messages;
 	}
 	
 	/**
@@ -331,14 +371,17 @@ public class XmlFile extends AnyFile implements ErrorHandler {
 	
 	@Override
 	public void error(SAXParseException exception) throws SAXException {
+		messages.add(exception.getMessage());
 		wfcode = WFCODE_ERROR;
 	}
 	@Override
 	public void fatalError(SAXParseException exception) throws SAXException {
+		messages.add(exception.getMessage());
 		wfcode = WFCODE_FATAL;
 	}
 	@Override
 	public void warning(SAXParseException exception) throws SAXException {
+		messages.add(exception.getMessage());
         wfcode = WFCODE_WARNING;
 	}
 

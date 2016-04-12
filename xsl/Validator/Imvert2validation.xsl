@@ -967,7 +967,8 @@
         'integer',
         'boolean',
         'decimal',
-        'datetime'
+        'datetime',
+        'time'
         )" 
         as="xs:string+"/>
     

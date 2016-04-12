@@ -25,7 +25,7 @@
     xmlns:imvert="http://www.imvertor.org/schema/system"
     xmlns:imf="http://www.imvertor.org/xsl/functions"
     xmlns:imvert-result="http://www.imvertor.org/schema/imvertor/application/v20160201"
-    xmlns:imvert-ep="http://www.imvertor.org/schema/endproduct"
+    xmlns:ep="http://www.imvertor.org/schema/endproduct"
     
     xmlns:bg="http://www.egem.nl/StUF/sector/bg/0310" 
     xmlns:metadata="http://www.kinggemeenten.nl/metadataVoorVerwerking" 
@@ -56,7 +56,7 @@
             <xsl:comment select="concat('XSD is geplaatst in ', $xsd-file-url)"/>
         </result>
         <xsl:result-document href="{$xsd-file-url}">
-            <xsl:apply-templates select="$imvert-endproduct/imvert-ep:endproduct-structures"/>
+            <xsl:apply-templates select="$imvert-endproduct/ep:message-set"/>
         </xsl:result-document>
     </xsl:template>
     

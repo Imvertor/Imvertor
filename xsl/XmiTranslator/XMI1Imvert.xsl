@@ -614,6 +614,10 @@
                 <xsl:sequence select="imf:create-output-element('imvert:type-name','datetime')"/>
                 <xsl:sequence select="imf:create-output-element('imvert:type-modifier',$type-modifier)"/>
             </xsl:when>
+            <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('TIJD','T')">
+                <xsl:sequence select="imf:create-output-element('imvert:baretype',$type-normname)"/>
+                <xsl:sequence select="imf:create-output-element('imvert:type-name','time')"/>
+            </xsl:when>
             <xsl:when test="substring($type-id,1,5) = ('eaxmi') and $type-normname = ('JAAR', 'JAARMAAND', 'DATUM', 'DT')">
                 <xsl:sequence select="imf:create-output-element('imvert:baretype',$type-normname)"/>
                 <xsl:sequence select="imf:create-output-element('imvert:type-name','datetime')"/>

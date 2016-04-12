@@ -29,6 +29,12 @@
          <tip>Yes if a compliancy Excel should be generated for this application</tip>
          <required>true</required>
       </cli-parm> 
+      <cli-parm>
+         <name>validatecomplyexcel</name>
+         <arg>yes|no</arg>
+         <tip>Yes if the compliancy excels created must be validated</tip>
+         <required>true</required>
+      </cli-parm> 
    </cli-parms>
    
    <properties>

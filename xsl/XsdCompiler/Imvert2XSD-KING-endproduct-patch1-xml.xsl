@@ -18,6 +18,7 @@
     
     xmlns:ss="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
     
+    xmlns="http://www.imvertor.org/schema/endproduct"
     version="2.0">
     
     <!-- TODO verwijderen. Patch1 is een patch op output formaat van robert; tijdelijk! Robert gaat dit zelf genereren -->

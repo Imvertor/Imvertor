@@ -20,6 +20,9 @@
 
 package nl.imvertor.ComplyCompiler;
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.apache.log4j.Logger;
 
 import nl.imvertor.common.Step;
@@ -78,6 +81,22 @@ public class ComplyCompiler  extends Step {
 				XmlFile newContentFile = new XmlFile(configurator.getParm("properties","WORK_COMPLY_FILE",true));
 				newContentFile.copyFile(contentFile);
 				formFile.deserializeFromXml(serializeFolder,true);
+				
+				// XML validate the generated worksheets
+				if (configurator.isTrue("cli","validatecomplyexcel")) {
+					Iterator<String> files = serializeFolder.listFilesToVector(true).iterator();
+					while (files.hasNext()) {
+						XmlFile file = new XmlFile(files.next());
+						if (file.getName().matches("^sheet\\d+\\.xml$"))
+							if (!file.isValid()) {
+								Iterator<String> messages = file.getMessages().iterator();
+								while (messages.hasNext()) {
+									runner.warn(logger, messages.next());
+								}
+								runner.error(logger, file.getMessages().size() + " problems found in generating: " + file.getCanonicalPath());
+							}
+					}
+				}
 				
 				configurator.setParm("appinfo","compliancy-result-form-path",formFile.getCanonicalPath());
 					

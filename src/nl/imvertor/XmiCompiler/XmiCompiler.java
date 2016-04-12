@@ -44,7 +44,7 @@ public class XmiCompiler extends Step {
 	protected static final Logger logger = Logger.getLogger(XmiCompiler.class);
 	
 	public static final String STEP_NAME = "XmiCompiler";
-	public static final String VC_IDENTIFIER = "$Id: XmiCompiler.java 7473 2016-03-22 07:30:03Z arjan $";
+	public static final String VC_IDENTIFIER = "$Id: XmiCompiler.java 7492 2016-04-11 09:51:58Z arjan $";
 
 	private AnyFile passedFile;
 	private XmlFile activeFile;
@@ -65,6 +65,7 @@ public class XmiCompiler extends Step {
 			// check what file is passed on the command line.
 			
 			AnyFile umlFile = new AnyFile(configurator.getFile(configurator.getParm("cli", "umlfile")));
+			boolean mustReread = configurator.isTrue("cli", "refreshxmi", false);
 
 			EapFile eapFile = umlFile.getExtension().toLowerCase().equals("eap") ? new EapFile(umlFile) : null;
 			XmiFile xmiFile = umlFile.getExtension().toLowerCase().equals("xmi") ? new XmiFile(umlFile) : null;
@@ -111,7 +112,7 @@ public class XmiCompiler extends Step {
 				if (activeFile.exists()) 
 					f1 = (idFile.exists()) ? idFile.getContent() : "";
 				String f2 = passedFile.getFileInfo();
-				if (!f1.equals(f2)) {
+				if (!f1.equals(f2) || mustReread) {
 					runner.info(logger,"Reading" + filespec);
 					exportEapToXmi((EapFile) passedFile, activeFile);
 					// and place file info in ID file
