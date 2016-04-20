@@ -105,6 +105,9 @@ public class ChainTranslateAndReport {
 		    // However, in some circumstances (debugging or prototyping) we may want to continue anyway. 
 		    forced = configurator.forceCompile() && !succeeds;
 		    
+		    // read the current application phase
+		    configurator.getRunner().getAppPhase(); 
+		    
 		    if (succeeds || forced) {
 		    
 		    	if (forced) { 
